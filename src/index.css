@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --color-brand-blue: #5b21b6; /* Deep Purple/Violet */
+  --color-brand-lavender: #f3e8ff;
+  --color-brand-green: #10b981;
+  --color-brand-orange: #f97316;
+  --color-brand-pink: #ec4899;
+  --color-brand-yellow: #f59e0b;
+  --color-bg-paper: #ffffff;
+  --color-ink: #000000;
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--color-bg-paper)] text-[var(--color-ink)] font-sans antialiased;
+  }
+  
+  h1, h2, h3 {
+    @apply font-serif font-medium tracking-tight;
+  }
+}
+
+.serif-italic {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.bento-grid {
+  display: grid;
+  @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-zinc-200 border-t border-zinc-200;
+}
+
+.bento-item {
+  @apply bg-[var(--color-bg-paper)] p-12 flex flex-col gap-6;
+}
+
+.nav-pill {
+  @apply px-5 py-2 rounded-full bg-white border border-black/5 text-[13px] font-medium transition-all hover:bg-black/5;
+}
+
+.btn-primary {
+  @apply bg-violet-700 text-white px-8 py-4 rounded-full font-medium flex items-center gap-3 transition-all hover:bg-violet-800;
+}
+
+.btn-secondary {
+  @apply bg-violet-100 text-violet-900 px-8 py-4 rounded-full font-medium flex items-center gap-3 transition-all hover:bg-violet-200;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d1d1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
