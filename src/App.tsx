@@ -19,6 +19,7 @@ import {
   Star
 } from "lucide-react";
 import { useState } from "react";
+import logoUrl from "./assets/logo.svg";
 
 const LANGUAGES = {
   EN: "English",
@@ -146,7 +147,19 @@ export default function App() {
       <nav className="fixed top-8 left-0 right-0 z-50 px-6">
         <div className="max-w-6xl mx-auto bg-white/80 backdrop-blur-2xl rounded-full px-5 py-3 flex items-center justify-between shadow-2xl shadow-black/[0.04] border border-white/60">
           <div className="flex items-center gap-8 pl-4">
-            <button onClick={() => setView("HOME")} className="font-serif text-2xl font-bold tracking-tight text-black hover:opacity-70 transition-opacity">* {t.name}</button>
+            <button
+              onClick={() => setView("HOME")}
+              className="flex items-center gap-3 text-black hover:opacity-70 transition-opacity"
+              aria-label={t.name}
+            >
+              <img
+                src={logoUrl}
+                alt={`${t.name} logo`}
+                className="h-7 w-auto block"
+                draggable={false}
+              />
+              <span className="font-serif text-2xl font-bold tracking-tight">{t.name}</span>
+            </button>
             <div className="hidden lg:flex items-center gap-1">
               {[
                 { id: "HOME", label: t.nav.home },
