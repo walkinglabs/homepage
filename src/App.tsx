@@ -30,6 +30,24 @@ const WECHAT_QR_URL = "https://github.com/walkinglabs/.github/raw/main/profile/w
 
 type View = "HOME" | "PROJECTS" | "GROUP" | "BLOG" | "CONTACT";
 
+const PARTNERS = [
+  {
+    name: "Datawhale",
+    url: "https://github.com/datawhalechina",
+    logo: "https://www.datawhale.cn/assets/logo-vAxrscYT.png"
+  },
+  {
+    name: "百度飞桨",
+    url: "https://github.com/PaddlePaddle",
+    logo: "https://avatars.githubusercontent.com/u/23534030?s=200&v=4"
+  },
+  {
+    name: "ModelScope 社区",
+    url: "https://github.com/modelscope",
+    logo: "https://avatars.githubusercontent.com/u/109945100?s=200&v=4"
+  }
+];
+
 const BLOG_POSTS = {
   ZH: [
     {
@@ -1051,6 +1069,38 @@ export default function App() {
             <div>
               <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-6 font-mono">Labs HQ</h4>
               <p className="text-base text-zinc-500 font-light leading-relaxed">Virtual first lab. Physically spanning across Beijing, Singapore, and decentralized research nodes globally.</p>
+            </div>
+          </div>
+
+          <div className="max-w-7xl mx-auto mt-28 border-t border-zinc-100 pt-20 overflow-hidden">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 mb-12">
+              <div>
+                <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-violet-700 mb-8 font-mono">Partners</div>
+                <h3 className="text-6xl md:text-7xl leading-none mb-8 text-black">
+                  协作网络
+                </h3>
+                <p className="text-xl text-zinc-500 font-light leading-relaxed max-w-2xl">
+                  与开放社区和技术平台一起，推进智能体从想法、评测到可复现实验系统的落地。
+                </p>
+              </div>
+            </div>
+            <div className="partner-marquee border-y border-zinc-100">
+              <div className="partner-marquee-track">
+                {[...PARTNERS, ...PARTNERS, ...PARTNERS].map((partner, index) => (
+                  <a
+                    key={`${partner.name}-${index}`}
+                    href={partner.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="partner-marquee-item group"
+                  >
+                    <div className="partner-logo">
+                      <img src={partner.logo} alt={`${partner.name} logo`} />
+                    </div>
+                    <span>{partner.name}</span>
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </motion.div>
