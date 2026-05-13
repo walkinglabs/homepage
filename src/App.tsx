@@ -16,7 +16,8 @@ import {
   Ghost,
   CircleDot,
   Smile,
-  Star
+  Star,
+  X
 } from "lucide-react";
 import { useState } from "react";
 import logoUrl from "./assets/logo.svg";
@@ -26,9 +27,184 @@ const LANGUAGES = {
   ZH: "中文"
 };
 
+const WECHAT_QR_URL = "https://github.com/walkinglabs/.github/raw/main/profile/wechat.png";
+
+type View = "HOME" | "PROJECTS" | "GROUP" | "BLOG" | "CONTACT";
+
+const BLOG_POSTS = {
+  ZH: [
+    {
+      slug: "agents-need-rl",
+      date: "May 13, 2026",
+      title: "为什么 Agents 需要强化学习",
+      author: "WalkingLabs Core",
+      category: "Agentic AI",
+      readTime: "8 min read",
+      desc: "LLM 规划本身还不够。真正可用的 Agent 需要在反馈循环中学习任务边界、工具选择与长期策略。",
+      body: [
+        "大语言模型让 Agent 拥有了强大的语言理解、计划生成与工具调用能力，但这并不自动等于稳定的行动能力。一个 Agent 在真实环境中会遇到延迟反馈、错误工具返回、目标漂移、上下文污染和多步决策失败。仅靠一次性的 prompt 或静态规则，很难让系统在这些复杂场景中持续变好。",
+        "强化学习的价值在于把“行动后的结果”重新纳入训练和优化过程。对 Agent 来说，奖励不一定只是游戏分数，也可以是任务完成率、人工偏好、工具调用成本、失败恢复能力、事实一致性和用户满意度。关键是建立可观测、可评估、可迭代的反馈闭环。",
+        "我们更关心的是工程化的 RL for Agents：如何记录轨迹，如何定义中间奖励，如何做离线评估，如何避免为了指标而牺牲可靠性。一个好的 Agent 系统不只是会回答问题，而是能在行动中发现不确定性，主动修正计划，并从失败中提炼下一次更好的策略。"
+      ],
+      takeaways: [
+        "Agent 的核心瓶颈不是“会不会说”，而是“能不能稳定行动”。",
+        "反馈数据需要和工具调用、环境状态、用户目标绑定在一起。",
+        "RL 更适合作为持续优化层，而不是替代基础模型能力。"
+      ]
+    },
+    {
+      slug: "embodied-intelligence-frontier",
+      date: "May 08, 2026",
+      title: "具身智能：Agent 的下一块战场",
+      author: "WalkingLabs Core",
+      category: "Embodied AI",
+      readTime: "7 min read",
+      desc: "从数字助理走向物理执行，Agent 需要理解世界状态、动作约束与真实反馈。",
+      body: [
+        "当 Agent 离开浏览器和文档，进入机器人、设备控制、空间感知或真实生产流程时，问题会立刻变得不同。物理世界不是一个稳定的文本接口：传感器会有噪声，执行器会有误差，环境会变化，反馈也常常不是即时的。",
+        "具身智能要求 Agent 同时处理感知、规划和低层动作之间的映射。它不仅要知道“应该做什么”，还要理解“能不能做”“以什么代价做”“失败之后如何恢复”。这让世界模型、动作抽象和安全边界变得非常重要。",
+        "我们认为未来的 Agent 基础设施会越来越接近一个分层系统：上层负责目标理解与任务分解，中层负责策略选择和工具/技能调度，下层负责和真实环境交互。每一层都需要可测试、可回放、可校准。"
+      ],
+      takeaways: [
+        "具身 Agent 的难点在于不确定环境下的连续行动。",
+        "安全约束和失败恢复应当是一等能力。",
+        "仿真、回放和真实反馈需要组合使用。"
+      ]
+    },
+    {
+      slug: "llm-sync-memory",
+      date: "April 22, 2026",
+      title: "构建 LLM-Sync：实时记忆系统的工程笔记",
+      author: "Engineers Hub",
+      category: "Memory",
+      readTime: "6 min read",
+      desc: "一个可扩展的 Agent 记忆层，需要同时考虑检索质量、写入节奏、延迟和可解释性。",
+      body: [
+        "Agent 的记忆不是把所有历史都塞回上下文。真正有用的记忆系统需要回答三个问题：什么值得存，什么时候取回，取回后如何影响当前决策。LLM-Sync 的核心思路是把事件、实体、任务状态和偏好拆成不同类型的记忆，并为每类记忆设计不同的写入和检索策略。",
+        "实时记忆最容易遇到的问题是延迟和污染。每次交互都同步写入向量库，会拖慢体验；不加过滤地写入，又会把临时信息和错误假设长期保存。我们采用分层缓存和延迟固化：短期上下文先进入会话记忆，经过确认或重复出现后再进入长期记忆。",
+        "另一个关键点是可解释性。Agent 在使用某段记忆时，应当能说明它为什么相关、来自哪里、可信度如何。记忆系统不是黑盒外挂，而是 Agent 决策链路的一部分。"
+      ],
+      takeaways: [
+        "记忆需要分类，不同类型使用不同生命周期。",
+        "写入比检索更需要克制。",
+        "可解释的记忆引用能显著提升系统可信度。"
+      ]
+    }
+  ],
+  EN: [
+    {
+      slug: "agents-need-rl",
+      date: "May 13, 2026",
+      title: "Why Agents Need Reinforcement Learning",
+      author: "WalkingLabs Core",
+      category: "Agentic AI",
+      readTime: "8 min read",
+      desc: "LLM planning is not enough. Useful agents need feedback loops for tool choice, task boundaries, and long-horizon strategy.",
+      body: [
+        "Large language models gave agents strong language understanding, planning, and tool-use abilities. That does not automatically create reliable action. In real environments, agents face delayed feedback, noisy tool responses, drifting goals, polluted context, and multi-step failure modes.",
+        "Reinforcement learning matters because it brings the result of action back into optimization. For agents, reward can mean completion rate, human preference, tool cost, recovery quality, factual consistency, or user satisfaction. The important part is building a loop that can be observed, evaluated, and improved.",
+        "Our focus is practical RL for agents: recording trajectories, defining intermediate rewards, running offline evaluation, and avoiding metric gaming. A strong agent does more than answer; it notices uncertainty, revises its plan, and learns better strategies from failure."
+      ],
+      takeaways: [
+        "The core bottleneck is stable action, not fluent language.",
+        "Feedback should be tied to tools, environment state, and user goals.",
+        "RL works best as a continuous improvement layer."
+      ]
+    },
+    {
+      slug: "embodied-intelligence-frontier",
+      date: "May 08, 2026",
+      title: "Embodied Intelligence: The Next Frontier",
+      author: "WalkingLabs Core",
+      category: "Embodied AI",
+      readTime: "7 min read",
+      desc: "As agents move from digital assistants to physical execution, they must reason about world state, constraints, and real feedback.",
+      body: [
+        "When agents leave browsers and documents for robotics, devices, spatial perception, or production workflows, the problem changes. The physical world is not a stable text interface. Sensors are noisy, actuators drift, environments shift, and feedback is rarely immediate.",
+        "Embodied intelligence asks agents to connect perception, planning, and low-level action. They need to know what should happen, whether it can happen, what it costs, and how to recover when reality disagrees.",
+        "We expect agent infrastructure to become layered: goal understanding and decomposition at the top, policy and skill routing in the middle, and grounded interaction at the bottom. Each layer needs testing, replay, and calibration."
+      ],
+      takeaways: [
+        "Embodied agents operate under continuous uncertainty.",
+        "Safety constraints and recovery should be first-class capabilities.",
+        "Simulation, replay, and real feedback need to work together."
+      ]
+    },
+    {
+      slug: "llm-sync-memory",
+      date: "April 22, 2026",
+      title: "Building LLM-Sync: Notes on Real-Time Memory",
+      author: "Engineers Hub",
+      category: "Memory",
+      readTime: "6 min read",
+      desc: "A scalable memory layer has to balance retrieval quality, write discipline, latency, and explainability.",
+      body: [
+        "Agent memory is not the practice of stuffing every prior message back into context. Useful memory answers three questions: what should be stored, when should it be retrieved, and how should it affect the current decision.",
+        "Real-time memory often fails on latency and pollution. Writing every interaction into a vector database slows the experience; writing without filters preserves temporary assumptions as durable facts. LLM-Sync uses layered caching and delayed consolidation.",
+        "Explainability is the other key. When an agent uses memory, it should be able to say why that memory matters, where it came from, and how reliable it is. Memory is part of the decision chain, not a black-box attachment."
+      ],
+      takeaways: [
+        "Different memory types need different lifecycles.",
+        "Writing memory requires more restraint than retrieval.",
+        "Explainable memory references increase trust."
+      ]
+    }
+  ]
+};
+
+const PROJECTS = [
+  {
+    title: "hands-on-modern-rl",
+    repo: "walkinglabs/hands-on-modern-rl",
+    url: "https://github.com/walkinglabs/hands-on-modern-rl",
+    desc: "A practice-first modern reinforcement learning course, from classic control to LLM post-training, RLVR, Agentic RL, and multimodal agents.",
+    tags: ["RL", "LLM Alignment", "Agentic RL"],
+    type: "Course",
+    stars: "1.7k",
+    forks: "86"
+  },
+  {
+    title: "learn-harness-engineering",
+    repo: "walkinglabs/learn-harness-engineering",
+    url: "https://github.com/walkinglabs/learn-harness-engineering",
+    desc: "A project-based course on the environment, state management, verification, and control mechanisms that make AI coding agents work reliably.",
+    tags: ["Harness", "Agents", "Course"],
+    type: "Course",
+    stars: "4.2k",
+    forks: "405"
+  },
+  {
+    title: "awesome-harness-engineering",
+    repo: "walkinglabs/awesome-harness-engineering",
+    url: "https://github.com/walkinglabs/awesome-harness-engineering",
+    desc: "A curated list of articles, playbooks, benchmarks, specifications, and open-source projects for reliable AI agent harness engineering.",
+    tags: ["Awesome List", "Reliability", "Agents"],
+    type: "Resource",
+    stars: "2.4k",
+    forks: "183"
+  },
+  {
+    title: "easy-vibe",
+    repo: "datawhalechina/easy-vibe",
+    url: "https://github.com/datawhalechina/easy-vibe",
+    desc: "A beginner-friendly vibe coding course: if you can describe what you want, you can learn to build real apps step by step.",
+    tags: ["Vibe Coding", "Beginner", "Course"],
+    type: "Course",
+    stars: "10.5k",
+    forks: "986"
+  }
+];
+
 export default function App() {
   const [lang, setLang] = useState<keyof typeof LANGUAGES>("ZH");
-  const [view, setView] = useState<"HOME" | "PROJECTS" | "GROUP" | "BLOG" | "CONTACT">("HOME");
+  const [view, setViewState] = useState<View>("HOME");
+  const [activePostSlug, setActivePostSlug] = useState<string | null>(null);
+  const [showWechatQr, setShowWechatQr] = useState(false);
+
+  const setView = (nextView: View) => {
+    setViewState(nextView);
+    setActivePostSlug(null);
+  };
 
   const t = {
     ZH: {
@@ -76,7 +252,7 @@ export default function App() {
         }
       ],
       vision: "我们致力于探索能够感知、规划、推理、行动与持续优化的新一代智能体系统，打造高质量的开源项目、教程与开发基础设施。",
-      footer: "WalkingLabs © 2026. 实验室致力于打造开放、严谨且长期主义的技术空间。",
+      footer: "WalkingLabs © 2026. 探索可感知、可规划、可行动，并能在反馈中持续进化的 Agent 系统。",
       nav: {
         home: "首页",
         projects: "项目",
@@ -130,7 +306,7 @@ export default function App() {
         }
       ],
       vision: "We explore agents that perceive, plan, reason, and act—turning frontier ideas into reproducible open-source systems.",
-      footer: "WalkingLabs © 2026. Dedicated to rigorous, open technical growth.",
+      footer: "WalkingLabs © 2026. Exploring agent systems that perceive, plan, act, and improve through feedback.",
       nav: {
         home: "Home",
         projects: "Projects",
@@ -140,32 +316,33 @@ export default function App() {
       }
     }
   }[lang];
+  const blogPosts = BLOG_POSTS[lang];
+  const activePost = activePostSlug ? blogPosts.find((post) => post.slug === activePostSlug) : null;
 
   return (
     <div className="min-h-screen selection:bg-brand-blue/20">
       {/* Navigation */}
-      <nav className="fixed top-8 left-0 right-0 z-50 px-6">
-        <div className="max-w-6xl mx-auto bg-white/80 backdrop-blur-2xl rounded-full px-5 py-3 flex items-center justify-between shadow-2xl shadow-black/[0.04] border border-white/60">
-          <div className="flex items-center gap-8 pl-4">
+      <nav className="fixed top-4 sm:top-6 lg:top-8 left-0 right-0 z-50 page-shell">
+        <div className="max-w-7xl mx-auto bg-white/80 backdrop-blur-2xl rounded-[2rem] sm:rounded-full px-3 sm:px-5 py-2.5 sm:py-3 flex items-center justify-between gap-3 shadow-2xl shadow-black/[0.04] border border-white/60">
+          <div className="flex min-w-0 items-center gap-3 lg:gap-8 pl-1 sm:pl-4">
             <button
               onClick={() => setView("HOME")}
-              className="flex items-center gap-3 text-black hover:opacity-70 transition-opacity"
+              className="flex min-w-0 shrink items-center gap-3 text-black hover:opacity-70 transition-opacity"
               aria-label={t.name}
             >
               <img
                 src={logoUrl}
-                alt={`${t.name} logo`}
-                className="h-7 w-auto block"
+                alt={t.name}
+                className="h-6 w-auto max-w-[46vw] sm:h-7 sm:max-w-[260px] md:max-w-[320px] block"
                 draggable={false}
               />
-              <span className="font-serif text-2xl font-bold tracking-tight">{t.name}</span>
             </button>
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="hidden xl:flex items-center gap-1">
               {[
                 { id: "HOME", label: t.nav.home },
                 { id: "PROJECTS", label: t.nav.projects },
-                { id: "GROUP", label: t.nav.group },
                 { id: "BLOG", label: t.nav.blog },
+                { id: "GROUP", label: t.nav.group },
                 { id: "CONTACT", label: t.nav.contact }
               ].map((item) => (
                 <button 
@@ -181,19 +358,20 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-3 lg:gap-4">
             <button 
               onClick={() => setLang(lang === "EN" ? "ZH" : "EN")}
-              className="px-4 py-2 text-zinc-500 hover:text-black transition-colors flex items-center gap-2 text-sm font-semibold uppercase tracking-wider"
+              className="p-2 sm:px-4 sm:py-2 text-zinc-500 hover:text-black transition-colors flex items-center gap-2 text-sm font-semibold uppercase tracking-wider"
+              aria-label={lang === "EN" ? "Switch to Chinese" : "Switch to English"}
             >
               <Globe className="w-4 h-4" />
-              {lang}
+              <span className="hidden sm:inline">{lang}</span>
             </button>
-            <a href="https://github.com" target="_blank" className="p-2.5 text-zinc-500 hover:text-black transition-colors">
-              <Github className="w-6 h-6" />
+            <a href="https://github.com/walkinglabs" target="_blank" rel="noreferrer" className="hidden min-[380px]:flex p-2 sm:p-2.5 text-zinc-500 hover:text-black transition-colors" aria-label="GitHub">
+              <Github className="w-5 h-5 sm:w-6 sm:h-6" />
             </a>
-            <button className="bg-black text-white px-8 py-3.5 rounded-full text-sm font-bold uppercase tracking-tight hover:bg-zinc-800 transition-all ml-2 shadow-xl shadow-black/20 scale-100 hover:scale-[1.02] active:scale-[0.98]">
-               {lang === "EN" ? "Get Started" : "立即开始"}
+            <button onClick={() => setView("PROJECTS")} className="bg-black text-white px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 rounded-full text-xs sm:text-sm font-bold uppercase tracking-tight whitespace-nowrap hover:bg-zinc-800 transition-all sm:ml-1 lg:ml-2 scale-100 hover:scale-[1.02] active:scale-[0.98]">
+               {lang === "EN" ? "Start" : "开始"}
             </button>
           </div>
         </div>
@@ -202,14 +380,14 @@ export default function App() {
       {view === "HOME" && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
           {/* Hero Section */}
-          <section className="pt-48 pb-32 px-6">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+          <section className="pt-36 sm:pt-44 lg:pt-48 pb-24 sm:pb-32 page-shell overflow-hidden">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h1 className="text-6xl md:text-[5.5rem] leading-[1.05] mb-12 tracking-tight font-medium">
+            <h1 className="text-[clamp(3rem,7vw,5.5rem)] leading-[1.05] mb-8 sm:mb-12 tracking-tight font-medium break-words">
               {t.tagline.includes("Next-gen") ? (
                 <>
                   Perceive, Plan <span className="serif-italic">and</span> <br />
@@ -223,11 +401,11 @@ export default function App() {
               )}
             </h1>
             
-            <div className="flex flex-wrap gap-5">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-5">
               <button className="btn-primary">
                 Explore Projects <ArrowRight className="w-5 h-5" />
               </button>
-              <button className="btn-secondary">
+              <button className="btn-secondary" onClick={() => setShowWechatQr(true)}>
                 <Smile className="w-5 h-5" /> Join Community
               </button>
             </div>
@@ -273,7 +451,7 @@ export default function App() {
       </section>
 
       {/* Intro Text Chunk (from pointers style) */}
-      <section className="px-6 py-32 border-t border-zinc-100 bg-white">
+      <section className="page-shell py-32 border-t border-zinc-100 bg-white">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-20">
           <div className="flex-1">
              <div className="relative inline-block mb-12">
@@ -295,7 +473,7 @@ export default function App() {
       {/* Focus Areas (Product Discovery Style) */}
       <section className="border-t border-zinc-200">
         <div className="max-w-7xl mx-auto">
-          <div className="px-6 py-20 border-b border-zinc-100 bg-[var(--color-bg-paper)]">
+          <div className="page-shell py-20 border-b border-zinc-100 bg-[var(--color-bg-paper)]">
              <div className="w-12 h-12 rounded-full border border-black/10 flex items-center justify-center mb-8">
                <div className="w-4 h-4 rounded-full bg-violet-700 animate-ping" />
              </div>
@@ -331,12 +509,12 @@ export default function App() {
                     Join our WeChat Group to discuss Agentic AI, RL, and more. Become part of a long-term, rigorous technical community.
                   </p>
                   <div className="flex gap-4">
-                    <button className="bg-white text-ink px-6 py-3 rounded-full font-medium flex items-center gap-2">
+                    <button onClick={() => setShowWechatQr(true)} className="bg-white text-ink px-6 py-3 rounded-full font-medium flex items-center gap-2">
                       <MessageSquare className="w-5 h-5" /> WeChat Group
                     </button>
-                    <button className="border border-white/20 px-6 py-3 rounded-full font-medium">
+                    <a href="https://github.com/walkinglabs" target="_blank" rel="noreferrer" className="border border-white/20 px-6 py-3 rounded-full font-medium">
                       Join GitHub
-                    </button>
+                    </a>
                   </div>
                 </div>
                 <div className="w-48 h-48 bg-white p-4 rounded-3xl flex flex-col items-center justify-center gap-2">
@@ -354,7 +532,7 @@ export default function App() {
       </section>
 
       {/* Values / Vision Section */}
-      <section className="py-32 px-6 bg-[var(--color-bg-paper)] overflow-hidden relative border-t border-zinc-200">
+      <section className="py-32 page-shell bg-[var(--color-bg-paper)] overflow-hidden relative border-t border-zinc-200">
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col items-center text-center">
             <motion.div
@@ -420,7 +598,7 @@ export default function App() {
 
       {/* Massive Brand Statement */}
       <section className="bg-white pt-32 pb-8 overflow-hidden border-t border-zinc-100">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto page-shell">
           <motion.div
             initial={{ opacity: 0, y: 80 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -445,7 +623,7 @@ export default function App() {
       )}
 
       {view === "PROJECTS" && (
-        <motion.div className="pt-48 pb-20 px-6 min-h-screen" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        <motion.div className="pt-48 pb-20 page-shell min-h-screen" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="max-w-7xl mx-auto">
             <div className="mb-20">
               <h2 className="text-7xl md:text-[8rem] leading-none tracking-tighter mb-8 font-medium text-black">Projects.</h2>
@@ -453,32 +631,29 @@ export default function App() {
                 Open-source kernels, agents, and reinforcement learning playgrounds for the curious.
               </p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-zinc-200 border border-zinc-200">
-              {[
-                { title: "AgentCore", desc: "A high-performance framework for multi-agent coordination.", tags: ["Python", "Rust", "RL"], version: "v0.4.2", stars: "1.2k" },
-                { title: "WalkLearn", desc: "Minimalist reinforcement learning library for embodied intelligence.", tags: ["Torch", "RL"], version: "v1.1.0", stars: "842" },
-                { title: "LLM-Sync", desc: "Orchestration layer for real-time tool calling and memory management.", tags: ["Node.js", "GPT-4"], version: "v2.0.1", stars: "2.5k" },
-                { title: "WorldSim", desc: "Synthetic environments for testing agentic planning capabilities.", tags: ["Unity", "Sim"], version: "Beta", stars: "310" },
-                { title: "PromptLab", desc: "Refining agent instructions through automated red-teaming.", tags: ["NLP", "Sec"], version: "v0.1.0", stars: "156" },
-                { title: "MemGraph", desc: "Long-term hierarchical memory storage for autonomous agents.", tags: ["Graph", "RAG"], version: "v0.8.5", stars: "1.1k" }
-              ].map((proj, i) => (
-                <div key={i} className="bg-white p-12 hover:bg-zinc-50 transition-colors group">
+            <div className="grid md:grid-cols-2 gap-[1px] bg-zinc-200 border border-zinc-200">
+              {PROJECTS.map((proj) => (
+                <a key={proj.repo} href={proj.url} target="_blank" rel="noreferrer" className="bg-white p-10 md:p-12 hover:bg-zinc-50 transition-colors group block">
                   <div className="flex justify-between items-start mb-8">
-                    <div className="flex gap-2">
-                       <div className="text-xs font-mono px-2 py-1 bg-violet-100 text-violet-700 rounded-md">{proj.version}</div>
+                    <div className="flex flex-wrap gap-2">
+                       <div className="text-xs font-mono px-2 py-1 bg-violet-100 text-violet-700 rounded-md">{proj.type}</div>
                        <div className="text-xs font-mono px-2 py-1 bg-zinc-100 text-zinc-500 rounded-md flex items-center gap-1.5">
                          <Star className="w-3 h-3 fill-zinc-400 text-zinc-400" />
                          {proj.stars}
+                       </div>
+                       <div className="text-xs font-mono px-2 py-1 bg-zinc-100 text-zinc-500 rounded-md">
+                         {proj.forks} forks
                        </div>
                     </div>
                     <Github className="w-6 h-6 text-zinc-300 group-hover:text-black transition-colors" />
                   </div>
                   <h3 className="text-4xl mb-4 font-medium text-black">{proj.title}</h3>
+                  <div className="text-xs font-mono text-zinc-400 mb-6">{proj.repo}</div>
                   <p className="text-zinc-500 text-lg mb-8 leading-relaxed font-light">{proj.desc}</p>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {proj.tags.map(tag => <span key={tag} className="text-[10px] uppercase tracking-widest font-bold text-zinc-400 border border-zinc-200 px-3 py-1 rounded-full">{tag}</span>)}
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </div>
@@ -486,7 +661,7 @@ export default function App() {
       )}
 
       {view === "GROUP" && (
-        <motion.div className="pt-48 pb-20 px-6 min-h-screen" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
+        <motion.div className="pt-48 pb-20 page-shell min-h-screen" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
           <div className="max-w-7xl mx-auto">
             <div className="mb-24">
               <h2 className="text-7xl md:text-[8rem] leading-none tracking-tighter mb-8 font-medium text-black">Members.</h2>
@@ -707,62 +882,132 @@ export default function App() {
       )}
 
       {view === "BLOG" && (
-        <motion.div className="pt-48 pb-20 px-6 min-h-screen" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <motion.div className="pt-48 pb-20 page-shell min-h-screen" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
-              <h2 className="text-7xl md:text-[8rem] leading-none tracking-tighter font-medium text-black">Blog.</h2>
-              <span className="nav-pill mb-4 border-zinc-200 text-zinc-500">Tutorials & Research Updates</span>
-            </div>
-            <div className="grid lg:grid-cols-4 gap-20">
-              <div className="lg:col-span-3 space-y-32">
-                {[
-                  { date: "May 13, 2026", title: "Why Agents need Reinforcement Learning", author: "WalkingLabs Core", desc: "A deep dive into why LLM planning is insufficient without continuous feedback cycles and the role of PPO in agent orchestration." },
-                  { date: "May 08, 2026", title: "Embodied Intelligence: The Final Frontier", author: "WalkingLabs Core", desc: "Moving from digital assistants to physical actuators. Challenges in real-world task execution and latent space mapping." },
-                  { date: "April 22, 2026", title: "Building LLM-Sync: Real-time memory hacks", author: "Engineers Hub", desc: "How we implemented a vector-cached memory layer that scales to thousands of concurrent agent interactions without latency spikes." }
-                ].map((post, i) => (
-                  <div key={i} className="grid md:grid-cols-4 gap-12 group cursor-pointer border-t border-zinc-100 pt-16 first:border-t-0 first:pt-0">
-                    <div className="text-zinc-400 font-mono text-sm pt-2">{post.date}</div>
-                    <div className="md:col-span-3">
-                      <h3 className="text-5xl md:text-6xl mb-8 group-hover:text-violet-700 transition-colors tracking-tight text-black font-medium leading-tight">{post.title}</h3>
-                      <p className="text-xl text-zinc-500 leading-relaxed mb-8 max-w-3xl font-light">{post.desc}</p>
-                      <div className="flex items-center gap-4 text-sm font-medium text-black">
-                        <span className="serif-italic opacity-40">Written by</span> {post.author}
-                        <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" />
-                      </div>
+            {activePost ? (
+              <article className="max-w-4xl">
+                <button
+                  onClick={() => setActivePostSlug(null)}
+                  className="nav-pill mb-12 text-zinc-600 hover:text-black"
+                >
+                  ← {lang === "EN" ? "Back to Blog" : "返回博客"}
+                </button>
+                <div className="flex flex-wrap items-center gap-3 mb-8 text-xs font-bold uppercase tracking-widest text-zinc-400">
+                  <span>{activePost.date}</span>
+                  <span className="text-zinc-200">/</span>
+                  <span>{activePost.category}</span>
+                  <span className="text-zinc-200">/</span>
+                  <span>{activePost.readTime}</span>
+                </div>
+                <h2 className="text-5xl md:text-[6.5rem] leading-[0.95] tracking-tighter font-medium text-black mb-10">
+                  {activePost.title}
+                </h2>
+                <p className="text-2xl text-zinc-500 leading-relaxed font-light mb-12">
+                  {activePost.desc}
+                </p>
+                <div className="border-y border-zinc-100 py-6 mb-14 flex items-center gap-4 text-sm font-medium text-black">
+                  <span className="serif-italic opacity-40">{lang === "EN" ? "Written by" : "作者"}</span>
+                  {activePost.author}
+                </div>
+                <div className="space-y-8 text-xl leading-[1.85] text-zinc-700 font-light">
+                  {activePost.body.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+                <div className="mt-16 bg-zinc-50 border border-zinc-100 p-8 md:p-10 rounded-[32px]">
+                  <h3 className="text-2xl mb-8 text-black">{lang === "EN" ? "Key Takeaways" : "核心要点"}</h3>
+                  <ul className="space-y-5">
+                    {activePost.takeaways.map((item) => (
+                      <li key={item} className="flex gap-4 text-zinc-600 leading-relaxed">
+                        <CircleDot className="w-5 h-5 text-violet-700 shrink-0 mt-1" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="mt-16 border-t border-zinc-100 pt-10">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-8">
+                    {lang === "EN" ? "More Posts" : "更多文章"}
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {blogPosts
+                      .filter((post) => post.slug !== activePost.slug)
+                      .map((post) => (
+                        <button
+                          key={post.slug}
+                          onClick={() => setActivePostSlug(post.slug)}
+                          className="text-left p-6 rounded-3xl border border-zinc-100 hover:border-violet-200 hover:bg-violet-50/40 transition-colors"
+                        >
+                          <div className="text-[10px] font-bold uppercase tracking-widest text-violet-600 mb-3">{post.category}</div>
+                          <div className="text-2xl font-serif text-black leading-tight mb-3">{post.title}</div>
+                          <div className="text-sm text-zinc-400">{post.date}</div>
+                        </button>
+                      ))}
+                  </div>
+                </div>
+              </article>
+            ) : (
+              <>
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+                  <h2 className="text-7xl md:text-[8rem] leading-none tracking-tighter font-medium text-black">Blog.</h2>
+                  <span className="nav-pill mb-4 border-zinc-200 text-zinc-500">Tutorials & Research Updates</span>
+                </div>
+                <div className="grid lg:grid-cols-4 gap-20">
+                  <div className="lg:col-span-3 space-y-32">
+                    {blogPosts.map((post) => (
+                      <button
+                        key={post.slug}
+                        onClick={() => setActivePostSlug(post.slug)}
+                        className="w-full text-left grid md:grid-cols-4 gap-12 group cursor-pointer border-t border-zinc-100 pt-16 first:border-t-0 first:pt-0"
+                      >
+                        <div className="text-zinc-400 font-mono text-sm pt-2">{post.date}</div>
+                        <div className="md:col-span-3">
+                          <div className="flex flex-wrap gap-3 mb-5">
+                            <span className="text-[10px] uppercase tracking-widest font-bold text-violet-700 bg-violet-50 border border-violet-100 px-3 py-1 rounded-full">{post.category}</span>
+                            <span className="text-[10px] uppercase tracking-widest font-bold text-zinc-400 border border-zinc-100 px-3 py-1 rounded-full">{post.readTime}</span>
+                          </div>
+                          <h3 className="text-5xl md:text-6xl mb-8 group-hover:text-violet-700 transition-colors tracking-tight text-black font-medium leading-tight">{post.title}</h3>
+                          <p className="text-xl text-zinc-500 leading-relaxed mb-8 max-w-3xl font-light">{post.desc}</p>
+                          <div className="flex items-center gap-4 text-sm font-medium text-black">
+                            <span className="serif-italic opacity-40">{lang === "EN" ? "Written by" : "作者"}</span> {post.author}
+                            <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" />
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="lg:col-span-1 border-l border-zinc-100 pl-12 hidden lg:block">
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-black mb-8">Research Radar</h4>
+                    <ul className="space-y-12">
+                      {[
+                        "Self-Reasoning Agents",
+                        "Constrained RL in Robotics",
+                        "Multi-Modal Memory Architectures",
+                        "Synthetic Data Generation"
+                      ].map(topic => (
+                        <li key={topic} className="group cursor-pointer">
+                          <div className="text-[10px] uppercase font-bold text-violet-600 mb-2 font-mono">Frontier</div>
+                          <div className="text-lg font-medium group-hover:underline transition-all text-black">{topic}</div>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-20 p-8 bg-zinc-50 rounded-3xl border border-zinc-100">
+                      <BookOpen className="w-8 h-8 text-violet-700 mb-4" />
+                      <div className="text-sm font-bold text-black uppercase tracking-tight mb-2">Annual Report 2025</div>
+                      <p className="text-xs text-zinc-500 leading-relaxed font-light">Download our comprehensive study on Agentic AI performance across 50+ benchmarks.</p>
                     </div>
                   </div>
-                ))}
-              </div>
-              <div className="lg:col-span-1 border-l border-zinc-100 pl-12 hidden lg:block">
-                <h4 className="text-xs font-bold uppercase tracking-widest text-black mb-8">Research Radar</h4>
-                <ul className="space-y-12">
-                  {[
-                    "Self-Reasoning Agents",
-                    "Constrained RL in Robotics",
-                    "Multi-Modal Memory Architectures",
-                    "Synthetic Data Generation"
-                  ].map(topic => (
-                    <li key={topic} className="group cursor-pointer">
-                      <div className="text-[10px] uppercase font-bold text-violet-600 mb-2 font-mono">Frontier</div>
-                      <div className="text-lg font-medium group-hover:underline transition-all text-black">{topic}</div>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-20 p-8 bg-zinc-50 rounded-3xl border border-zinc-100">
-                  <BookOpen className="w-8 h-8 text-violet-700 mb-4" />
-                  <div className="text-sm font-bold text-black uppercase tracking-tight mb-2">Annual Report 2025</div>
-                  <p className="text-xs text-zinc-500 leading-relaxed font-light">Download our comprehensive study on Agentic AI performance across 50+ benchmarks.</p>
                 </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         </motion.div>
       )}
 
       {view === "CONTACT" && (
-        <motion.div className="pt-48 pb-32 px-6 min-h-screen" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-24 items-start">
-            <div className="sticky top-48">
+        <motion.div className="pt-48 pb-32 page-shell min-h-screen" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}>
+          <div className="max-w-7xl mx-auto w-full">
+            <div className="max-w-4xl">
               <h2 className="text-7xl md:text-[8rem] leading-none tracking-tighter mb-12 font-medium text-black">Contact.</h2>
               <div className="space-y-8">
                 <p className="text-2xl text-zinc-400 font-light leading-relaxed">
@@ -770,34 +1015,10 @@ export default function App() {
                   Reach out for research partnerships or project inquiries.
                 </p>
                 <div className="pt-12 space-y-8">
-                  <a href="mailto:hello@walkinglabs.io" className="text-4xl md:text-5xl border-b-2 border-black/10 hover:border-black transition-all block text-black font-medium pb-4">hello@walkinglabs.io</a>
-                  <a href="#" className="text-4xl md:text-5xl border-b-2 border-black/10 hover:border-black transition-all block text-black font-medium pb-4">@walkinglabs</a>
+                  <a href="mailto:physicoada@gmail.com" className="text-4xl md:text-5xl border-b-2 border-black/10 hover:border-black transition-all block text-black font-medium pb-4">physicoada@gmail.com</a>
+                  <a href="https://github.com/walkinglabs" target="_blank" rel="noreferrer" className="text-4xl md:text-5xl border-b-2 border-black/10 hover:border-black transition-all block text-black font-medium pb-4">github.com/walkinglabs</a>
                 </div>
               </div>
-            </div>
-            
-            <div className="bg-white p-10 md:p-16 rounded-[40px] shadow-2xl border border-zinc-100 flex flex-col gap-16">
-              <div className="space-y-12">
-                <div className="grid md:grid-cols-2 gap-10">
-                  <div className="space-y-4">
-                    <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Your Name</label>
-                    <input type="text" className="w-full bg-transparent border-b border-zinc-200 pb-4 focus:outline-none focus:border-violet-600 transition-colors placeholder:text-zinc-300 text-lg" placeholder="Isidore B." />
-                  </div>
-                  <div className="space-y-4">
-                    <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Email Address</label>
-                    <input type="email" className="w-full bg-transparent border-b border-zinc-200 pb-4 focus:outline-none focus:border-violet-600 transition-colors placeholder:text-zinc-300 text-lg" placeholder="your@email.com" />
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Subject</label>
-                  <input type="text" className="w-full bg-transparent border-b border-zinc-200 pb-4 focus:outline-none focus:border-violet-600 transition-colors placeholder:text-zinc-300 text-lg" placeholder="Research query / Pilot program" />
-                </div>
-                <div className="space-y-4">
-                   <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Message</label>
-                   <textarea className="w-full bg-transparent border-b border-zinc-200 pb-4 focus:outline-none focus:border-violet-600 transition-colors min-h-[160px] placeholder:text-zinc-300 text-lg resize-none" placeholder="Tell us what you're building..." />
-                </div>
-              </div>
-              <button className="btn-primary w-full justify-center py-6 text-xl shadow-lg shadow-violet-200 translate-y-0 active:translate-y-1 transition-all">Send Transmission</button>
             </div>
           </div>
           
@@ -818,8 +1039,47 @@ export default function App() {
         </motion.div>
       )}
 
+      {showWechatQr && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center page-shell">
+          <button
+            className="absolute inset-0 bg-black/35 backdrop-blur-sm"
+            onClick={() => setShowWechatQr(false)}
+            aria-label={lang === "EN" ? "Close WeChat QR code" : "关闭微信二维码"}
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="relative w-full max-w-sm rounded-[32px] bg-white p-6 shadow-2xl shadow-black/20 border border-white/80"
+            role="dialog"
+            aria-modal="true"
+            aria-label={lang === "EN" ? "WeChat group QR code" : "微信群二维码"}
+          >
+            <button
+              onClick={() => setShowWechatQr(false)}
+              className="absolute right-4 top-4 w-10 h-10 rounded-full bg-zinc-100 text-zinc-500 hover:bg-zinc-200 hover:text-black transition-colors flex items-center justify-center"
+              aria-label={lang === "EN" ? "Close" : "关闭"}
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="pt-10 text-center">
+              <h3 className="text-3xl mb-2 text-black">{lang === "EN" ? "Join WeChat" : "加入微信群"}</h3>
+              <p className="text-sm text-zinc-500 mb-6">
+                {lang === "EN" ? "Scan the QR code to join the WalkingLabs community." : "扫码加入 WalkingLabs 社区。"}
+              </p>
+              <div className="rounded-3xl border border-zinc-100 bg-zinc-50 p-4">
+                <img
+                  src={WECHAT_QR_URL}
+                  alt={lang === "EN" ? "WalkingLabs WeChat QR code" : "WalkingLabs 微信二维码"}
+                  className="w-full rounded-2xl bg-white"
+                />
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
       {/* Footer */}
-      <footer className="pb-12 px-6 border-t border-zinc-100 bg-white">
+      <footer className="pb-12 page-shell border-t border-zinc-100 bg-white">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12 pt-12">
           <div className="text-center md:text-left">
             <p className="text-sm text-zinc-400 max-w-sm">
@@ -828,7 +1088,7 @@ export default function App() {
           </div>
           
           <div className="flex flex-wrap justify-center gap-8 text-[13px] font-bold uppercase tracking-widest text-zinc-400">
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-violet-600 transition-colors">GitHub</a>
+            <a href="https://github.com/walkinglabs" target="_blank" rel="noreferrer" className="hover:text-violet-600 transition-colors">GitHub</a>
             <button onClick={() => setView("BLOG")} className="hover:text-violet-600 transition-colors uppercase">Documentation</button>
             <a href="#" className="hover:text-violet-700 transition-colors uppercase">Twitter / X</a>
             <button onClick={() => setView("CONTACT")} className="hover:text-violet-600 transition-colors uppercase">Privacy</button>
