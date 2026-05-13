@@ -1,20 +1,40 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# WalkingLabs Homepage
 
-# Run and deploy your AI Studio app
+Official homepage for WalkingLabs, built with React, Vite, Tailwind CSS, and Motion.
 
-This contains everything you need to run your app locally.
+## Development
 
-View your app in AI Studio: https://ai.studio/apps/09861f87-a35b-46e1-a4ef-e9ed6130460e
+Install dependencies:
 
-## Run Locally
+```bash
+npm install
+```
 
-**Prerequisites:**  Node.js
+Start the local dev server:
 
+```bash
+npm run dev
+```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+The site runs at [http://localhost:3000](http://localhost:3000).
+
+## Scripts
+
+```bash
+npm run dev      # Start Vite dev server
+npm run lint     # Type-check with TypeScript
+npm run build    # Build production assets into dist/
+npm run preview  # Preview the production build locally
+```
+
+## GitHub Pages
+
+This repository includes a GitHub Actions workflow at `.github/workflows/pages.yml`.
+
+For deployment, configure repository settings:
+
+1. Open `Settings` -> `Pages`.
+2. Set `Build and deployment` source to `GitHub Actions`.
+3. Push to `main` or manually run the `Deploy to GitHub Pages` workflow.
+
+The workflow builds the Vite app with the `/homepage/` base path and deploys the generated `dist/` directory.
