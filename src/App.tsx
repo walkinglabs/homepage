@@ -7,7 +7,6 @@ import { motion } from "motion/react";
 import { 
   ArrowRight, 
   Github, 
-  MessageSquare, 
   Cpu, 
   BrainCircuit, 
   Network, 
@@ -19,7 +18,7 @@ import {
   Star,
   X
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import logoUrl from "./assets/logo.svg";
 
 const LANGUAGES = {
@@ -200,10 +199,17 @@ export default function App() {
   const [view, setViewState] = useState<View>("HOME");
   const [activePostSlug, setActivePostSlug] = useState<string | null>(null);
   const [showWechatQr, setShowWechatQr] = useState(false);
+  const [wechatQrLoaded, setWechatQrLoaded] = useState(false);
+  const jellyBodyRef = useRef<HTMLDivElement | null>(null);
 
   const setView = (nextView: View) => {
     setViewState(nextView);
     setActivePostSlug(null);
+  };
+
+  const openWechatQr = () => {
+    setWechatQrLoaded(false);
+    setShowWechatQr(true);
   };
 
   const t = {
@@ -319,6 +325,34 @@ export default function App() {
   const blogPosts = BLOG_POSTS[lang];
   const activePost = activePostSlug ? blogPosts.find((post) => post.slug === activePostSlug) : null;
 
+  useEffect(() => {
+    const body = jellyBodyRef.current;
+    if (!body) return;
+
+    const randomizeJelly = () => {
+      const points = Array.from({ length: 8 }, () => `${Math.round(36 + Math.random() * 30)}%`);
+      const x1 = (0.98 + Math.random() * 0.055).toFixed(3);
+      const y1 = (0.98 + Math.random() * 0.055).toFixed(3);
+      const x2 = (0.98 + Math.random() * 0.055).toFixed(3);
+      const y2 = (0.98 + Math.random() * 0.055).toFixed(3);
+      const r1 = `${(Math.random() * 1.4 - 0.7).toFixed(2)}deg`;
+      const r2 = `${(Math.random() * 1.4 - 0.7).toFixed(2)}deg`;
+
+      body.style.setProperty("--jelly-r1", `${points[0]} ${points[1]} ${points[2]} ${points[3]} / ${points[4]} ${points[5]} ${points[6]} ${points[7]}`);
+      body.style.setProperty("--jelly-r2", `${points[3]} ${points[2]} ${points[1]} ${points[0]} / ${points[7]} ${points[6]} ${points[5]} ${points[4]}`);
+      body.style.setProperty("--jelly-sx1", x1);
+      body.style.setProperty("--jelly-sy1", y1);
+      body.style.setProperty("--jelly-sx2", x2);
+      body.style.setProperty("--jelly-sy2", y2);
+      body.style.setProperty("--jelly-rot1", r1);
+      body.style.setProperty("--jelly-rot2", r2);
+    };
+
+    randomizeJelly();
+    body.addEventListener("animationiteration", randomizeJelly);
+    return () => body.removeEventListener("animationiteration", randomizeJelly);
+  }, []);
+
   return (
     <div className="min-h-screen selection:bg-brand-blue/20">
       {/* Navigation */}
@@ -402,10 +436,10 @@ export default function App() {
             </h1>
             
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-5">
-              <button className="btn-primary">
+              <button className="btn-primary" onClick={() => setView("PROJECTS")}>
                 Explore Projects <ArrowRight className="w-5 h-5" />
               </button>
-              <button className="btn-secondary" onClick={() => setShowWechatQr(true)}>
+              <button className="btn-secondary" onClick={openWechatQr}>
                 <Smile className="w-5 h-5" /> Join Community
               </button>
             </div>
@@ -418,13 +452,13 @@ export default function App() {
               style={{ willChange: "transform" }}
               animate={{ 
                 y: [0, -15, 0],
-                rotate: [-1, 1, -1]
+                rotate: [-0.5, 0.5, -0.5]
               }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-violet-600 to-indigo-400 rounded-[45%_55%_65%_35%/35%_55%_45%_65%] shadow-2xl opacity-90" />
+              <div ref={jellyBodyRef} className="jelly-body absolute inset-0 bg-gradient-to-br from-violet-600 to-indigo-400 shadow-2xl opacity-90" />
               
-              <div className="absolute inset-0 flex flex-col items-center justify-start pt-32 md:pt-36">
+              <div className="jelly-face absolute inset-0 flex flex-col items-center justify-start pt-32 md:pt-36">
                 <div className="flex gap-12 md:gap-16">
                   <motion.div 
                     className="w-3.5 h-7 md:w-5 md:h-12 bg-white rounded-full shadow-sm" 
@@ -501,32 +535,15 @@ export default function App() {
             ))}
             
             {/* Community Bento Cell */}
-            <div className="bento-item bg-ink text-bg-paper col-span-1 md:col-span-2 lg:col-span-3">
-              <div className="flex flex-col md:flex-row gap-12 items-center">
-                <div className="flex-1">
-                  <h3 className="text-3xl mb-4 font-serif italic text-brand-blue">Build with us.</h3>
-                  <p className="text-zinc-400 mb-8 max-w-md">
-                    Join our WeChat Group to discuss Agentic AI, RL, and more. Become part of a long-term, rigorous technical community.
-                  </p>
-                  <div className="flex gap-4">
-                    <button onClick={() => setShowWechatQr(true)} className="bg-white text-ink px-6 py-3 rounded-full font-medium flex items-center gap-2">
-                      <MessageSquare className="w-5 h-5" /> WeChat Group
-                    </button>
-                    <a href="https://github.com/walkinglabs" target="_blank" rel="noreferrer" className="border border-white/20 px-6 py-3 rounded-full font-medium">
-                      Join GitHub
-                    </a>
-                  </div>
-                </div>
-                <div className="w-48 h-48 bg-white p-4 rounded-3xl flex flex-col items-center justify-center gap-2">
-                  <div className="w-full h-full bg-zinc-100 rounded-xl flex items-center justify-center border-2 border-dashed border-zinc-300">
-                    <span className="text-zinc-400 text-[10px] uppercase font-bold text-center px-4">
-                      QR Code Placeholder
-                    </span>
-                  </div>
-                  <span className="text-[10px] text-ink/60 font-mono">SCAN TO JOIN</span>
-                </div>
-              </div>
-            </div>
+            <button
+              onClick={openWechatQr}
+              className="bento-item bg-ink text-bg-paper col-span-1 md:col-span-2 lg:col-span-3 text-left hover:bg-zinc-950 transition-colors"
+            >
+              <h3 className="text-3xl mb-4 font-serif italic text-brand-blue">Build with us.</h3>
+              <p className="text-zinc-400 max-w-md">
+                Join our WeChat Group to discuss Agentic AI, RL, and more. Become part of a long-term, rigorous technical community.
+              </p>
+            </button>
           </div>
         </div>
       </section>
@@ -607,11 +624,11 @@ export default function App() {
             style={{ willChange: "transform, opacity" }}
             className="flex flex-col w-fit mx-auto"
           >
-            <span className="text-[18vw] lg:text-[220px] font-bold leading-[0.85] tracking-tighter block select-none text-black">
+            <span className="text-[20vw] lg:text-[250px] font-bold leading-[0.85] tracking-tighter block select-none text-black">
               WALKING
             </span>
-            <div className="flex justify-end -mt-[5vw] lg:-mt-16">
-              <span className="text-[14vw] lg:text-[180px] font-bold serif-italic text-violet-600 leading-none tracking-tighter block select-none">
+            <div className="flex justify-end -mt-[5.5vw] lg:-mt-20">
+              <span className="text-[16vw] lg:text-[210px] font-bold serif-italic text-violet-600 leading-none tracking-tighter block select-none">
                 LABS
               </span>
             </div>
@@ -1066,13 +1083,30 @@ export default function App() {
               <p className="text-sm text-zinc-500 mb-6">
                 {lang === "EN" ? "Scan the QR code to join the WalkingLabs community." : "扫码加入 WalkingLabs 社区。"}
               </p>
-              <div className="rounded-3xl border border-zinc-100 bg-zinc-50 p-4">
+              <div className="relative rounded-3xl border border-zinc-100 bg-zinc-50 p-4 min-h-[320px] flex items-center justify-center">
+                {!wechatQrLoaded && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-zinc-400">
+                    <div className="qr-spinner" />
+                    <span className="text-xs font-bold uppercase tracking-widest">
+                      {lang === "EN" ? "Loading QR" : "加载二维码"}
+                    </span>
+                  </div>
+                )}
                 <img
                   src={WECHAT_QR_URL}
                   alt={lang === "EN" ? "WalkingLabs WeChat QR code" : "WalkingLabs 微信二维码"}
-                  className="w-full rounded-2xl bg-white"
+                  onLoad={() => setWechatQrLoaded(true)}
+                  className={`w-full rounded-2xl bg-white transition-opacity duration-300 ${wechatQrLoaded ? "opacity-100" : "opacity-0"}`}
                 />
               </div>
+              <a
+                href={WECHAT_QR_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-block text-xs text-zinc-400 hover:text-violet-700 transition-colors underline underline-offset-4"
+              >
+                {lang === "EN" ? "If it keeps loading, open the GitHub QR image." : "长时间加载不出，可到 GitHub 页面获取二维码。"}
+              </a>
             </div>
           </motion.div>
         </div>
