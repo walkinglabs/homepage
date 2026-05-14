@@ -36,6 +36,9 @@ jobs:
         env:
           GITHUB_PAGES: "true"
 
+      - name: Normalize Pages entry
+        run: cp dist/index.dev.html dist/index.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

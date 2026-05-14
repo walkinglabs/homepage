@@ -213,7 +213,7 @@ const PROJECTS = [
 ];
 
 export default function App() {
-  const [lang, setLang] = useState<keyof typeof LANGUAGES>("ZH");
+  const [lang, setLang] = useState<keyof typeof LANGUAGES>("EN");
   const [view, setViewState] = useState<View>("HOME");
   const [activePostSlug, setActivePostSlug] = useState<string | null>(null);
   const [showWechatQr, setShowWechatQr] = useState(false);
