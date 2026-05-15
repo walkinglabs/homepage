@@ -342,6 +342,13 @@ export default function App() {
   }[lang];
   const blogPosts = BLOG_POSTS[lang];
   const activePost = activePostSlug ? blogPosts.find((post) => post.slug === activePostSlug) : null;
+  const navItems: Array<{ id: View; label: string }> = [
+    { id: "HOME", label: t.nav.home },
+    { id: "PROJECTS", label: t.nav.projects },
+    { id: "BLOG", label: t.nav.blog },
+    { id: "GROUP", label: t.nav.group },
+    { id: "CONTACT", label: t.nav.contact }
+  ];
 
   useEffect(() => {
     const body = jellyBodyRef.current;
@@ -375,56 +382,66 @@ export default function App() {
     <div className="min-h-screen selection:bg-brand-blue/20">
       {/* Navigation */}
       <nav className="fixed top-4 sm:top-6 lg:top-8 left-0 right-0 z-50 page-shell">
-        <div className="max-w-7xl mx-auto bg-white/80 backdrop-blur-2xl rounded-[2rem] sm:rounded-full px-3 sm:px-5 py-2.5 sm:py-3 flex items-center justify-between gap-3 shadow-2xl shadow-black/[0.04] border border-white/60">
-          <div className="flex min-w-0 items-center gap-3 lg:gap-8 pl-1 sm:pl-4">
-            <button
-              onClick={() => setView("HOME")}
-              className="flex min-w-0 shrink items-center gap-3 text-black hover:opacity-70 transition-opacity"
-              aria-label={t.name}
-            >
-              <img
-                src={logoUrl}
-                alt={t.name}
-                className="h-6 w-auto max-w-[46vw] sm:h-7 sm:max-w-[260px] md:max-w-[320px] block"
-                draggable={false}
-              />
-            </button>
-            <div className="hidden xl:flex items-center gap-1">
-              {[
-                { id: "HOME", label: t.nav.home },
-                { id: "PROJECTS", label: t.nav.projects },
-                { id: "BLOG", label: t.nav.blog },
-                { id: "GROUP", label: t.nav.group },
-                { id: "CONTACT", label: t.nav.contact }
-              ].map((item) => (
-                <button 
-                  key={item.id}
-                  onClick={() => setView(item.id as any)} 
-                  className={`px-6 py-2.5 rounded-full text-[15px] font-medium transition-all ${
-                    view === item.id ? "text-violet-600 bg-violet-600/5 shadow-sm" : "text-zinc-500 hover:text-black"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
+        <div className="max-w-7xl mx-auto bg-white/85 backdrop-blur-2xl rounded-[1.65rem] xl:rounded-full px-3 sm:px-5 py-2.5 sm:py-3 shadow-2xl shadow-black/[0.04] border border-white/60">
+          <div className="flex w-full items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-3 lg:gap-8 pl-1 sm:pl-4">
+              <button
+                onClick={() => setView("HOME")}
+                className="flex min-w-0 shrink items-center gap-3 text-black hover:opacity-70 transition-opacity"
+                aria-label={t.name}
+              >
+                <img
+                  src={logoUrl}
+                  alt={t.name}
+                  className="h-6 w-auto max-w-[46vw] sm:h-7 sm:max-w-[260px] md:max-w-[320px] block"
+                  draggable={false}
+                />
+              </button>
+              <div className="hidden xl:flex items-center gap-1">
+                {navItems.map((item) => (
+                  <button 
+                    key={item.id}
+                    onClick={() => setView(item.id)} 
+                    className={`px-6 py-2.5 rounded-full text-[15px] font-medium transition-all ${
+                      view === item.id ? "text-violet-600 bg-violet-600/5 shadow-sm" : "text-zinc-500 hover:text-black"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-1 sm:gap-3 lg:gap-4">
+              <button 
+                onClick={() => setLang(lang === "EN" ? "ZH" : "EN")}
+                className="p-2 sm:px-4 sm:py-2 text-zinc-500 hover:text-black transition-colors flex items-center gap-2 text-sm font-semibold uppercase tracking-wider"
+                aria-label={lang === "EN" ? "Switch to Chinese" : "Switch to English"}
+              >
+                <Globe className="w-4 h-4" />
+                <span className="hidden sm:inline">{lang}</span>
+              </button>
+              <a href="https://github.com/walkinglabs" target="_blank" rel="noreferrer" className="hidden min-[380px]:flex p-2 sm:p-2.5 text-zinc-500 hover:text-black transition-colors" aria-label="GitHub">
+                <Github className="w-5 h-5 sm:w-6 sm:h-6" />
+              </a>
+              <button onClick={() => setView("PROJECTS")} className="bg-black text-white px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 rounded-full text-xs sm:text-sm font-bold uppercase tracking-tight whitespace-nowrap hover:bg-zinc-800 transition-all sm:ml-1 lg:ml-2 scale-100 hover:scale-[1.02] active:scale-[0.98]">
+                 {lang === "EN" ? "Start" : "开始"}
+              </button>
             </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-1 sm:gap-3 lg:gap-4">
-            <button 
-              onClick={() => setLang(lang === "EN" ? "ZH" : "EN")}
-              className="p-2 sm:px-4 sm:py-2 text-zinc-500 hover:text-black transition-colors flex items-center gap-2 text-sm font-semibold uppercase tracking-wider"
-              aria-label={lang === "EN" ? "Switch to Chinese" : "Switch to English"}
-            >
-              <Globe className="w-4 h-4" />
-              <span className="hidden sm:inline">{lang}</span>
-            </button>
-            <a href="https://github.com/walkinglabs" target="_blank" rel="noreferrer" className="hidden min-[380px]:flex p-2 sm:p-2.5 text-zinc-500 hover:text-black transition-colors" aria-label="GitHub">
-              <Github className="w-5 h-5 sm:w-6 sm:h-6" />
-            </a>
-            <button onClick={() => setView("PROJECTS")} className="bg-black text-white px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 rounded-full text-xs sm:text-sm font-bold uppercase tracking-tight whitespace-nowrap hover:bg-zinc-800 transition-all sm:ml-1 lg:ml-2 scale-100 hover:scale-[1.02] active:scale-[0.98]">
-               {lang === "EN" ? "Start" : "开始"}
-            </button>
+          <div className="mobile-nav-scroll mt-2 flex gap-1 overflow-x-auto border-t border-black/5 pt-2 xl:hidden">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setView(item.id)}
+                className={`shrink-0 rounded-full px-4 py-2 text-[13px] font-semibold transition-colors ${
+                  view === item.id ? "bg-violet-600/10 text-violet-700" : "text-zinc-500 hover:bg-black/5 hover:text-black"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
           </div>
         </div>
       </nav>
@@ -432,7 +449,7 @@ export default function App() {
       {view === "HOME" && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
           {/* Hero Section */}
-          <section className="pt-36 sm:pt-44 lg:pt-48 pb-24 sm:pb-32 page-shell overflow-hidden">
+          <section className="pt-44 sm:pt-48 lg:pt-48 pb-24 sm:pb-32 page-shell overflow-hidden">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
