@@ -37,23 +37,19 @@
   padding-right: clamp(1.25rem, 4vw, 4rem);
 }
 
+.home-hero-shell {
+  padding-left: clamp(1.5rem, 7vw, 7rem);
+  padding-right: clamp(1.5rem, 7vw, 7rem);
+}
+
 .jelly-body {
-  --jelly-r1: 52% 48% 58% 42% / 42% 48% 52% 58%;
-  --jelly-r2: 39% 61% 50% 50% / 52% 43% 57% 48%;
-  --jelly-sx1: 1.025;
-  --jelly-sy1: 0.985;
-  --jelly-sx2: 0.99;
-  --jelly-sy2: 1.02;
-  --jelly-rot1: 0.6deg;
-  --jelly-rot2: -0.5deg;
   border-radius: 45% 55% 65% 35% / 35% 55% 45% 65%;
   transform-origin: 50% 58%;
-  animation: jelly-breathe 12s ease-in-out infinite;
+  animation: jelly-morph 8s ease-in-out infinite;
   will-change: border-radius, transform;
 }
 
 .jelly-face {
-  animation: jelly-face-drift 12s ease-in-out infinite;
   will-change: transform;
 }
 
@@ -163,39 +159,19 @@
   }
 }
 
-@keyframes jelly-breathe {
+@keyframes jelly-morph {
   0%,
   100% {
     border-radius: 45% 55% 65% 35% / 35% 55% 45% 65%;
-    transform: scale(1) rotate(0deg);
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
   }
-  22% {
-    border-radius: var(--jelly-r1);
-    transform: scale(var(--jelly-sx1), var(--jelly-sy1)) rotate(var(--jelly-rot1));
+  34% {
+    border-radius: 55% 45% 43% 57% / 48% 38% 62% 52%;
+    transform: translate3d(0, -2px, 0) scale(1.012, 0.992) rotate(0.4deg);
   }
-  48% {
-    border-radius: var(--jelly-r2);
-    transform: scale(var(--jelly-sx2), var(--jelly-sy2)) rotate(var(--jelly-rot2));
-  }
-  73% {
-    border-radius: var(--jelly-r1);
-    transform: scale(var(--jelly-sy1), var(--jelly-sx1)) rotate(calc(var(--jelly-rot1) * -0.6));
-  }
-}
-
-@keyframes jelly-face-drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  22% {
-    transform: translate3d(6px, -3px, 0) scale(0.985, 1.02);
-  }
-  48% {
-    transform: translate3d(-5px, 5px, 0) scale(1.01, 0.99);
-  }
-  73% {
-    transform: translate3d(4px, 3px, 0) scale(0.995, 1.01);
+  68% {
+    border-radius: 39% 61% 58% 42% / 54% 47% 53% 46%;
+    transform: translate3d(0, 2px, 0) scale(0.994, 1.01) rotate(-0.35deg);
   }
 }
 

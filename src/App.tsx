@@ -16,7 +16,11 @@ import {
   CircleDot,
   Smile,
   Star,
-  X
+  X,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  ChevronDown
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import logoUrl from "./assets/logo.svg";
@@ -27,8 +31,9 @@ const LANGUAGES = {
 };
 
 const WECHAT_QR_URL = "https://github.com/walkinglabs/.github/raw/main/profile/wechat.png";
+const WECHAT_OA_QR_URL = `${import.meta.env.BASE_URL}wechat-official-account.jpg`;
 
-type View = "HOME" | "PROJECTS" | "GROUP" | "BLOG" | "CONTACT";
+type View = "HOME" | "PROJECTS" | "GROUP" | "BLOG" | "CONTACT" | "INTRO";
 
 const PARTNERS = [
   {
@@ -217,17 +222,46 @@ export default function App() {
   const [view, setViewState] = useState<View>("HOME");
   const [activePostSlug, setActivePostSlug] = useState<string | null>(null);
   const [showWechatQr, setShowWechatQr] = useState(false);
-  const [wechatQrLoaded, setWechatQrLoaded] = useState(false);
-  const jellyBodyRef = useRef<HTMLDivElement | null>(null);
+  const [wechatQrLoaded, setWechatQrLoaded] = useState<Record<"group" | "oa", boolean>>({ group: false, oa: false });
+  const [wechatQrFailed, setWechatQrFailed] = useState<Record<"group" | "oa", boolean>>({ group: false, oa: false });
+  const [introSlide, setIntroSlide] = useState(0);
+  const [introDepth, setIntroDepth] = useState(0);
+  const introSwipeLockedRef = useRef(false);
+  const introWheelDeltaXRef = useRef(0);
+  const introWheelDeltaYRef = useRef(0);
+  const introTouchStartXRef = useRef<number | null>(null);
+  const introTouchStartYRef = useRef<number | null>(null);
 
   const setView = (nextView: View) => {
     setViewState(nextView);
     setActivePostSlug(null);
+    setIntroSlide(0);
+    setIntroDepth(0);
   };
 
   const openWechatQr = () => {
-    setWechatQrLoaded(false);
+    setWechatQrLoaded({ group: false, oa: false });
+    setWechatQrFailed({ group: false, oa: false });
     setShowWechatQr(true);
+  };
+
+  const moveIntroSlide = (direction: 1 | -1) => {
+    if (introSwipeLockedRef.current) return;
+    introSwipeLockedRef.current = true;
+    setIntroSlide((slide) => Math.max(0, Math.min(totalSlides - 1, slide + direction)));
+    setIntroDepth(0);
+    window.setTimeout(() => {
+      introSwipeLockedRef.current = false;
+    }, 520);
+  };
+
+  const moveIntroDepth = (direction: 1 | -1) => {
+    if (introSwipeLockedRef.current) return;
+    introSwipeLockedRef.current = true;
+    setIntroDepth((depth) => Math.max(0, Math.min(1, depth + direction)));
+    window.setTimeout(() => {
+      introSwipeLockedRef.current = false;
+    }, 420);
   };
 
   const t = {
@@ -350,37 +384,195 @@ export default function App() {
     { id: "CONTACT", label: t.nav.contact }
   ];
 
+  const introSlides = {
+    ZH: [
+      {
+        title: "WalkingLabs",
+        subtitle: "感知 · 规划 · 行动",
+        body: "专注下一代 Agentic AI 的开源实验室",
+        cta: "探索智能体的无限可能"
+      },
+      {
+        title: "我们做什么",
+        subtitle: "研究驱动 · 开源优先",
+        body: "我们致力于探索能够感知、规划、推理、行动与持续优化的新一代智能体系统，打造高质量的开源项目、教程与开发基础设施。",
+      },
+      {
+        title: "核心方向",
+        subtitle: "六大研究领域",
+        items: [
+          "Agentic AI — 面向复杂任务的自主智能体架构",
+          "LLM Agents — 基于大模型的规划、记忆与工具调用",
+          "Reinforcement Learning — 决策优化与策略学习",
+          "Multi-Agent Systems — 多智能体协作与通信",
+          "Embodied AI — 具身智能系统研发",
+          "Open Tutorials — 开源教程推动社区共建"
+        ]
+      },
+      {
+        title: "开源项目",
+        subtitle: "从课程到基础设施",
+        items: [
+          "hands-on-modern-rl — 现代强化学习实战教程",
+          "learn-harness-engineering — AI 编码智能体可靠性工程",
+          "awesome-harness-engineering — 精选资源列表",
+          "easy-vibe — 零基础 vibe coding 课程"
+        ]
+      },
+      {
+        title: "加入我们",
+        subtitle: "一起构建 Agent 的未来",
+        body: "无论你是研究者、工程师还是学习者，欢迎加入 WalkingLabs 社区。我们通过开源项目、技术教程和社区讨论，共同推进智能体技术的发展。",
+        cta: "扫码加入微信群 →"
+      }
+    ],
+    EN: [
+      {
+        title: "WalkingLabs",
+        subtitle: "Perceive · Plan · Act",
+        body: "An open-source lab focused on Next-gen Agentic AI",
+        cta: "Explore the future of intelligent agents"
+      },
+      {
+        title: "What We Do",
+        subtitle: "Research-Driven · Open Source First",
+        body: "We explore next-generation agent systems that can perceive, plan, reason, act, and continuously improve — building high-quality open-source projects, tutorials, and development infrastructure.",
+      },
+      {
+        title: "Core Directions",
+        subtitle: "Six Research Areas",
+        items: [
+          "Agentic AI — Autonomous agent architectures for complex tasks",
+          "LLM Agents — Planning, memory & tool-use with LLMs",
+          "Reinforcement Learning — Decision optimization & policy learning",
+          "Multi-Agent Systems — Collaboration & communication",
+          "Embodied AI — Physical world interaction systems",
+          "Open Tutorials — Community-driven education"
+        ]
+      },
+      {
+        title: "Open Source Projects",
+        subtitle: "From Courses to Infrastructure",
+        items: [
+          "hands-on-modern-rl — Practical RL course",
+          "learn-harness-engineering — AI coding agent reliability",
+          "awesome-harness-engineering — Curated resources",
+          "easy-vibe — Beginner-friendly vibe coding"
+        ]
+      },
+      {
+        title: "Join Us",
+        subtitle: "Build the Future of Agents Together",
+        body: "Whether you're a researcher, engineer, or learner — welcome to the WalkingLabs community. We advance agent technology through open-source projects, tutorials, and community discussions.",
+        cta: "Scan to join WeChat →"
+      }
+    ]
+  };
+
+  const slides = introSlides[lang];
+  const totalSlides = slides.length;
+  const activeIntroSlide = slides[introSlide];
+  const introDetailCopy = {
+    ZH: [
+      {
+        title: "从开放实验室开始",
+        body: "WalkingLabs 把研究问题、工程实现和社区协作放在同一个循环里：先做可复现实验，再沉淀教程、工具和项目，让更多人能参与下一代智能体系统的构建。"
+      },
+      {
+        title: "研究如何变成系统",
+        body: "我们关注的不只是模型能力，而是智能体在真实任务中的完整链路：感知输入、拆解目标、调用工具、检查反馈，并在失败后持续修正策略。"
+      },
+      {
+        title: "方向背后的共同问题",
+        body: "这些方向都指向同一个目标：让 Agent 不只是生成文本，而是能在复杂环境中做可靠决策，理解上下文，协作执行，并把经验转化为更好的下一次行动。"
+      },
+      {
+        title: "项目如何服务学习和研发",
+        body: "开源项目覆盖课程、可靠性工程、资源整理和低门槛实践。它们既是学习材料，也是实验基础设施，用来验证想法、复现结果并积累工程经验。"
+      },
+      {
+        title: "社区协作方式",
+        body: "欢迎研究者、工程师和学习者加入。你可以从阅读教程、提交 issue、复现实验、贡献项目或参与讨论开始，一起把 Agentic AI 推向更可用的形态。"
+      }
+    ],
+    EN: [
+      {
+        title: "Start With an Open Lab",
+        body: "WalkingLabs puts research questions, engineering systems, and community work into one loop: build reproducible experiments first, then turn them into tutorials, tools, and open projects."
+      },
+      {
+        title: "From Research to Systems",
+        body: "We care about the full agent loop in real tasks: perceiving inputs, decomposing goals, using tools, checking feedback, and improving after failures instead of relying on one-shot prompts."
+      },
+      {
+        title: "The Shared Question",
+        body: "All directions point to one goal: agents that do more than generate text. They should make reliable decisions, understand context, coordinate actions, and convert experience into better behavior."
+      },
+      {
+        title: "Why These Projects Exist",
+        body: "The projects span courses, reliability engineering, curated resources, and beginner-friendly practice. They are learning materials and experimental infrastructure at the same time."
+      },
+      {
+        title: "How to Join",
+        body: "Researchers, engineers, and learners are welcome. Start by reading tutorials, filing issues, reproducing experiments, contributing code, or joining community discussions."
+      }
+    ]
+  }[lang];
+  const activeIntroDetail = introDetailCopy[introSlide];
+
   useEffect(() => {
-    const body = jellyBodyRef.current;
-    if (!body) return;
+    if (view !== "INTRO") return;
 
-    const randomizeJelly = () => {
-      const points = Array.from({ length: 8 }, () => `${Math.round(36 + Math.random() * 30)}%`);
-      const x1 = (0.98 + Math.random() * 0.055).toFixed(3);
-      const y1 = (0.98 + Math.random() * 0.055).toFixed(3);
-      const x2 = (0.98 + Math.random() * 0.055).toFixed(3);
-      const y2 = (0.98 + Math.random() * 0.055).toFixed(3);
-      const r1 = `${(Math.random() * 1.4 - 0.7).toFixed(2)}deg`;
-      const r2 = `${(Math.random() * 1.4 - 0.7).toFixed(2)}deg`;
+    const originalBodyOverscroll = document.body.style.overscrollBehavior;
+    const originalHtmlOverscroll = document.documentElement.style.overscrollBehavior;
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overscrollBehavior = "none";
+    document.documentElement.style.overscrollBehavior = "none";
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    introWheelDeltaXRef.current = 0;
+    introWheelDeltaYRef.current = 0;
 
-      body.style.setProperty("--jelly-r1", `${points[0]} ${points[1]} ${points[2]} ${points[3]} / ${points[4]} ${points[5]} ${points[6]} ${points[7]}`);
-      body.style.setProperty("--jelly-r2", `${points[3]} ${points[2]} ${points[1]} ${points[0]} / ${points[7]} ${points[6]} ${points[5]} ${points[4]}`);
-      body.style.setProperty("--jelly-sx1", x1);
-      body.style.setProperty("--jelly-sy1", y1);
-      body.style.setProperty("--jelly-sx2", x2);
-      body.style.setProperty("--jelly-sy2", y2);
-      body.style.setProperty("--jelly-rot1", r1);
-      body.style.setProperty("--jelly-rot2", r2);
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      if (introSwipeLockedRef.current) return;
+
+      introWheelDeltaXRef.current += event.deltaX;
+      introWheelDeltaYRef.current += event.deltaY;
+
+      const absX = Math.abs(introWheelDeltaXRef.current);
+      const absY = Math.abs(introWheelDeltaYRef.current);
+
+      if (absX > absY && absX >= 56) {
+        moveIntroSlide(introWheelDeltaXRef.current > 0 ? 1 : -1);
+        introWheelDeltaXRef.current = 0;
+        introWheelDeltaYRef.current = 0;
+        return;
+      }
+
+      if (absY >= 36) {
+        moveIntroDepth(introWheelDeltaYRef.current > 0 ? 1 : -1);
+        introWheelDeltaXRef.current = 0;
+        introWheelDeltaYRef.current = 0;
+      }
     };
 
-    randomizeJelly();
-    body.addEventListener("animationiteration", randomizeJelly);
-    return () => body.removeEventListener("animationiteration", randomizeJelly);
-  }, []);
+    window.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      document.body.style.overscrollBehavior = originalBodyOverscroll;
+      document.documentElement.style.overscrollBehavior = originalHtmlOverscroll;
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      window.removeEventListener("wheel", handleWheel);
+    };
+  }, [view]);
 
   return (
     <div className="min-h-screen selection:bg-brand-blue/20">
       {/* Navigation */}
+      {view !== "INTRO" && (
       <nav className="fixed top-4 sm:top-6 lg:top-8 left-0 right-0 z-50 page-shell">
         <div className="max-w-7xl mx-auto bg-white/85 backdrop-blur-2xl rounded-[1.65rem] xl:rounded-full px-3 sm:px-5 py-2.5 sm:py-3 shadow-2xl shadow-black/[0.04] border border-white/60">
           <div className="flex w-full items-center justify-between gap-3">
@@ -445,11 +637,12 @@ export default function App() {
           </div>
         </div>
       </nav>
+      )}
 
       {view === "HOME" && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
           {/* Hero Section */}
-          <section className="pt-44 sm:pt-48 lg:pt-48 pb-24 sm:pb-32 page-shell overflow-hidden">
+          <section className="pt-44 sm:pt-48 lg:pt-48 pb-24 sm:pb-32 page-shell home-hero-shell overflow-hidden">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -471,10 +664,10 @@ export default function App() {
             </h1>
             
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-5">
-              <button className="btn-primary" onClick={() => setView("PROJECTS")}>
-                Explore Projects <ArrowRight className="w-5 h-5" />
+              <button className="btn-primary" onClick={() => setView("INTRO")}>
+                {lang === "EN" ? "Intro" : "介绍"} <ArrowRight className="w-5 h-5" />
               </button>
-              <button className="btn-secondary" onClick={openWechatQr}>
+              <button className="btn-secondary" onClick={() => openWechatQr()}>
                 <Smile className="w-5 h-5" /> Join Community
               </button>
             </div>
@@ -491,7 +684,7 @@ export default function App() {
               }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             >
-              <div ref={jellyBodyRef} className="jelly-body absolute inset-0 bg-gradient-to-br from-violet-600 to-indigo-400 shadow-2xl opacity-90" />
+              <div className="jelly-body absolute inset-0 bg-gradient-to-br from-violet-600 to-indigo-400 shadow-2xl opacity-90" />
               
               <div className="jelly-face absolute inset-0 flex flex-col items-center justify-start pt-32 md:pt-36">
                 <div className="flex gap-12 md:gap-16">
@@ -509,11 +702,6 @@ export default function App() {
               </div>
 
               {/* Floaties */}
-              <motion.div 
-                className="absolute top-10 right-10 w-24 h-24 bg-violet-300/30 rounded-full blur-[60px]"
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 4, repeat: Infinity }}
-              />
             </motion.div>
           </div>
         </div>
@@ -571,7 +759,7 @@ export default function App() {
             
             {/* Community Bento Cell */}
             <button
-              onClick={openWechatQr}
+              onClick={() => openWechatQr()}
               className="bento-item bg-ink text-bg-paper col-span-1 md:col-span-2 lg:col-span-3 text-left hover:bg-zinc-950 transition-colors"
             >
               <h3 className="text-3xl mb-4 font-serif italic text-brand-blue">Build with us.</h3>
@@ -1056,6 +1244,165 @@ export default function App() {
         </motion.div>
       )}
 
+      {view === "INTRO" && (
+        <motion.div
+          className="relative h-screen min-h-[680px] overflow-hidden overscroll-none bg-white px-8 sm:px-12 lg:px-20"
+          style={{ overscrollBehavior: "none", touchAction: "none" }}
+          onTouchStart={(event) => {
+            introTouchStartXRef.current = event.touches[0]?.clientX ?? null;
+            introTouchStartYRef.current = event.touches[0]?.clientY ?? null;
+          }}
+          onTouchEnd={(event) => {
+            const startX = introTouchStartXRef.current;
+            const startY = introTouchStartYRef.current;
+            introTouchStartXRef.current = null;
+            introTouchStartYRef.current = null;
+            if (startX === null || startY === null) return;
+            const endX = event.changedTouches[0]?.clientX;
+            const endY = event.changedTouches[0]?.clientY;
+            if (endX === undefined || endY === undefined) return;
+            const deltaX = startX - endX;
+            const deltaY = startY - endY;
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) >= 48) {
+              moveIntroSlide(deltaX > 0 ? 1 : -1);
+              return;
+            }
+            if (Math.abs(deltaY) >= 48) {
+              moveIntroDepth(deltaY > 0 ? 1 : -1);
+            }
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <button
+            onClick={() => setView("HOME")}
+            className="fixed right-6 top-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100 text-zinc-500 hover:bg-black hover:text-white transition-colors"
+            aria-label={lang === "EN" ? "Close intro" : "关闭介绍"}
+          >
+            <X className="h-7 w-7" />
+          </button>
+
+          <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center pb-36 pt-28">
+            <motion.div
+              key={`${introSlide}-${introDepth}`}
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className={`flex flex-col ${introDepth === 1 || "items" in activeIntroSlide ? "gap-6 lg:gap-7" : "gap-8 lg:gap-10"}`}
+            >
+              <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-violet-600 font-mono">
+                {introSlide + 1} / {totalSlides}
+                <span className="ml-4 text-zinc-300">{introDepth === 0 ? "OVERVIEW" : "DETAIL"}</span>
+              </div>
+              <h2
+                className={`max-w-5xl leading-[0.95] tracking-tighter font-medium text-black ${
+                  introDepth === 1 || "items" in activeIntroSlide || introSlide === totalSlides - 1
+                    ? "text-5xl sm:text-6xl lg:text-[6.5rem]"
+                    : "text-6xl sm:text-7xl lg:text-[8rem]"
+                }`}
+              >
+                {introDepth === 0 ? activeIntroSlide.title : activeIntroDetail.title}
+              </h2>
+              <p
+                className={`text-violet-600 font-light ${
+                  introDepth === 1 || "items" in activeIntroSlide ? "text-2xl sm:text-3xl" : "text-2xl sm:text-3xl lg:text-4xl"
+                }`}
+              >
+                {introDepth === 0 ? activeIntroSlide.subtitle : activeIntroSlide.title}
+              </p>
+              {introDepth === 1 ? (
+                <p className="max-w-4xl text-xl sm:text-2xl lg:text-3xl text-zinc-500 leading-relaxed">
+                  {activeIntroDetail.body}
+                </p>
+              ) : activeIntroSlide.body && (
+                <p className="max-w-4xl text-xl sm:text-2xl lg:text-3xl text-zinc-500 leading-relaxed">
+                  {activeIntroSlide.body}
+                </p>
+              )}
+              {introDepth === 0 && "items" in activeIntroSlide && activeIntroSlide.items && (
+                <ul className="grid gap-x-12 gap-y-5 md:grid-cols-2">
+                  {activeIntroSlide.items!.map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-zinc-600">
+                      <span className="mt-2.5 w-2.5 h-2.5 rounded-full bg-violet-400 shrink-0" />
+                      <span className="text-lg lg:text-xl leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {introDepth === 0 && activeIntroSlide.cta && (
+                <button
+                  onClick={introSlide === totalSlides - 1 ? () => openWechatQr() : undefined}
+                  className={`mt-2 inline-flex w-fit items-center gap-3 text-xl font-semibold ${
+                    introSlide === totalSlides - 1
+                      ? "bg-black text-white px-9 py-4 rounded-full hover:bg-zinc-800 transition-colors"
+                      : "text-violet-600 hover:text-violet-800 transition-colors"
+                  }`}
+                >
+                  {activeIntroSlide.cta}
+                  {introSlide < totalSlides - 1 && <ArrowRight className="w-5 h-5" />}
+                </button>
+              )}
+            </motion.div>
+          </div>
+
+          <div className="absolute bottom-0 left-1/2 w-[calc(100%-4rem)] max-w-6xl -translate-x-1/2 flex items-center justify-center border-t border-zinc-100 py-6">
+            <div className="flex gap-2">
+              {slides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setIntroSlide(i)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${
+                    i === introSlide ? "bg-violet-600 scale-125" : "bg-zinc-200 hover:bg-zinc-300"
+                  }`}
+                  aria-label={`Slide ${i + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="absolute bottom-6 right-8 z-20 grid grid-cols-3 grid-rows-3 gap-1">
+            <span />
+            <button
+              onClick={() => moveIntroDepth(-1)}
+              disabled={introDepth === 0}
+              className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-400 hover:bg-zinc-100 hover:text-black transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
+              aria-label={lang === "EN" ? "Section overview" : "返回小节概览"}
+            >
+              <ChevronUp className="h-5 w-5" />
+            </button>
+            <span />
+            <button
+              onClick={() => moveIntroSlide(-1)}
+              disabled={introSlide === 0}
+              className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-400 hover:bg-zinc-100 hover:text-black transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
+              aria-label={lang === "EN" ? "Previous section" : "上一小节"}
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <div className="h-10 w-10 rounded-full bg-zinc-100" />
+            <button
+              onClick={() => moveIntroSlide(1)}
+              disabled={introSlide === totalSlides - 1}
+              className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-400 hover:bg-zinc-100 hover:text-black transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
+              aria-label={lang === "EN" ? "Next section" : "下一小节"}
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+            <span />
+            <button
+              onClick={() => moveIntroDepth(1)}
+              disabled={introDepth === 1}
+              className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-400 hover:bg-zinc-100 hover:text-black transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
+              aria-label={lang === "EN" ? "Section detail" : "深入说明"}
+            >
+              <ChevronDown className="h-5 w-5" />
+            </button>
+            <span />
+          </div>
+        </motion.div>
+      )}
+
       {view === "CONTACT" && (
         <motion.div className="pt-48 pb-32 page-shell min-h-screen" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}>
           <div className="max-w-7xl mx-auto w-full">
@@ -1069,6 +1416,9 @@ export default function App() {
                 <div className="pt-12 space-y-8">
                   <a href="mailto:physicoada@gmail.com" className="text-4xl md:text-5xl border-b-2 border-black/10 hover:border-black transition-all block text-black font-medium pb-4">physicoada@gmail.com</a>
                   <a href="https://github.com/walkinglabs" target="_blank" rel="noreferrer" className="text-4xl md:text-5xl border-b-2 border-black/10 hover:border-black transition-all block text-black font-medium pb-4">github.com/walkinglabs</a>
+                  <button onClick={openWechatQr} className="text-4xl md:text-5xl border-b-2 border-black/10 hover:border-black transition-all block text-black font-medium pb-4 text-left w-full">
+                    {lang === "EN" ? "WeChat Official Account" : "微信公众号"}
+                  </button>
                 </div>
               </div>
             </div>
@@ -1124,7 +1474,7 @@ export default function App() {
       )}
 
       {showWechatQr && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center page-shell">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
           <button
             className="absolute inset-0 bg-black/35 backdrop-blur-sm"
             onClick={() => setShowWechatQr(false)}
@@ -1133,10 +1483,10 @@ export default function App() {
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="relative w-full max-w-sm rounded-[32px] bg-white p-6 shadow-2xl shadow-black/20 border border-white/80"
+            className="relative w-full max-w-[min(42rem,calc(100vw-2rem))] max-h-[calc(100vh-2rem)] overflow-y-auto rounded-[28px] bg-white p-5 sm:p-6 shadow-2xl shadow-black/20 border border-white/80"
             role="dialog"
             aria-modal="true"
-            aria-label={lang === "EN" ? "WeChat group QR code" : "微信群二维码"}
+            aria-label={lang === "EN" ? "WeChat QR codes" : "微信二维码"}
           >
             <button
               onClick={() => setShowWechatQr(false)}
@@ -1146,40 +1496,77 @@ export default function App() {
               <X className="w-5 h-5" />
             </button>
             <div className="pt-10 text-center">
-              <h3 className="text-3xl mb-2 text-black">{lang === "EN" ? "Join WeChat" : "加入微信群"}</h3>
-              <p className="text-sm text-zinc-500 mb-6">
-                {lang === "EN" ? "Scan the QR code to join the WalkingLabs community." : "扫码加入 WalkingLabs 社区。"}
+              <h3 className="text-2xl sm:text-3xl mb-2 text-black">
+                {lang === "EN" ? "WeChat" : "微信"}
+              </h3>
+              <p className="text-sm text-zinc-500 mb-5 max-w-md mx-auto">
+                {lang === "EN" ? "Scan to join the group or follow the official account." : "扫码加入微信群，或关注 WalkingLabs 微信公众号。"}
               </p>
-              <div className="relative rounded-3xl border border-zinc-100 bg-zinc-50 p-4 min-h-[320px] flex items-center justify-center">
-                {!wechatQrLoaded && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-zinc-400">
-                    <div className="qr-spinner" />
-                    <span className="text-xs font-bold uppercase tracking-widest">
-                      {lang === "EN" ? "Loading QR" : "加载二维码"}
-                    </span>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {[
+                  {
+                    id: "group" as const,
+                    title: lang === "EN" ? "WeChat Group" : "微信群",
+                    desc: lang === "EN" ? "Community discussion" : "加入社区讨论",
+                    src: WECHAT_QR_URL,
+                    href: WECHAT_QR_URL,
+                    alt: lang === "EN" ? "WalkingLabs WeChat group QR code" : "WalkingLabs 微信群二维码"
+                  },
+                  {
+                    id: "oa" as const,
+                    title: lang === "EN" ? "Official Account" : "微信公众号",
+                    desc: lang === "EN" ? "Follow updates" : "关注项目更新",
+                    src: WECHAT_OA_QR_URL,
+                    href: WECHAT_OA_QR_URL,
+                    alt: lang === "EN" ? "WalkingLabs WeChat Official Account QR code" : "WalkingLabs 微信公众号二维码"
+                  }
+                ].map((qr) => (
+                  <div key={qr.id} className="text-left">
+                    <div className="mb-3">
+                      <div className="text-sm font-bold text-black">{qr.title}</div>
+                      <div className="text-xs text-zinc-400">{qr.desc}</div>
+                    </div>
+                    <div className="relative aspect-square rounded-2xl border border-zinc-100 bg-zinc-50 p-3 flex items-center justify-center">
+                      {!wechatQrLoaded[qr.id] && !wechatQrFailed[qr.id] && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-zinc-400">
+                          <div className="qr-spinner" />
+                          <span className="text-xs font-bold uppercase tracking-widest">
+                            {lang === "EN" ? "Loading QR" : "加载二维码"}
+                          </span>
+                        </div>
+                      )}
+                      {wechatQrFailed[qr.id] && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center text-zinc-400">
+                          <div className="text-sm font-bold text-zinc-600">
+                            {lang === "EN" ? "QR image missing" : "二维码图片未添加"}
+                          </div>
+                          <div className="text-xs leading-relaxed">
+                            {qr.id === "oa"
+                              ? (lang === "EN"
+                                ? "Add public/wechat-official-account.jpg to show the official account QR."
+                                : "请添加 public/wechat-official-account.jpg 以显示公众号二维码。")
+                              : (lang === "EN" ? "The GitHub group QR image could not load." : "GitHub 群二维码加载失败。")}
+                          </div>
+                        </div>
+                      )}
+                      <img
+                        src={qr.src}
+                        alt={qr.alt}
+                        onLoad={() => setWechatQrLoaded((loaded) => ({ ...loaded, [qr.id]: true }))}
+                        onError={() => setWechatQrFailed((failed) => ({ ...failed, [qr.id]: true }))}
+                        className={`h-full w-full object-contain rounded-xl bg-white transition-opacity duration-300 ${wechatQrLoaded[qr.id] && !wechatQrFailed[qr.id] ? "opacity-100" : "opacity-0"}`}
+                      />
+                    </div>
                   </div>
-                )}
-                <img
-                  src={WECHAT_QR_URL}
-                  alt={lang === "EN" ? "WalkingLabs WeChat QR code" : "WalkingLabs 微信二维码"}
-                  onLoad={() => setWechatQrLoaded(true)}
-                  className={`w-full rounded-2xl bg-white transition-opacity duration-300 ${wechatQrLoaded ? "opacity-100" : "opacity-0"}`}
-                />
+                ))}
               </div>
-              <a
-                href={WECHAT_QR_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-4 inline-block text-xs text-zinc-400 hover:text-violet-700 transition-colors underline underline-offset-4"
-              >
-                {lang === "EN" ? "If it keeps loading, open the GitHub QR image." : "长时间加载不出，可到 GitHub 页面获取二维码。"}
-              </a>
             </div>
           </motion.div>
         </div>
       )}
 
       {/* Footer */}
+      {view !== "INTRO" && (
       <footer className="pb-12 page-shell border-t border-zinc-100 bg-white">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12 pt-12">
           <div className="text-center md:text-left">
@@ -1196,6 +1583,7 @@ export default function App() {
           </div>
         </div>
       </footer>
+      )}
     </div>
   );
 }
