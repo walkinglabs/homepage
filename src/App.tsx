@@ -1431,7 +1431,7 @@ export default function App() {
             </div>
             <div>
               <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-6 font-mono">Collaboration</h4>
-              <p className="text-base text-zinc-500 font-light leading-relaxed">For university research partnerships or corporate enterprise agent pilots, please specify in the subject line for priority routing.</p>
+              <p className="text-base text-zinc-500 font-light leading-relaxed">{lang === "EN" ? "We are actively seeking collaborators who share our interest in foundational tutorials on LLM and Agent technologies, as well as those interested in co-developing applied Agent projects — spanning toolchains, frameworks, and end-user applications. If you are passionate about building the next generation of intelligent agent systems, we welcome you to join our community group and connect with us." : "我们正在积极寻求对 LLM 与 Agent 基础教程感兴趣的合作伙伴，同时欢迎有志于共同产出 Agent 应用项目（涵盖工具链、框架及端到端应用）的研究者与工程师加入协作。如果您对构建下一代智能体系统充满热情，欢迎加入我们的社区群与我们取得联系。"}</p>
             </div>
             <div>
               <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-6 font-mono">Labs HQ</h4>
