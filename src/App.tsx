@@ -1433,8 +1433,8 @@ export default function App() {
               <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-6 font-mono">Collaboration</h4>
               <p className="text-base text-zinc-500 font-light leading-relaxed">
                 {lang === "EN"
-                  ? <>We are actively seeking collaborators who share our interest in foundational tutorials on LLM and Agent technologies, as well as those interested in co-developing applied Agent projects — spanning toolchains, frameworks, and end-user applications. If you are passionate about building the next generation of intelligent agent systems, we welcome you to join our <button onClick={openWechatQr} className="text-violet-600 hover:text-violet-800 underline underline-offset-2 transition-colors">community group</button> and connect with us.</>
-                  : <>我们正在积极寻求对 LLM 与 Agent 基础教程感兴趣的合作伙伴，同时欢迎有志于共同产出 Agent 应用项目（涵盖工具链、框架及端到端应用）的研究者与工程师加入协作。如果您对构建下一代智能体系统充满热情，欢迎加入我们的<button onClick={openWechatQr} className="text-violet-600 hover:text-violet-800 underline underline-offset-2 transition-colors">社群</button>与我们取得联系。</>
+                  ? <>We are actively seeking collaborators who share our interest in foundational tutorials on LLM and Agent technologies, as well as those interested in co-developing applied Agent projects — spanning toolchains, frameworks, and end-user applications. If you are passionate about building the next generation of intelligent agent systems, we welcome you to join our <span onClick={openWechatQr} role="button" className="text-violet-600 hover:text-violet-800 underline underline-offset-2 cursor-pointer font-semibold transition-colors">community group</span> and connect with us.</>
+                  : <>我们正在积极寻求对 LLM 与 Agent 基础教程感兴趣的合作伙伴，同时欢迎有志于共同产出 Agent 应用项目（涵盖工具链、框架及端到端应用）的研究者与工程师加入协作。如果您对构建下一代智能体系统充满热情，欢迎加入我们的<span onClick={openWechatQr} role="button" className="text-violet-600 hover:text-violet-800 underline underline-offset-2 cursor-pointer font-semibold transition-colors">社群</span>与我们取得联系。</>
                 }
               </p>
             </div>
