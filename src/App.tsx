@@ -1582,9 +1582,9 @@ export default function App() {
           
           <div className="flex flex-wrap justify-center gap-8 text-[13px] font-bold uppercase tracking-widest text-zinc-400">
             <a href="https://github.com/walkinglabs" target="_blank" rel="noreferrer" className="hover:text-violet-600 transition-colors">GitHub</a>
-            <button onClick={() => setView("BLOG")} className="hover:text-violet-600 transition-colors uppercase">Documentation</button>
-            <a href="#" className="hover:text-violet-700 transition-colors uppercase">Twitter / X</a>
-            <button onClick={() => setView("CONTACT")} className="hover:text-violet-600 transition-colors uppercase">Privacy</button>
+            <button onClick={() => setView("BLOG")} className="hover:text-violet-600 transition-colors uppercase">Blog</button>
+            <button onClick={openWechatQr} className="hover:text-violet-600 transition-colors uppercase">WeChat</button>
+            <button onClick={() => setView("CONTACT")} className="hover:text-violet-600 transition-colors uppercase">Contact</button>
           </div>
         </div>
       </footer>
