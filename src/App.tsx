@@ -1459,10 +1459,12 @@ export default function App() {
               <div>
                 <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-violet-700 mb-8 font-mono">Partners</div>
                 <h3 className="text-6xl md:text-7xl leading-none mb-8 text-black">
-                  协作网络
+                  {lang === "EN" ? "Partners" : "协作网络"}
                 </h3>
                 <p className="text-xl text-zinc-500 font-light leading-relaxed max-w-2xl">
-                  与开放社区和技术平台一起，推进智能体从想法、评测到可复现实验系统的落地。
+                  {lang === "EN"
+                    ? "Working with open communities and tech platforms to bring agents from ideas and evaluations to reproducible experimental systems."
+                    : "与开放社区和技术平台一起，推进智能体从想法、评测到可复现实验系统的落地。"}
                 </p>
               </div>
             </div>
