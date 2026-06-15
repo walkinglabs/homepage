@@ -50,6 +50,16 @@ const PARTNERS = [
     name: "ModelScope 社区",
     url: "https://github.com/modelscope",
     logo: "https://avatars.githubusercontent.com/u/109945100?s=200&v=4"
+  },
+  {
+    name: "阶跃星辰",
+    url: "https://www.stepfun.com/",
+    logo: "https://unpkg.com/@lobehub/icons-static-png@latest/light/stepfun.png"
+  },
+  {
+    name: "AMD",
+    url: "https://www.amd.com/",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/7/7c/AMD_Logo.svg"
   }
 ];
 
