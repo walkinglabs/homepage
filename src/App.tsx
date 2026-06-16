@@ -20,7 +20,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  MessageCircle
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import logoUrl from "./assets/logo.svg";
@@ -32,6 +33,7 @@ const LANGUAGES = {
 
 const WECHAT_QR_URL = "https://github.com/walkinglabs/.github/raw/main/profile/wechat.png";
 const WECHAT_OA_QR_URL = `${import.meta.env.BASE_URL}wechat-official-account.jpg`;
+const DISCORD_INVITE_URL = "https://discord.gg/XU7DQmpqk";
 
 type View = "HOME" | "PROJECTS" | "GROUP" | "BLOG" | "CONTACT" | "INTRO";
 
@@ -680,6 +682,9 @@ export default function App() {
               <button className="btn-secondary" onClick={() => openWechatQr()}>
                 <Smile className="w-5 h-5" /> Join Community
               </button>
+              <a className="btn-secondary bg-indigo-100 text-indigo-900 hover:bg-indigo-200" href={DISCORD_INVITE_URL} target="_blank" rel="noreferrer">
+                <MessageCircle className="w-5 h-5" /> Discord
+              </a>
             </div>
           </motion.div>
 
@@ -768,15 +773,17 @@ export default function App() {
             ))}
             
             {/* Community Bento Cell */}
-            <button
-              onClick={() => openWechatQr()}
+            <a
+              href={DISCORD_INVITE_URL}
+              target="_blank"
+              rel="noreferrer"
               className="bento-item bg-ink text-bg-paper col-span-1 md:col-span-2 lg:col-span-3 text-left hover:bg-zinc-950 transition-colors"
             >
               <h3 className="text-3xl mb-4 font-serif italic text-brand-blue">Build with us.</h3>
               <p className="text-zinc-400 max-w-md">
-                Join our WeChat Group to discuss Agentic AI, RL, and more. Become part of a long-term, rigorous technical community.
+                Join our Discord channels to discuss Agentic AI, RL, and more. Become part of a long-term, rigorous technical community.
               </p>
-            </button>
+            </a>
           </div>
         </div>
       </section>
@@ -1426,6 +1433,7 @@ export default function App() {
                 <div className="pt-12 space-y-8">
                   <a href="mailto:physicoada@gmail.com" className="text-4xl md:text-5xl border-b-2 border-black/10 hover:border-black transition-all block text-black font-medium pb-4">physicoada@gmail.com</a>
                   <a href="https://github.com/walkinglabs" target="_blank" rel="noreferrer" className="text-4xl md:text-5xl border-b-2 border-black/10 hover:border-black transition-all block text-black font-medium pb-4">github.com/walkinglabs</a>
+                  <a href={DISCORD_INVITE_URL} target="_blank" rel="noreferrer" className="text-4xl md:text-5xl border-b-2 border-black/10 hover:border-black transition-all block text-black font-medium pb-4">discord.gg/XU7DQmpqk</a>
                   <button onClick={openWechatQr} className="text-4xl md:text-5xl border-b-2 border-black/10 hover:border-black transition-all block text-black font-medium pb-4 text-left w-full">
                     {lang === "EN" ? "WeChat Official Account" : "微信公众号"}
                   </button>
@@ -1437,7 +1445,9 @@ export default function App() {
           <div className="max-w-7xl mx-auto mt-48 grid md:grid-cols-3 gap-16 border-t border-zinc-100 pt-20">
             <div>
               <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-6 font-mono">Open Office Hours</h4>
-              <p className="text-base text-zinc-500 font-light leading-relaxed">Join our weekly public technical sync on Fridays at 10:00 AM (UTC+8) via our Discord/WeChat portal.</p>
+              <p className="text-base text-zinc-500 font-light leading-relaxed">
+                Join our weekly public technical sync on Fridays at 10:00 AM (UTC+8) via <a href={DISCORD_INVITE_URL} target="_blank" rel="noreferrer" className="text-violet-600 hover:text-violet-800 underline underline-offset-2 font-semibold transition-colors">Discord</a> or WeChat.
+              </p>
             </div>
             <div>
               <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-6 font-mono">Collaboration</h4>
@@ -1594,6 +1604,7 @@ export default function App() {
           
           <div className="flex flex-wrap justify-center gap-8 text-[13px] font-bold uppercase tracking-widest text-zinc-400">
             <a href="https://github.com/walkinglabs" target="_blank" rel="noreferrer" className="hover:text-violet-600 transition-colors">GitHub</a>
+            <a href={DISCORD_INVITE_URL} target="_blank" rel="noreferrer" className="hover:text-violet-600 transition-colors">Discord</a>
             <button onClick={() => setView("BLOG")} className="hover:text-violet-600 transition-colors uppercase">Blog</button>
             <button onClick={openWechatQr} className="hover:text-violet-600 transition-colors uppercase">WeChat</button>
             <button onClick={() => setView("CONTACT")} className="hover:text-violet-600 transition-colors uppercase">Contact</button>
