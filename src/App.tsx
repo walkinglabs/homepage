@@ -1510,7 +1510,7 @@ export default function App() {
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="relative w-full max-w-[min(42rem,calc(100vw-2rem))] max-h-[calc(100vh-2rem)] overflow-y-auto rounded-[28px] bg-white p-5 sm:p-6 shadow-2xl shadow-black/20 border border-white/80"
+            className="relative w-full max-w-[min(56rem,calc(100vw-2rem))] max-h-[calc(100vh-2rem)] overflow-y-auto rounded-[28px] bg-white p-5 sm:p-6 shadow-2xl shadow-black/20 border border-white/80"
             role="dialog"
             aria-modal="true"
             aria-label={lang === "EN" ? "WeChat QR codes" : "微信二维码"}
@@ -1529,7 +1529,7 @@ export default function App() {
               <p className="text-sm text-zinc-500 mb-5 max-w-md mx-auto">
                 {lang === "EN" ? "Scan to join the group or follow the official account." : "扫码加入微信群，或关注 WalkingLabs 微信公众号。"}
               </p>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.9fr)] sm:items-start">
                 {[
                   {
                     id: "group" as const,
@@ -1553,7 +1553,7 @@ export default function App() {
                       <div className="text-sm font-bold text-black">{qr.title}</div>
                       <div className="text-xs text-zinc-400">{qr.desc}</div>
                     </div>
-                    <div className="relative aspect-square rounded-2xl border border-zinc-100 bg-zinc-50 p-3 flex items-center justify-center">
+                    <div className={`relative rounded-2xl border border-zinc-100 bg-zinc-50 p-3 flex items-center justify-center ${qr.id === "group" ? "aspect-[2343/957]" : "aspect-square"}`}>
                       {!wechatQrLoaded[qr.id] && !wechatQrFailed[qr.id] && (
                         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-zinc-400">
                           <div className="qr-spinner" />
