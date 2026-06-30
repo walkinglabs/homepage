@@ -36,6 +36,7 @@ const WECHAT_OA_QR_URL = `${import.meta.env.BASE_URL}wechat-official-account.jpg
 const DISCORD_INVITE_URL = "https://discord.gg/XU7DQmpqk";
 
 type View = "HOME" | "PROJECTS" | "GROUP" | "BLOG" | "CONTACT" | "INTRO";
+type WechatQrId = "group" | "oa";
 
 const PARTNERS = [
   {
@@ -234,8 +235,9 @@ export default function App() {
   const [view, setViewState] = useState<View>("HOME");
   const [activePostSlug, setActivePostSlug] = useState<string | null>(null);
   const [showWechatQr, setShowWechatQr] = useState(false);
-  const [wechatQrLoaded, setWechatQrLoaded] = useState<Record<"group" | "oa", boolean>>({ group: false, oa: false });
-  const [wechatQrFailed, setWechatQrFailed] = useState<Record<"group" | "oa", boolean>>({ group: false, oa: false });
+  const [wechatQrLoaded, setWechatQrLoaded] = useState<Record<WechatQrId, boolean>>({ group: false, oa: false });
+  const [wechatQrFailed, setWechatQrFailed] = useState<Record<WechatQrId, boolean>>({ group: false, oa: false });
+  const [enlargedWechatQrId, setEnlargedWechatQrId] = useState<WechatQrId | null>(null);
   const [introSlide, setIntroSlide] = useState(0);
   const [introDepth, setIntroDepth] = useState(0);
   const introSwipeLockedRef = useRef(false);
@@ -254,7 +256,13 @@ export default function App() {
   const openWechatQr = () => {
     setWechatQrLoaded({ group: false, oa: false });
     setWechatQrFailed({ group: false, oa: false });
+    setEnlargedWechatQrId(null);
     setShowWechatQr(true);
+  };
+
+  const closeWechatQr = () => {
+    setShowWechatQr(false);
+    setEnlargedWechatQrId(null);
   };
 
   const moveIntroSlide = (direction: 1 | -1) => {
@@ -395,6 +403,25 @@ export default function App() {
     { id: "GROUP", label: t.nav.group },
     { id: "CONTACT", label: t.nav.contact }
   ];
+  const wechatQrItems: Array<{ id: WechatQrId; title: string; desc: string; src: string; alt: string }> = [
+    {
+      id: "group",
+      title: lang === "EN" ? "WeChat Group" : "微信群",
+      desc: lang === "EN" ? "Community discussion" : "加入社区讨论",
+      src: WECHAT_QR_URL,
+      alt: lang === "EN" ? "WalkingLabs WeChat group QR code" : "WalkingLabs 微信群二维码"
+    },
+    {
+      id: "oa",
+      title: lang === "EN" ? "Official Account" : "微信公众号",
+      desc: lang === "EN" ? "Follow updates" : "关注项目更新",
+      src: WECHAT_OA_QR_URL,
+      alt: lang === "EN" ? "WalkingLabs WeChat Official Account QR code" : "WalkingLabs 微信公众号二维码"
+    }
+  ];
+  const enlargedWechatQr = enlargedWechatQrId
+    ? wechatQrItems.find((qr) => qr.id === enlargedWechatQrId)
+    : null;
 
   const introSlides = {
     ZH: [
@@ -531,6 +558,22 @@ export default function App() {
     ]
   }[lang];
   const activeIntroDetail = introDetailCopy[introSlide];
+
+  useEffect(() => {
+    if (!showWechatQr) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (enlargedWechatQrId) {
+        setEnlargedWechatQrId(null);
+        return;
+      }
+      closeWechatQr();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showWechatQr, enlargedWechatQrId]);
 
   useEffect(() => {
     if (view !== "INTRO") return;
@@ -1504,7 +1547,7 @@ export default function App() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
           <button
             className="absolute inset-0 bg-black/35 backdrop-blur-sm"
-            onClick={() => setShowWechatQr(false)}
+            onClick={closeWechatQr}
             aria-label={lang === "EN" ? "Close WeChat QR code" : "关闭微信二维码"}
           />
           <motion.div
@@ -1516,7 +1559,7 @@ export default function App() {
             aria-label={lang === "EN" ? "WeChat QR codes" : "微信二维码"}
           >
             <button
-              onClick={() => setShowWechatQr(false)}
+              onClick={closeWechatQr}
               className="absolute right-4 top-4 w-10 h-10 rounded-full bg-zinc-100 text-zinc-500 hover:bg-zinc-200 hover:text-black transition-colors flex items-center justify-center"
               aria-label={lang === "EN" ? "Close" : "关闭"}
             >
@@ -1530,30 +1573,19 @@ export default function App() {
                 {lang === "EN" ? "Scan to join the group or follow the official account." : "扫码加入微信群，或关注 WalkingLabs 微信公众号。"}
               </p>
               <div className="grid gap-4 sm:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.9fr)] sm:items-start">
-                {[
-                  {
-                    id: "group" as const,
-                    title: lang === "EN" ? "WeChat Group" : "微信群",
-                    desc: lang === "EN" ? "Community discussion" : "加入社区讨论",
-                    src: WECHAT_QR_URL,
-                    href: WECHAT_QR_URL,
-                    alt: lang === "EN" ? "WalkingLabs WeChat group QR code" : "WalkingLabs 微信群二维码"
-                  },
-                  {
-                    id: "oa" as const,
-                    title: lang === "EN" ? "Official Account" : "微信公众号",
-                    desc: lang === "EN" ? "Follow updates" : "关注项目更新",
-                    src: WECHAT_OA_QR_URL,
-                    href: WECHAT_OA_QR_URL,
-                    alt: lang === "EN" ? "WalkingLabs WeChat Official Account QR code" : "WalkingLabs 微信公众号二维码"
-                  }
-                ].map((qr) => (
+                {wechatQrItems.map((qr) => (
                   <div key={qr.id} className="text-left">
                     <div className="mb-3">
                       <div className="text-sm font-bold text-black">{qr.title}</div>
                       <div className="text-xs text-zinc-400">{qr.desc}</div>
                     </div>
-                    <div className={`relative rounded-2xl border border-zinc-100 bg-zinc-50 p-3 flex items-center justify-center ${qr.id === "group" ? "aspect-[2343/957]" : "aspect-square"}`}>
+                    <button
+                      type="button"
+                      onClick={() => !wechatQrFailed[qr.id] && setEnlargedWechatQrId(qr.id)}
+                      className={`group relative w-full cursor-zoom-in rounded-2xl border border-zinc-100 bg-zinc-50 p-3 flex items-center justify-center transition-colors hover:border-violet-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 ${qr.id === "group" ? "aspect-[2343/957]" : "aspect-square"}`}
+                      aria-label={lang === "EN" ? `Enlarge ${qr.title}` : `放大${qr.title}`}
+                      disabled={wechatQrFailed[qr.id]}
+                    >
                       {!wechatQrLoaded[qr.id] && !wechatQrFailed[qr.id] && (
                         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-zinc-400">
                           <div className="qr-spinner" />
@@ -1583,12 +1615,55 @@ export default function App() {
                         onError={() => setWechatQrFailed((failed) => ({ ...failed, [qr.id]: true }))}
                         className={`h-full w-full object-contain rounded-xl bg-white transition-opacity duration-300 ${wechatQrLoaded[qr.id] && !wechatQrFailed[qr.id] ? "opacity-100" : "opacity-0"}`}
                       />
-                    </div>
+                      {wechatQrLoaded[qr.id] && !wechatQrFailed[qr.id] && (
+                        <span className="pointer-events-none absolute right-5 top-5 rounded-full bg-black/70 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                          {lang === "EN" ? "Enlarge" : "放大"}
+                        </span>
+                      )}
+                    </button>
                   </div>
                 ))}
               </div>
             </div>
           </motion.div>
+          {enlargedWechatQr && (
+            <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
+              <button
+                className="absolute inset-0 cursor-zoom-out"
+                onClick={() => setEnlargedWechatQrId(null)}
+                aria-label={lang === "EN" ? "Close enlarged image backdrop" : "关闭放大图片背景"}
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="relative z-10 flex max-h-[calc(100vh-2rem)] w-full max-w-5xl flex-col gap-3"
+                role="dialog"
+                aria-modal="true"
+                aria-label={enlargedWechatQr.title}
+              >
+                <div className="flex items-center justify-between gap-4 text-white">
+                  <div>
+                    <div className="text-sm font-bold">{enlargedWechatQr.title}</div>
+                    <div className="text-xs text-white/65">{enlargedWechatQr.desc}</div>
+                  </div>
+                  <button
+                    onClick={() => setEnlargedWechatQrId(null)}
+                    className="w-10 h-10 rounded-full bg-white/12 text-white hover:bg-white/20 transition-colors flex items-center justify-center"
+                    aria-label={lang === "EN" ? "Close enlarged image" : "关闭放大图片"}
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                <div className="flex min-h-0 items-center justify-center rounded-2xl bg-white p-3 shadow-2xl shadow-black/30">
+                  <img
+                    src={enlargedWechatQr.src}
+                    alt={enlargedWechatQr.alt}
+                    className="max-h-[calc(100vh-8rem)] w-auto max-w-full object-contain rounded-xl"
+                  />
+                </div>
+              </motion.div>
+            </div>
+          )}
         </div>
       )}
 
