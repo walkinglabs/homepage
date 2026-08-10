@@ -25,6 +25,11 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import logoUrl from "./assets/logo.svg";
+import repoStatsData from "./data/repos.json";
+
+const REPO_STATS = Object.fromEntries(
+  (repoStatsData as Array<{ repo: string; stars: string; forks: string }>).map((r) => [r.repo, r])
+);
 
 const LANGUAGES = {
   EN: "English",
@@ -939,10 +944,10 @@ export default function App() {
                        <div className="text-xs font-mono px-2 py-1 bg-violet-100 text-violet-700 rounded-md">{proj.type}</div>
                        <div className="text-xs font-mono px-2 py-1 bg-zinc-100 text-zinc-500 rounded-md flex items-center gap-1.5">
                          <Star className="w-3 h-3 fill-zinc-400 text-zinc-400" />
-                         {proj.stars}
+                         {(REPO_STATS[proj.repo] ?? proj).stars}
                        </div>
                        <div className="text-xs font-mono px-2 py-1 bg-zinc-100 text-zinc-500 rounded-md">
-                         {proj.forks} forks
+                         {(REPO_STATS[proj.repo] ?? proj).forks} forks
                        </div>
                     </div>
                     <Github className="w-6 h-6 text-zinc-300 group-hover:text-black transition-colors" />

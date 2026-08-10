@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: "0 0 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -30,6 +32,11 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Fetch latest repo stats
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/fetch-repo-stats.mjs
 
       - name: Build
         run: npm run build
