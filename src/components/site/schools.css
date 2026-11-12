@@ -1,3 +1,9 @@
+/* The masked rails blend with the section as a whole. */
+.school-logo-flow,
+#learner-directory img {
+  mix-blend-mode: darken;
+}
+
 .school-logo-flow {
   --logo-gap: clamp(2.5rem, 4vw, 4.5rem);
   --logo-cycle: calc(var(--logo-count) * 6.4s);
