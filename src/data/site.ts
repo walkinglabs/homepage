@@ -81,8 +81,8 @@ export const contributors = [
 export const navLinks = [
   { label: 'About', href: '#about', index: '01' },
   { label: 'Projects', href: '#projects', index: '02' },
-  { label: 'Method', href: '#method', index: '03' },
-  { label: 'Voices', href: '#voices', index: '04' },
+  { label: 'Voices', href: '#voices', index: '03' },
+  { label: 'Method', href: '#method', index: '04' },
   { label: 'Community', href: '#community', index: '05' },
   { label: 'FAQ', href: '#faq', index: '06' },
 ] as const

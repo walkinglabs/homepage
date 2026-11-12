@@ -36,10 +36,10 @@ export default function App() {
               <About />
               <FocusBento />
               <Projects />
+              <Voices />
               <Method />
               <Community />
               <div className="bg-muted/30">
-                <Voices />
                 <Faq />
               </div>
               <FinalCta />

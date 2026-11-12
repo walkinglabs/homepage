@@ -1,7 +1,6 @@
 .voices-row {
   --voice-gap: 0.75rem;
   --voice-card-width: clamp(17rem, 42vw, 23rem);
-  --voice-duration: 40s;
   --voice-delay: -0.5s;
 
   min-width: 0;
@@ -9,7 +8,6 @@
 }
 
 .voices-row[data-staggered] {
-  --voice-duration: 30s;
   --voice-delay: -5.5s;
 }
 
