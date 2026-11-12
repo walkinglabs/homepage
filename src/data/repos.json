@@ -1,22 +1,44 @@
 [
   {
-    "repo": "walkinglabs/hands-on-modern-rl",
-    "stars": "3.8k",
-    "forks": "278"
+    "repo": "walkinglabs/learn-harness-engineering",
+    "stars": "24.3k",
+    "forks": "2789",
+    "starCount": 24299
   },
   {
-    "repo": "walkinglabs/learn-harness-engineering",
-    "stars": "11.1k",
-    "forks": "1206"
+    "repo": "walkinglabs/hands-on-modern-rl",
+    "stars": "4.9k",
+    "forks": "361",
+    "starCount": 4893
+  },
+  {
+    "repo": "walkinglabs/modern-llm-notebook",
+    "stars": "284",
+    "forks": "61",
+    "starCount": 284
   },
   {
     "repo": "walkinglabs/awesome-harness-engineering",
-    "stars": "3.8k",
-    "forks": "314"
+    "stars": "4.7k",
+    "forks": "486",
+    "starCount": 4691
   },
   {
-    "repo": "datawhalechina/easy-vibe",
-    "stars": "18.8k",
-    "forks": "1793"
+    "repo": "walkinglabs/self-improving-agent-notebook",
+    "stars": "56",
+    "forks": "22",
+    "starCount": 56
+  },
+  {
+    "repo": "walkinglabs/university-skill",
+    "stars": "42",
+    "forks": "5",
+    "starCount": 42
+  },
+  {
+    "repo": "walkinglabs/hands-on-world-models",
+    "stars": "36",
+    "forks": "6",
+    "starCount": 36
   }
 ]

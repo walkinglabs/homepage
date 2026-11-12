@@ -1,221 +1,433 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
-@import "tailwindcss";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
-@theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Playfair Display", serif;
-  --font-mono: "JetBrains Mono", monospace;
-  
-  --color-brand-blue: #5b21b6; /* Deep Purple/Violet */
-  --color-brand-lavender: #f3e8ff;
-  --color-brand-green: #10b981;
-  --color-brand-orange: #f97316;
-  --color-brand-pink: #ec4899;
-  --color-brand-yellow: #f59e0b;
-  --color-bg-paper: #ffffff;
-  --color-ink: #000000;
+/* ---------- self-hosted type ----------
+   Display type is TencentSans ("Tencent W7" Latin + "Tencent W7CN" Hanzi),
+   the brand font www.tencent.com itself serves — single bold cut, headings
+   only. Body text stays on MiSans (subset by scripts/prepare-fonts.py) +
+   the system stack, mirroring how the reference site pairs its display
+   face with a quieter body family. */
+@import './styles/tencent.css';
+@import './styles/misans.css';
+
+/* dark scope — used for the featured card and the closing CTA */
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   Design tokens
+   ------------------------------------------------------------
+   These are the *shadcn/ui* token names, so every component
+   pulled from the shadcn / Magic UI / Aceternity registries
+   inherits this palette instead of shipping its own.
+   ============================================================ */
+:root {
+  --radius: 0.625rem;
+
+  --background: #fafaf9;
+  --foreground: #0e0f0e;
+
+  --card: #ffffff;
+  --card-foreground: #0e0f0e;
+  --popover: #ffffff;
+  --popover-foreground: #0e0f0e;
+
+  --primary: #0e0f0e;
+  --primary-foreground: #fafaf9;
+
+  --secondary: #f2f2ef;
+  --secondary-foreground: #0e0f0e;
+
+  --muted: #f2f2ef;
+  --muted-foreground: #6f7370;
+
+  --accent: #efefec;
+  --accent-foreground: #0e0f0e;
+
+  --destructive: #b42318;
+  --destructive-foreground: #ffffff;
+
+  --border: #e6e5e1;
+  --input: #e6e5e1;
+  --ring: #8241b5;
+
+  /* single brand accent, sampled from the official WalkingLabs mark */
+  --brand: #8241b5;
+  --brand-soft: #f4eefb;
+
+  /* ink ramp (legacy aliases kept so old utilities keep working) */
+  --ink-2: #33363a;
+  --ink-70: #4b4f52;
+  --ink-45: #82868a;
+  --line-soft: #eeeeea;
+  --line-strong: #d3d3cd;
 }
 
-@layer base {
-  body {
-    @apply bg-[var(--color-bg-paper)] text-[var(--color-ink)] font-sans antialiased;
-  }
-  
-  h1, h2, h3 {
-    @apply font-serif font-medium tracking-tight;
-  }
+.dark {
+  --background: #0b0c0b;
+  --foreground: #ecede8;
+  --card: #121412;
+  --card-foreground: #ecede8;
+  --popover: #121412;
+  --popover-foreground: #ecede8;
+  --primary: #ecede8;
+  --primary-foreground: #0b0c0b;
+  --secondary: #1a1c1a;
+  --secondary-foreground: #ecede8;
+  --muted: #1a1c1a;
+  --muted-foreground: #8e938f;
+  --accent: #1e211e;
+  --accent-foreground: #ecede8;
+  --border: #262a26;
+  --input: #262a26;
+  --ring: #b98be0;
+  --brand: #b98be0;
+  --brand-soft: #1d1526;
+  --ink-2: #c9cdc8;
+  --ink-70: #a8ada8;
+  --ink-45: #8e938f;
+  --line-soft: #1e211e;
+  --line-strong: #333833;
 }
 
-.serif-italic {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-brand: var(--brand);
+  --color-brand-soft: var(--brand-soft);
+
+  /* legacy aliases used by section components */
+  --color-paper: var(--background);
+  --color-surface: var(--card);
+  --color-ink: var(--foreground);
+  --color-ink-2: var(--ink-2);
+  --color-ink-70: var(--ink-70);
+  --color-ink-45: var(--ink-45);
+  --color-line: var(--border);
+  --color-line-soft: var(--line-soft);
+  --color-line-strong: var(--line-strong);
+  --color-dark: var(--background);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 10px);
+
+  /* Display = TencentSans W7 (single 700 cut, like tencent.com headlines);
+     body = MiSans + system, the quiet companion the reference site also
+     uses for running text. */
+  --font-sans: 'MiSans', 'PingFang SC', 'HarmonyOS Sans SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', system-ui, sans-serif;
+  --font-display: 'Tencent W7', 'Tencent W7CN', 'MiSans', 'PingFang SC',
+    'HarmonyOS Sans SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-serif: 'MiSans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', serif;
+  /* no second typeface for "technical" bits: metadata stays in the same family,
+     tabular figures do the work that mono used to do */
+  --font-mono: 'MiSans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', monospace;
+
+  --shadow-card: 0 1px 2px rgb(14 15 14 / 0.03), 0 1px 1px rgb(14 15 14 / 0.02);
+  --shadow-float: 0 1px 2px rgb(14 15 14 / 0.04), 0 12px 32px -24px rgb(14 15 14 / 0.22);
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* animations required by the pulled registry components */
+  --animate-marquee: marquee var(--duration) linear infinite;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-scroll: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear
+    infinite;
+  --animate-shine: shine var(--duration) infinite linear;
+  --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
+  --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
 }
 
-.page-shell {
-  padding-left: clamp(1.25rem, 4vw, 4rem);
-  padding-right: clamp(1.25rem, 4vw, 4rem);
-}
-
-.home-hero-shell {
-  padding-left: clamp(1.5rem, 7vw, 7rem);
-  padding-right: clamp(1.5rem, 7vw, 7rem);
-}
-
-.jelly-body {
-  border-radius: 45% 55% 65% 35% / 35% 55% 45% 65%;
-  transform-origin: 50% 58%;
-  animation: jelly-morph 8s ease-in-out infinite;
-  will-change: border-radius, transform;
-}
-
-.jelly-face {
-  will-change: transform;
-}
-
-.qr-spinner {
-  width: 2.75rem;
-  height: 2.75rem;
-  border: 3px solid #e4e4e7;
-  border-top-color: #6d28d9;
-  border-radius: 999px;
-  animation: qr-spin 0.9s linear infinite;
-}
-
-.partner-marquee {
-  position: relative;
-  overflow: hidden;
-}
-
-.partner-marquee::before,
-.partner-marquee::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  z-index: 1;
-  width: clamp(2rem, 8vw, 7rem);
-  pointer-events: none;
-}
-
-.partner-marquee::before {
-  left: 0;
-  background: linear-gradient(to right, white, transparent);
-}
-
-.partner-marquee::after {
-  right: 0;
-  background: linear-gradient(to left, white, transparent);
-}
-
-.partner-marquee-track {
-  display: flex;
-  width: max-content;
-  animation: partner-marquee 24s linear infinite;
-}
-
-.partner-marquee:hover .partner-marquee-track {
-  animation-play-state: paused;
-}
-
-.partner-marquee-item {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  min-width: clamp(18rem, 30vw, 28rem);
-  padding: 2rem 3rem;
-  color: #000;
-  border-right: 1px solid #f4f4f5;
-  white-space: nowrap;
-}
-
-.partner-marquee-item span {
-  font-size: clamp(1.5rem, 2.4vw, 2.75rem);
-  line-height: 1;
-  font-weight: 500;
-  letter-spacing: 0;
-  transition: color 180ms ease;
-}
-
-.partner-marquee-item:hover span {
-  color: #6d28d9;
-}
-
-.partner-logo {
-  width: 8.5rem;
-  height: 4.25rem;
-  border-radius: 999px;
-  border: 1px solid #f4f4f5;
-  background: #fff;
-  overflow: hidden;
-  flex: 0 0 auto;
-  filter: grayscale(1);
-  transition: filter 180ms ease;
-}
-
-.partner-marquee-item:hover .partner-logo {
-  filter: grayscale(0);
-}
-
-.partner-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 0.85rem;
-}
-
-@keyframes partner-marquee {
+@keyframes marquee {
   from {
     transform: translateX(0);
   }
   to {
-    transform: translateX(-33.333%);
+    transform: translateX(calc(-100% - var(--gap)));
   }
 }
 
-@keyframes qr-spin {
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
   to {
-    transform: rotate(360deg);
+    transform: translateY(calc(-100% - var(--gap)));
   }
 }
 
-@keyframes jelly-morph {
-  0%,
+@keyframes scroll {
+  to {
+    transform: translate(calc(-50% - 0.5rem));
+  }
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
   100% {
-    border-radius: 45% 55% 65% 35% / 35% 55% 45% 65%;
-    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
-  }
-  34% {
-    border-radius: 55% 45% 43% 57% / 48% 38% 62% 52%;
-    transform: translate3d(0, -2px, 0) scale(1.012, 0.992) rotate(0.4deg);
-  }
-  68% {
-    border-radius: 39% 61% 58% 42% / 54% 47% 53% 46%;
-    transform: translate3d(0, 2px, 0) scale(0.994, 1.01) rotate(-0.35deg);
+    background-position: 0% 0%;
   }
 }
 
-.bento-grid {
-  display: grid;
-  @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-zinc-200 border-t border-zinc-200;
+@keyframes spotlight {
+  0% {
+    opacity: 0;
+    transform: translate(-72%, -62%) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -40%) scale(1);
+  }
 }
 
-.bento-item {
-  @apply bg-[var(--color-bg-paper)] p-12 flex flex-col gap-6;
+@keyframes orbit {
+  0% {
+    transform: rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px))
+      rotate(calc(var(--angle) * -1deg));
+  }
+  100% {
+    transform: rotate(calc(var(--angle) * 1deg + 360deg)) translateY(calc(var(--radius) * 1px))
+      rotate(calc((var(--angle) * -1deg) - 360deg));
+  }
 }
 
-.nav-pill {
-  @apply px-5 py-2 rounded-full bg-white border border-black/5 text-[13px] font-medium transition-all hover:bg-black/5;
+@keyframes beam-dash {
+  to {
+    stroke-dashoffset: -26;
+  }
 }
 
-.mobile-nav-scroll {
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    letter-spacing: 0;
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--brand);
+    color: #fff;
+  }
+
+  section[id],
+  div[id='top'] {
+    scroll-margin-top: 96px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
 }
 
-.mobile-nav-scroll::-webkit-scrollbar {
-  display: none;
+@layer components {
+  /* ---------- type ----------
+     tencent.com pattern: headlines in the brand display face (TencentSans
+     W7, a single bold cut) set upright and tight; body on MiSans at a
+     CJK-friendly 1.7 line-height. Weight contrast does the separating. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.06;
+    font-size: clamp(40px, 5.1vw, 72px);
+    text-wrap: balance;
+  }
+
+  /* pull quotes: same family, no italic synthesis */
+  .serif {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.012em;
+    font-size: 1.04em;
+    line-height: 1.42;
+  }
+
+  .h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.14;
+    font-size: clamp(27px, 3.3vw, 42px);
+    text-wrap: balance;
+  }
+
+  /* section kickers: small caps label, no pill, no dot */
+  .kicker {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+
+  @media (max-width: 700px) {
+    .display {
+      font-size: clamp(34px, 9.6vw, 50px);
+    }
+  }
+
+  /* ---------- layout ---------- */
+  .shell {
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 32px;
+  }
+  @media (max-width: 700px) {
+    .shell {
+      padding-inline: 20px;
+    }
+  }
+
+  /* ---------- faint paper texture ---------- */
+  .grain::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    pointer-events: none;
+    opacity: 0.028;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- edge fade for rails ---------- */
+  .fade-x {
+    mask-image: linear-gradient(90deg, transparent, #000 72px, #000 calc(100% - 72px), transparent);
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 72px,
+      #000 calc(100% - 72px),
+      transparent
+    );
+  }
+
+  /* ---------- dashed connector used in the method diagram ---------- */
+  .dash-flow {
+    stroke-dasharray: 4 7;
+    animation: beam-dash 2.4s linear infinite;
+  }
 }
 
-.btn-primary {
-  @apply bg-violet-700 text-white px-8 py-4 rounded-full font-medium flex items-center gap-3 transition-all hover:bg-violet-800;
+/* On touch-sized screens, settle gently on each project card while allowing
+   taller cards to scroll naturally. */
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  html { scroll-snap-type: y proximity; scroll-padding-top: 88px; }
+  .scroll-card, #method, #community, #projects ~ section, footer {
+    scroll-snap-align: start;
+    scroll-margin-top: 88px;
+  }
 }
 
-.btn-secondary {
-  @apply bg-violet-100 text-violet-900 px-8 py-4 rounded-full font-medium flex items-center gap-3 transition-all hover:bg-violet-200;
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  html { scroll-snap-type: none; }
+  #projects .stack-card { position: sticky; top: 76px; }
+  #projects > .shell > .stack-card { z-index: 1; }
+  .project-stack { position: relative; }
+  .project-stack .stack-card { background: var(--background); border-radius: 12px; }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #d1d1d1;
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+/* Full-width course cards, layered as the reader scrolls. */
+.course-stack { position: relative; }
+.course-panel { position: sticky; top: 84px; min-height: min(620px, calc(100svh - 110px)); display: grid; grid-template-columns: 1fr 1.05fr; align-items: center; gap: clamp(28px, 5vw, 70px); padding: clamp(28px, 5vw, 72px); border-radius: 16px; margin-bottom: 18px; overflow: hidden; box-shadow: 0 -12px 36px #0002; color: #1d2218; }
+.course-panel:nth-child(1) { background: #d1f783; }
+.course-panel:nth-child(2) { background: #b9b8f0; color: #24233d; }
+.course-panel:nth-child(3) { background: #f0bfa2; color: #33251d; }
+.course-label { font-size: 11px; letter-spacing: .1em; opacity: .7; }
+.course-copy h3 { font-size: clamp(38px, 5vw, 70px); letter-spacing: -.055em; line-height: 1; font-weight: 650; margin: 56px 0 20px; }
+.course-copy p { font-size: 15px; line-height: 1.7; max-width: 40ch; opacity: .75; }
+.course-copy a { display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; border-bottom: 1px solid currentColor; padding-bottom: 7px; font-size: 13px; font-weight: 650; }
+.course-screen { overflow: hidden; border-radius: 8px; box-shadow: 0 24px 60px #0003; transform: rotate(-2deg); transition: transform .5s; }
+.course-panel:hover .course-screen { transform: rotate(0); }
+.course-screen img { display: block; width: 100%; height: auto; }
+@media (max-width: 767px) { .course-panel { top: 72px; grid-template-columns: 1fr; min-height: 0; gap: 32px; padding: 28px; } .course-copy h3 { margin-top: 36px; } }
+@media (prefers-reduced-motion: reduce) { .course-panel { position: relative; } .course-screen { transition: none; } }
+/* Original monochrome palette for the full repository stack. */
+.course-panel.course-panel-dark { background: #121413; color: #f4f4f0; }
+.course-panel.course-panel-light { background: #f6f6f3; color: #171918; border: 1px solid #e1e1dd; }
+.course-copy h3 { overflow-wrap: anywhere; }
+.course-meta { display:flex; align-items:center; flex-wrap:wrap; gap:18px; margin-top:28px; font-size:12px; opacity:.65; }
+.course-meta span { display:inline-flex; align-items:center; gap:5px; }
+.course-screen video { display:block; width:100%; height:auto; }
+
+/* Keep the layered course cards on phone layouts. */
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  .repo-stack {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .repo-stack:not([data-static]) .repo-featured {
+    position: sticky;
+    top: min(80px, calc(100svh - var(--repo-featured-height, 0px) - 16px));
+    z-index: 1;
+  }
+
+  .repo-stack:not([data-static]) .repo-featured:has(:focus-visible) {
+    z-index: 3;
+  }
+
+  .repo-stack:not([data-static]) .repo-stack-item {
+    position: sticky;
+    top: 80px;
+  }
 }

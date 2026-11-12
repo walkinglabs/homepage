@@ -1,0 +1,20 @@
+/* TencentSans (Tencent W7) — the brand font served by www.tencent.com.
+   W7 is a single bold cut: headings only; body text stays on the system
+   stack, exactly like the reference site itself. */
+@font-face {
+  font-family: 'Tencent W7';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/tencent/TencentW7.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Tencent W7CN';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src:
+    url('/fonts/tencent/TencentW7CN.woff2') format('woff2'),
+    url('/fonts/tencent/TencentW7CN.woff') format('woff');
+}

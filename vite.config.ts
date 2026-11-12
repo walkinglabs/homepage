@@ -1,32 +1,29 @@
-import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
-import path from 'path';
-import {defineConfig, loadEnv} from 'vite';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+import { copyFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { fileURLToPath, URL } from 'node:url'
 
-export default defineConfig(({mode}) => {
-  const env = loadEnv(mode, '.', '');
-  return {
-    base: process.env.GITHUB_PAGES === 'true' ? '/homepage/' : '/',
-    build: {
-      rollupOptions: {
-        input: path.resolve(__dirname, 'index.dev.html'),
+const githubPages = process.env.GITHUB_PAGES === 'true'
+
+export default defineConfig({
+  base: githubPages ? '/homepage/' : '/',
+  plugins: [
+    react(),
+    tailwindcss(),
+    githubPages && {
+      name: 'github-pages-entry',
+      apply: 'build',
+      writeBundle({ dir = 'dist' }) {
+        // The Pages workflow also publishes the original entry name.
+        copyFileSync(join(dir, 'index.html'), join(dir, 'index.dev.html'))
       },
     },
-    plugins: [react(), tailwindcss()],
-    define: {
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+  ],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, '.'),
-      },
-    },
-    server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
-      hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
-      watch: process.env.DISABLE_HMR === 'true' ? null : {},
-    },
-  };
-});
+  },
+})

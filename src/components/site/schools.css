@@ -1,0 +1,104 @@
+.school-logo-flow {
+  --logo-gap: clamp(2.5rem, 4vw, 4.5rem);
+  --logo-cycle: calc(var(--logo-count) * 6.4s);
+
+  overflow-x: auto;
+  container-type: inline-size;
+}
+
+.school-logo-track {
+  display: flex;
+  width: max-content;
+}
+
+.school-logo-group {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--logo-gap);
+  min-width: 100cqw;
+  min-height: 3.5rem;
+  margin: 0;
+  padding: 0 var(--logo-gap) 0 0;
+  list-style: none;
+}
+
+.school-logo-lane {
+  display: grid;
+  flex: none;
+  min-height: 3.5rem;
+  place-items: center;
+}
+
+.school-logo-mark {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  min-height: 3rem;
+}
+
+.school-logo-image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(12.5rem, 62vw);
+  max-height: 2.25rem;
+  object-fit: contain;
+}
+
+.school-logo-name {
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: -.025em;
+  white-space: nowrap;
+}
+
+.school-logo-copy {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .school-logo-flow:not([data-static]) {
+    overflow: clip;
+    mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  }
+
+  .school-logo-flow:not([data-static]) .school-logo-track {
+    animation: school-logo-scroll var(--logo-cycle) linear infinite;
+  }
+
+  .school-logo-flow:not([data-static]) .school-logo-copy {
+    display: flex;
+  }
+
+  .school-logo-flow[data-direction="right"] .school-logo-track {
+    animation-direction: reverse;
+  }
+
+  .school-logo-flow[data-direction="right"] .school-logo-copy {
+    order: -1;
+  }
+
+  .school-logo-flow:hover .school-logo-track {
+    animation-play-state: paused;
+  }
+
+  .school-logo-flow:has(:focus-visible) {
+    overflow-x: auto;
+    mask-image: none;
+  }
+
+  .school-logo-flow:has(:focus-visible) .school-logo-track {
+    animation: none;
+  }
+
+  .school-logo-flow:has(:focus-visible) .school-logo-copy {
+    display: none;
+  }
+}
+
+@keyframes school-logo-scroll {
+  to { transform: translateX(-50%); }
+}
