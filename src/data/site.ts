@@ -38,6 +38,15 @@ export const site = {
   starsLabel: '33.2k',
   starsTotal: 33.2,
   repoCount: 11,
+  // 2026-11-12 snapshot. Count GitHub commit contributors across all public
+  // WalkingLabs repositories. Deduplicate by account ID and exclude bots.
+  // To refresh, run this with an authenticated GitHub CLI:
+  //   set -o pipefail
+  //   gh api --paginate 'orgs/walkinglabs/repos?type=public&per_page=100' --jq '.[].name' |
+  //     while IFS= read -r repo; do
+  //       gh api --paginate "repos/walkinglabs/$repo/contributors?per_page=100" \
+  //         --jq '.[] | select(.type == "User") | select(.login | ascii_downcase | endswith("[bot]") | not) | .id' || exit 1
+  //     done | sort -u | wc -l
   contributors: 188,
   locales: 12,
 } as const

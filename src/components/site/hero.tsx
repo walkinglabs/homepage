@@ -185,7 +185,7 @@ export function Hero() {
             </AvatarGroup>
             <p className="max-w-[32ch] text-[12.5px] leading-snug text-muted-foreground">
               {t(
-                "With contributions from " + site.contributors + " contributors, taught in " + site.locales + " languages.",
+                "Built with " + site.contributors + " open-source contributors, taught in " + site.locales + " languages.",
                 "汇集 " + site.contributors + " 位开源贡献者，提供 " + site.locales + " 种语言版本。",
               )}
             </p>
