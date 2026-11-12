@@ -25,7 +25,7 @@ export function FocusBento() {
           <div className="mb-9 flex flex-wrap items-end justify-between gap-4">
             <h2 className="h2">{t("Research areas", "研究方向")}</h2>
             <p className="max-w-[34ch] text-[13.5px] leading-relaxed text-muted-foreground">
-              {t("Our courses and projects often bring several of these areas together.", "课程覆盖从理解到实现的完整过程，很多项目会把几个方向串在一起。")}
+              {t("Pick a topic and open a repo.", "挑个方向，进仓库看看。")}
             </p>
           </div>
         </Reveal>

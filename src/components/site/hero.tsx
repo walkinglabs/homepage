@@ -160,7 +160,10 @@ export function Hero() {
           <Headline />
 
           <p className="mt-7 max-w-[46ch] text-[15.5px] leading-[1.7] text-muted-foreground">
-            {t("We build free, deeply-written courses that take you from a paper’s abstract to code you wrote yourself. 33k stars later, the material is still open and still free.", "我们写免费、扎实的课程，陪你从读懂论文摘要走到亲手写出代码。超过 3.3 万个星标，课程依然开源、免费。")}
+            {t(
+              "WalkingLabs turns real-world AI engineering practices from industry into hands-on courses anyone can follow. Our courses and code are open source.",
+              "WalkingLabs 把企业在真实项目中积累的 AI 工程经验，做成人人都能跟着学、动手做的课程。课程与代码开源。",
+            )}
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-2.5">
@@ -191,8 +194,8 @@ export function Hero() {
             </AvatarGroup>
             <p className="max-w-[32ch] text-[12.5px] leading-snug text-muted-foreground">
               {t(
-                "Built with " + site.contributors + " open-source contributors, taught in " + site.locales + " languages.",
-                "汇集 " + site.contributors + " 位开源贡献者，提供 " + site.locales + " 种语言版本。",
+                "We want more people to push the limits of intelligence and help accelerate progress toward AGI.",
+                "我们希望，让更多人有机会挑战智能的上限，一起加速 AGI 的到来。",
               )}
             </p>
           </div>

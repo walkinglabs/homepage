@@ -13,7 +13,7 @@ export function Method() {
             <p className="kicker">{t("How we work", "学习方法")}</p>
             <h2 className="h2 mt-3">{t("Understand. Build. Then outgrow us.", "读懂原理，亲手实现，再做出自己的东西。")}</h2>
             <p className="mt-4 text-[14px] leading-[1.7] text-muted-foreground">
-              {t("Every course follows the same three beats. The order matters more than the speed you move through them.", "每门课程都按理解、动手、创造三个步骤展开。按这个顺序走，比赶进度更重要。")}
+              {t("Understand it, run it, then try a change of your own.", "先弄懂，再跑一遍，最后试着改点什么。")}
             </p>
           </div>
         </Reveal>

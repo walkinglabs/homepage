@@ -1,0 +1,75 @@
+.voices-row {
+  --voice-gap: 0.75rem;
+  --voice-card-width: clamp(17rem, 42vw, 23rem);
+  --voice-duration: 40s;
+  --voice-delay: -0.5s;
+
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.voices-row[data-staggered] {
+  --voice-duration: 30s;
+  --voice-delay: -5.5s;
+}
+
+.voices-track,
+.voices-group {
+  display: flex;
+  width: max-content;
+}
+
+.voices-group {
+  gap: var(--voice-gap);
+  padding: 2px var(--voice-gap) 2px 2px;
+}
+
+.voice-card {
+  flex: 0 0 var(--voice-card-width);
+  width: var(--voice-card-width);
+}
+
+.voices-copy {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #voices-rails:not([data-static]) .voices-row {
+    overflow: clip;
+  }
+
+  #voices-rails:not([data-static]) .voices-track {
+    animation: voices-drift var(--voice-duration) linear var(--voice-delay) infinite;
+  }
+
+  #voices-rails:not([data-static]) .voices-copy {
+    display: flex;
+  }
+
+  #voices-rails[data-paused] .voices-track {
+    animation-play-state: paused;
+  }
+
+  #voices-rails .voices-row:has(:focus-visible) {
+    overflow-x: auto;
+  }
+
+  #voices-rails .voices-row:has(:focus-visible) .voices-track {
+    animation: none;
+  }
+
+  #voices-rails .voices-row:has(:focus-visible) .voices-copy {
+    display: none;
+  }
+}
+
+@media (hover: hover) {
+  #voices-rails:not([data-static]) .voices-row:hover .voices-track {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes voices-drift {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}

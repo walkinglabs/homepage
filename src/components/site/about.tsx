@@ -25,13 +25,16 @@ export function About() {
 
           <Reveal delay={0.06}>
             <p className="mt-7 max-w-[38ch] text-[clamp(18px,2vw,24px)] leading-[1.55] text-foreground">
-              {t("WalkingLabs is an open-source lab exploring agentic AI, LLM systems, reinforcement learning and embodied intelligence.", "WalkingLabs 是一个开源实验室，探索智能体、大模型系统、强化学习和具身智能。")}
+              {t("WalkingLabs is an open-source lab focused on AI research and engineering.", "WalkingLabs 是一个关注 AI 前沿研究与工程实践的开源实验室。")}
             </p>
           </Reveal>
 
           <Reveal delay={0.1}>
             <p className="mt-5 max-w-[58ch] text-[14.5px] leading-[1.72] text-muted-foreground">
-              {t("We write the course we wished existed: derivations spelled out, assumptions named, code that runs on a laptop, and results you can reproduce before dinner. No paywall, no waitlist, no “coming soon”. Everything ships as a repository, and anyone can fork it, teach from it, or break it.", "我们写自己希望读到的课程：推导逐步展开，假设说明白，代码可以在自己的电脑上运行，实验可以亲手复现。每门课程都开放在仓库里，任何人都可以学习、动手改动或用于教学。")}
+              {t(
+                "From reinforcement learning and large language models to AI infrastructure, agent development, and embodied intelligence, practical learning resources often lag behind advances in research and engineering. We turn ideas from papers and lessons from real projects into open-source courses with clear explanations, runnable code, and reproducible experiments.",
+                "从强化学习、大语言模型到 AI 基础设施、智能体开发和具身智能，前沿研究和工程实践不断向前，能跟着做的学习资料却常常滞后。我们把论文里的方法和真实项目中的经验整理成开源课程，讲清原理，提供可运行的代码和可复现的实验。",
+              )}
             </p>
           </Reveal>
 
