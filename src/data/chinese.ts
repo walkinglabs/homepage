@@ -13,7 +13,7 @@ export const chinese: Record<string, string> = {
   'About WalkingLabs': '关于 WalkingLabs',
   'GitHub stars': 'GitHub 星标',
   'Open repositories': '开源仓库',
-  'Languages shipped': '覆盖语言',
+  'Contributors': '开源贡献者',
   'What we work on': '研究方向',
   'Agentic AI': '智能体 AI',
   'LLM Systems': '大模型系统',

@@ -185,8 +185,8 @@ export function Hero() {
             </AvatarGroup>
             <p className="max-w-[32ch] text-[12.5px] leading-snug text-muted-foreground">
               {t(
-                "Maintained in the open by " + site.contributors + " contributors, taught in " + site.locales + " languages.",
-                "由 " + site.contributors + " 位贡献者公开维护，提供 " + site.locales + " 种语言版本。",
+                "With contributions from " + site.contributors + " contributors, taught in " + site.locales + " languages.",
+                "汇集 " + site.contributors + " 位开源贡献者，提供 " + site.locales + " 种语言版本。",
               )}
             </p>
           </div>

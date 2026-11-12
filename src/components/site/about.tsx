@@ -8,7 +8,7 @@ import { Reveal } from './reveal'
 const stats = [
   { value: site.starsTotal, decimals: 1, suffix: 'k', label: 'GitHub stars' },
   { value: site.repoCount, decimals: 0, suffix: '', label: 'Open repositories' },
-  { value: site.languages, decimals: 0, suffix: '', label: 'Languages shipped' },
+  { value: site.contributors, decimals: 0, suffix: '', label: 'Contributors' },
 ]
 
 export function About() {

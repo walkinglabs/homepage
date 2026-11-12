@@ -38,8 +38,7 @@ export const site = {
   starsLabel: '33.2k',
   starsTotal: 33.2,
   repoCount: 11,
-  languages: 5,
-  contributors: 24,
+  contributors: 188,
   locales: 12,
 } as const
 
