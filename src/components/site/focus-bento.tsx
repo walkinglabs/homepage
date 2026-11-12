@@ -23,18 +23,15 @@ export function FocusBento() {
       <div className="shell">
         <Reveal>
           <div className="mb-9 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="kicker">{t("What we work on")}</p>
-              <h2 className="h2 mt-3 max-w-[22ch]">{t("Six areas, one loop.", "从原理到实践，贯穿各个方向。")}</h2>
-            </div>
+            <h2 className="h2">{t("Research areas", "研究方向")}</h2>
             <p className="max-w-[34ch] text-[13.5px] leading-relaxed text-muted-foreground">
-              {t("Everything we publish sits somewhere on this map, and most courses walk the whole loop rather than stopping at a single box.", "课程覆盖从理解到实现的完整过程，很多项目会把几个方向串在一起。")}
+              {t("Our courses and projects often bring several of these areas together.", "课程覆盖从理解到实现的完整过程，很多项目会把几个方向串在一起。")}
             </p>
           </div>
         </Reveal>
 
         <Reveal delay={0.06}>
-          <BentoGrid className="auto-rows-[21rem] gap-3 md:grid-cols-2 lg:auto-rows-[21rem] lg:grid-cols-3">
+          <BentoGrid className="auto-rows-[minmax(21rem,auto)] gap-3 md:grid-cols-2 lg:grid-cols-3">
             {areas.map((area) => {
               return (
                 <BentoCard
@@ -47,14 +44,11 @@ export function FocusBento() {
                   className={cn(
                     'relative bg-card shadow-card ring-1 ring-border/70',
                     SPAN[area.index] ?? SINGLE,
-                    /* only the beam card reserves its top half for a diagram;
-                       every other card centres its copy so it reads as full */
-                    area.index !== '01' && 'justify-center',
+                    area.index === '01' ? 'justify-start' : 'justify-center',
                   )}
+                  illustration={area.index === '01' ? <BeamViz /> : undefined}
                   background={
-                    area.index === '01' ? (
-                      <BeamViz />
-                    ) : area.index === '05' ? (
+                    area.index === '01' ? null : area.index === '05' ? (
                       <OrbitViz />
                     ) : (
                       <div className="absolute inset-0">

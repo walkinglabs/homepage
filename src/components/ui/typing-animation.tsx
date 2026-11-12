@@ -56,6 +56,7 @@ interface TypingAnimationProps extends Omit<MotionProps, "children"> {
   startOnView?: boolean
   showCursor?: boolean
   blinkCursor?: boolean
+  cursorHideDelay?: number
   cursorStyle?: "line" | "block" | "underscore"
 }
 
@@ -73,6 +74,7 @@ export function TypingAnimation({
   startOnView = true,
   showCursor = true,
   blinkCursor = true,
+  cursorHideDelay,
   cursorStyle = "line",
   ...props
 }: TypingAnimationProps) {
@@ -227,6 +229,10 @@ export function TypingAnimation({
       {shouldShowCursor && (
         <span
           className={cn("inline-block", blinkCursor && "animate-blink-cursor")}
+          style={cursorHideDelay === undefined ? undefined : {
+            opacity: phase === "pause" ? 0 : 1,
+            transition: phase === "pause" ? `opacity 160ms ease ${cursorHideDelay}ms` : "none",
+          }}
         >
           {getCursorChar()}
         </span>

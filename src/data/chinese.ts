@@ -14,7 +14,6 @@ export const chinese: Record<string, string> = {
   'GitHub stars': 'GitHub 星标',
   'Open repositories': '开源仓库',
   'Contributors': '开源贡献者',
-  'What we work on': '研究方向',
   'Agentic AI': '智能体 AI',
   'LLM Systems': '大模型系统',
   'Reinforcement Learning': '强化学习',

@@ -17,7 +17,7 @@ function Node({
     <div
       ref={ref}
       className={cn(
-        'z-10 flex items-center gap-1.5 rounded-md border border-border bg-card px-2 py-1.5 text-[10.5px] font-medium shadow-sm',
+        'flex items-center gap-1.5 rounded-md border border-border bg-card px-2 py-1.5 text-[10.5px] font-medium shadow-sm',
         className,
       )}
     >
@@ -45,29 +45,29 @@ export function BeamViz() {
   }
 
   return (
-    <div ref={container} className="absolute left-1/2 top-5 h-[34%] w-[min(70%,420px)] -translate-x-1/2">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2">
+    <div ref={container} aria-hidden="true" className="pointer-events-none relative mx-auto mt-5 h-28 w-[min(82%,340px)] sm:h-32">
+      <div className="absolute top-0 left-1/2 z-10 -translate-x-1/2">
         <Node ref={task}>
           <Sparkles className="size-3 text-brand" />
           task
         </Node>
       </div>
 
-      <div className="absolute top-[44%] left-2 -translate-y-1/2">
+      <div className="absolute top-[44%] left-2 z-10 -translate-y-1/2">
         <Node ref={repo}>
           <FileCode2 className="size-3 text-muted-foreground" />
           repo
         </Node>
       </div>
 
-      <div className="absolute top-[44%] right-2 -translate-y-1/2">
+      <div className="absolute top-[44%] right-2 z-10 -translate-y-1/2">
         <Node ref={tools}>
           <Wrench className="size-3 text-muted-foreground" />
           tools
         </Node>
       </div>
 
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2">
+      <div className="absolute bottom-0 left-1/2 z-10 -translate-x-1/2">
         <Node ref={done}>
           <Check className="size-3 text-brand" strokeWidth={2.6} />
           done

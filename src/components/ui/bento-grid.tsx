@@ -12,7 +12,8 @@ interface BentoGridProps extends ComponentPropsWithoutRef<"div"> {
 interface BentoCardProps extends ComponentPropsWithoutRef<"div"> {
   name: string
   className: string
-  background: ReactNode
+  background?: ReactNode
+  illustration?: ReactNode
   Icon: React.ElementType
   description: string
   href: string
@@ -37,6 +38,7 @@ const BentoCard = ({
   name,
   className,
   background,
+  illustration,
   Icon,
   description,
   href,
@@ -55,9 +57,12 @@ const BentoCard = ({
     )}
     {...props}
   >
-    <div>{background}</div>
+    <div>{illustration ?? background}</div>
     <div className="p-4">
-      <div className="pointer-events-none z-10 flex transform-gpu flex-col gap-1 transition-all duration-300 lg:group-hover:-translate-y-10">
+      <div className={cn(
+        "pointer-events-none z-10 flex transform-gpu flex-col gap-1 transition-all duration-300",
+        !illustration && "lg:group-hover:-translate-y-10"
+      )}>
         <Icon className="h-12 w-12 origin-left transform-gpu text-neutral-700 transition-all duration-300 ease-in-out group-hover:scale-75" />
         <h3 className="text-xl font-semibold text-neutral-700 dark:text-neutral-300">
           {name}
@@ -67,7 +72,8 @@ const BentoCard = ({
 
       <div
         className={cn(
-          "pointer-events-none flex w-full translate-y-0 transform-gpu flex-row items-center transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 lg:hidden"
+          "pointer-events-none flex w-full translate-y-0 transform-gpu flex-row items-center transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100",
+          !illustration && "lg:hidden"
         )}
       >
         <Button
@@ -86,7 +92,8 @@ const BentoCard = ({
 
     <div
       className={cn(
-        "pointer-events-none absolute bottom-0 hidden w-full translate-y-10 transform-gpu flex-row items-center p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 lg:flex"
+        "pointer-events-none absolute bottom-0 hidden w-full translate-y-10 transform-gpu flex-row items-center p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100",
+        !illustration && "lg:flex"
       )}
     >
       <Button

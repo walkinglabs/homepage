@@ -1,21 +1,50 @@
-import { ArrowUpRight } from 'lucide-react'
+import { useRef } from 'react'
+import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react'
 import { useLocale } from '@/lib/locale'
+import { publicAsset } from '@/lib/utils'
 import { XMark } from './brand'
 
 const voices = [
   {
     name: 'Tech with Mak',
     handle: '@techNmak',
-    initials: 'M',
+    avatar: 'tech-nmak.jpg',
     lang: 'en',
     quote: 'Found this excellent open-source course by Walking Labs, covering 14 lectures and 8 hands-on projects on building more reliable AI coding agents.',
     zh: '发现了 Walking Labs 这门很棒的开源课程。它通过 14 讲和 8 个动手项目，教你构建更可靠的 AI 编程智能体。',
     url: 'https://x.com/techNmak/status/2111159344754745592',
   },
   {
+    name: 'Xudong Han',
+    handle: '@Xudong07452910',
+    avatar: 'xudong-han.jpg',
+    lang: 'en',
+    quote: 'What I like is the practice-first approach. Many chapters include runnable code, training curves, and examples of failures.',
+    zh: '我比较喜欢它的一点，是「实践优先」。很多章节都配了可以直接运行的代码、训练曲线和失败案例',
+    url: 'https://x.com/Xudong07452910/status/2085901306342908157',
+  },
+  {
+    name: 'Red Brick Labs',
+    handle: '@RedBrickLabs_',
+    avatar: 'red-brick-labs.jpg',
+    lang: 'en',
+    quote: 'this repo maps the full discipline, context, evals, guardrails, orchestration',
+    zh: '这个仓库梳理了整个领域，涵盖上下文、评估、护栏和编排。',
+    url: 'https://x.com/RedBrickLabs_/status/2064347541064540399',
+  },
+  {
+    name: 'Xiuyu Li',
+    handle: '@sheriyuo',
+    avatar: 'xiuyu-li.jpg',
+    lang: 'en',
+    quote: 'The Hands-on Modern RL tutorial everyone has been waiting for is finally available in English🥳🥳🥳',
+    zh: '大家期待已久的 Hands-on Modern RL 教程终于有英文版了🥳🥳🥳',
+    url: 'https://x.com/sheriyuo/status/2055234238660927577',
+  },
+  {
     name: 'Vaishnavi',
     handle: '@_vmlops',
-    initials: 'V',
+    avatar: 'vaishnavi.jpg',
     lang: 'en',
     quote: 'learn-harness-engineering is a free course built around exactly this […] one real app that evolves as your harness skills grow',
     zh: 'learn-harness-engineering 就是围绕这些问题设计的一门免费课程……一个真实应用，随着你的 Harness 技能提升而不断演进。',
@@ -24,16 +53,34 @@ const voices = [
   {
     name: 'santi',
     handle: '@santtiagom_',
-    initials: 'S',
+    avatar: 'santi.jpg',
     lang: 'es',
-    quote: 'si usás agentes para programar, entender cómo funcionan por dentro te cambia la forma de trabajar con ellos.',
-    zh: '如果你用智能体写代码，理解它们内部的工作方式，就会改变你与它们协作的方式。',
+    quote: 'y si te quedás con ganas de más, te dejo un curso para seguir aprendiendo',
+    zh: '如果你还想深入了解，这里有一门课程可以接着学。',
     url: 'https://x.com/santtiagom_/status/2099150822001070573',
+  },
+  {
+    name: 'Md Ismail Šojal',
+    handle: '@0x0SojalSec',
+    avatar: 'ismail-sojal.jpg',
+    lang: 'en',
+    quote: 'Free course (14 lectures + 8 projects) covering loops, graphs, verification, and observability on how Claude Code, Codex, and DeepSeek actually build',
+    zh: '免费课程，含 14 讲和 8 个项目，涵盖循环、图、验证与可观测性，并讲解 Claude Code、Codex 和 DeepSeek 的实际构建方式。',
+    url: 'https://x.com/0x0SojalSec/status/2106147412125589619',
   },
 ] as const
 
 export function Voices() {
   const { language, t } = useLocale()
+  const rail = useRef<HTMLDivElement>(null)
+
+  function scrollByCard(direction: -1 | 1) {
+    const track = rail.current
+    const card = track?.firstElementChild
+    if (!track || !card) return
+    const gap = parseFloat(getComputedStyle(track).columnGap)
+    track.scrollBy({ left: direction * (card.getBoundingClientRect().width + gap) })
+  }
 
   return (
     <section id="voices" aria-labelledby="voices-title" className="py-[clamp(64px,8vw,112px)]">
@@ -43,16 +90,27 @@ export function Voices() {
             {t('In their words.', '听听读者怎么说。')}
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
-            {t('What readers are sharing about WalkingLabs on X.', '读者在 X 上分享的 WalkingLabs 学习体验。')}
+            {t('What people are sharing about WalkingLabs on X.', '大家在 X 上分享的 WalkingLabs 课程和项目。')}
           </p>
         </div>
-        <div className="grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mb-3 flex justify-end gap-2">
+          <button type="button" onClick={() => scrollByCard(-1)} aria-controls="voices-rail"
+            aria-label={t('Previous posts', '上一条分享')}
+            className="grid size-9 cursor-pointer place-items-center rounded-full border border-border bg-card hover:bg-muted focus-visible:outline-2 focus-visible:outline-brand">
+            <ArrowLeft className="size-4" aria-hidden="true" />
+          </button>
+          <button type="button" onClick={() => scrollByCard(1)} aria-controls="voices-rail"
+            aria-label={t('Next posts', '下一条分享')}
+            className="grid size-9 cursor-pointer place-items-center rounded-full border border-border bg-card hover:bg-muted focus-visible:outline-2 focus-visible:outline-brand">
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </button>
+        </div>
+        <div ref={rail} id="voices-rail" className="grid auto-cols-[85%] grid-flow-col gap-3 overflow-x-auto pb-3 snap-x snap-mandatory motion-safe:scroll-smooth sm:auto-cols-[calc((100%_-_0.75rem)/2)] lg:auto-cols-[calc((100%_-_1.5rem)/3)]">
           {voices.map((voice) => (
-            <article key={voice.url} className="rounded-2xl border border-border bg-card p-5 text-card-foreground sm:p-6">
+            <article key={voice.url} className="flex snap-start flex-col rounded-2xl border border-border bg-card p-5 text-card-foreground sm:p-6">
               <div className="flex items-center gap-3">
-                <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-full bg-brand/15 text-sm font-semibold text-brand">
-                  {voice.initials}
-                </span>
+                <img src={publicAsset('media/voices/' + voice.avatar)} alt="" width={40} height={40}
+                  loading="lazy" decoding="async" className="size-10 shrink-0 rounded-full object-cover" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold">{voice.name}</p>
                   <p className="text-xs text-muted-foreground">{voice.handle}</p>
@@ -61,7 +119,7 @@ export function Voices() {
               </div>
               <blockquote
                 lang={language === 'zh' ? 'zh-CN' : voice.lang}
-                className="mt-5 text-[15px] leading-relaxed text-card-foreground"
+                className="mt-5 flex-1 text-[15px] leading-relaxed text-card-foreground"
               >
                 “{t(voice.quote, voice.zh)}”
               </blockquote>

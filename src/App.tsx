@@ -38,7 +38,7 @@ export default function App() {
               <Projects />
               <Method />
               <Community />
-              <div className="dark bg-background text-foreground">
+              <div className="bg-muted/30">
                 <Voices />
                 <Faq />
               </div>

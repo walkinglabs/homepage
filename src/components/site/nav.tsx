@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { ArrowUpRight, Globe2, Menu, Star } from 'lucide-react'
+import { ArrowUpRight, Check, Globe2, Menu, Star } from 'lucide-react'
+import { DropdownMenu } from 'radix-ui'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -14,6 +15,11 @@ import { cn } from '@/lib/utils'
 import { useLocale } from '@/lib/locale'
 import { navLinks, site } from '@/data/site'
 import { DiscordMark, GithubMark, Lockup } from './brand'
+
+const languages = [
+  { value: 'en', lang: 'en', label: 'English' },
+  { value: 'zh', lang: 'zh-CN', label: '简体中文' },
+] as const
 
 export function Nav() {
   const { language, setLanguage, t } = useLocale()
@@ -84,19 +90,47 @@ export function Nav() {
             </a>
           </Button>
 
-          <label className="relative grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-within:outline-2 focus-within:outline-brand">
-            <Globe2 className="size-4" aria-hidden="true" />
-            <select
-              value={language}
-              onChange={(event) => setLanguage(event.target.value === 'zh' ? 'zh' : 'en')}
-              aria-label={t('Site language', '网站语言')}
-              title={t('Site language', '网站语言')}
-              className="absolute inset-0 size-full cursor-pointer opacity-0"
-            >
-              <option value="en" lang="en">English</option>
-              <option value="zh" lang="zh-CN">简体中文</option>
-            </select>
-          </label>
+          <DropdownMenu.Root modal={false}>
+            <DropdownMenu.Trigger asChild>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label={t('Site language', '网站语言')}
+                className="cursor-pointer text-muted-foreground hover:text-foreground data-[state=open]:bg-muted data-[state=open]:text-foreground"
+              >
+                <Globe2 className="size-4" aria-hidden="true" />
+              </Button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                align="end"
+                sideOffset={8}
+                collisionPadding={12}
+                className="z-[60] min-w-36 rounded-lg border border-border bg-popover p-1 text-sm text-popover-foreground shadow-float"
+              >
+                <DropdownMenu.RadioGroup
+                  value={language}
+                  onValueChange={(value) => {
+                    if (value === 'en' || value === 'zh') setLanguage(value)
+                  }}
+                >
+                  {languages.map(({ value, lang, label }) => (
+                    <DropdownMenu.RadioItem
+                      key={value}
+                      value={value}
+                      lang={lang}
+                      className="flex cursor-pointer items-center justify-between gap-4 rounded-md px-3 py-2 outline-none data-[highlighted]:bg-muted data-[state=checked]:font-medium"
+                    >
+                      {label}
+                      <DropdownMenu.ItemIndicator>
+                        <Check className="size-3.5 text-brand" aria-hidden="true" />
+                      </DropdownMenu.ItemIndicator>
+                    </DropdownMenu.RadioItem>
+                  ))}
+                </DropdownMenu.RadioGroup>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
 
           <Sheet>
             <SheetTrigger asChild>

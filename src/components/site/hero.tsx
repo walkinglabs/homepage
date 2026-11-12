@@ -1,10 +1,11 @@
 import { useLocale } from '@/lib/locale'
 import { useState } from 'react'
 import { ArrowUpRight, Star } from 'lucide-react'
+import { useReducedMotion } from 'motion/react'
 import { Avatar, AvatarGroup, AvatarGroupCount, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { InteractiveDots } from '@/components/ui/interactive-dots'
-import { TextAnimate } from '@/components/ui/text-animate'
+import { TypingAnimation } from '@/components/ui/typing-animation'
 import { contributors, media, site } from '@/data/site'
 import { cn } from '@/lib/utils'
 import { NO_ANIM } from '@/lib/no-anim'
@@ -12,23 +13,28 @@ import { GithubMark } from './brand'
 
 function Headline() {
   const { language, t } = useLocale()
-  if (NO_ANIM) {
-    return <h1 className="display max-w-[18ch]">{t(site.tagline, "每个人都能教机器思考。")}</h1>
+  const reducedMotion = useReducedMotion()
+  const headline = t(site.tagline, "每个人都能教会机器思考。")
+  if (NO_ANIM || reducedMotion) {
+    return <h1 className="display max-w-[18ch]">{headline}</h1>
   }
 
   return (
-    <TextAnimate
-      as="h1"
-      key={language}
-      by={language === "zh" ? "character" : "word"}
-      animation="blurInUp"
-      duration={0.7}
-      startOnView={false}
-      once
-      className="display max-w-[18ch]"
-    >
-      {t(site.tagline, "每个人都能教机器思考。")}
-    </TextAnimate>
+    <h1 aria-label={headline} className="display relative max-w-[18ch]">
+      <span aria-hidden="true" className="invisible">{headline}</span>
+      <TypingAnimation
+        key={language}
+        aria-hidden="true"
+        typeSpeed={language === 'zh' ? 95 : 27}
+        pauseDelay={3200}
+        blinkCursor={false}
+        cursorHideDelay={650}
+        loop
+        className="absolute inset-0 block leading-[inherit] tracking-[inherit]"
+      >
+        {headline}
+      </TypingAnimation>
+    </h1>
   )
 }
 
