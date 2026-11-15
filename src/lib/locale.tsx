@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { chinese } from '@/data/chinese'
 
-type Language = 'en' | 'zh'
+import { isLanguage, languages, type Language } from '@/data/languages'
+import { translate } from '@/data/translations'
 type Locale = {
   language: Language
   setLanguage: (language: Language) => void
@@ -13,9 +14,10 @@ const LocaleContext = createContext<Locale | null>(null)
 
 function initialLanguage(): Language {
   const requested = new URLSearchParams(window.location.search).get('lang')
-  if (requested === 'en' || requested === 'zh') return requested
+  if (isLanguage(requested)) return requested
   try {
-    return localStorage.getItem(localeKey) === 'zh' ? 'zh' : 'en'
+    const saved = localStorage.getItem(localeKey)
+    return isLanguage(saved) ? saved : 'en'
   } catch {
     return 'en'
   }
@@ -25,7 +27,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const [language, setLocale] = useState(initialLanguage)
 
   useEffect(() => {
-    document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en'
+    document.documentElement.lang = languages.find(option => option.value === language)?.lang ?? 'en'
   }, [language])
 
   function setLanguage(next: Language) {
@@ -41,7 +43,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   }
 
   const t = (english: string, translated?: string) =>
-    language === 'zh' ? translated ?? chinese[english] ?? english : english
+    language === 'zh' ? translated ?? chinese[english] ?? english : language === 'en' ? english : translate(language, english)
 
   return <LocaleContext.Provider value={{ language, setLanguage, t }}>{children}</LocaleContext.Provider>
 }

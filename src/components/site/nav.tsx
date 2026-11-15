@@ -13,13 +13,9 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { useLocale } from '@/lib/locale'
+import { isLanguage, languages } from '@/data/languages'
 import { navLinks, site } from '@/data/site'
 import { DiscordMark, GithubMark, Lockup } from './brand'
-
-const languages = [
-  { value: 'en', lang: 'en', label: 'English' },
-  { value: 'zh', lang: 'zh-CN', label: '简体中文' },
-] as const
 
 export function Nav() {
   const { language, setLanguage, t } = useLocale()
@@ -106,12 +102,12 @@ export function Nav() {
                 align="end"
                 sideOffset={8}
                 collisionPadding={12}
-                className="z-[60] min-w-36 rounded-lg border border-border bg-popover p-1 text-sm text-popover-foreground shadow-float"
+                className="z-[60] max-h-[var(--radix-dropdown-menu-content-available-height)] min-w-36 overflow-y-auto rounded-lg border border-border bg-popover p-1 text-sm text-popover-foreground shadow-float"
               >
                 <DropdownMenu.RadioGroup
                   value={language}
                   onValueChange={(value) => {
-                    if (value === 'en' || value === 'zh') setLanguage(value)
+                    if (isLanguage(value)) setLanguage(value)
                   }}
                 >
                   {languages.map(({ value, lang, label }) => (

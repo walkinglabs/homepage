@@ -16,11 +16,11 @@ function Headline() {
   const reducedMotion = useReducedMotion()
   const headline = t(site.tagline, "每个人都能教会机器思考。")
   if (NO_ANIM || reducedMotion) {
-    return <h1 className="display max-w-[18ch]">{headline}</h1>
+    return <h1 dir="auto" className="display max-w-[18ch] [overflow-wrap:anywhere]">{headline}</h1>
   }
 
   return (
-    <h1 aria-label={headline} className="display relative max-w-[18ch]">
+    <h1 dir="auto" aria-label={headline} className="display relative max-w-[18ch] [overflow-wrap:anywhere]">
       <span aria-hidden="true" className="invisible">{headline}</span>
       <TypingAnimation
         key={language}
@@ -159,7 +159,7 @@ export function Hero() {
         <div>
           <Headline />
 
-          <p className="mt-7 max-w-[46ch] text-[15.5px] leading-[1.7] text-muted-foreground">
+          <p dir="auto" className="mt-7 max-w-[46ch] text-[15.5px] leading-[1.7] text-muted-foreground">
             {t(
               "WalkingLabs turns real-world AI engineering practices from industry into hands-on courses anyone can follow. Our courses and code are open source.",
               "WalkingLabs 把企业在真实项目中积累的 AI 工程经验，做成人人都能跟着学、动手做的课程。课程与代码开源。",
@@ -192,7 +192,7 @@ export function Hero() {
                 +18
               </AvatarGroupCount>
             </AvatarGroup>
-            <p className="max-w-[32ch] text-[12.5px] leading-snug text-muted-foreground">
+            <p dir="auto" className="max-w-[32ch] text-[12.5px] leading-snug text-muted-foreground">
               {t(
                 "We want more people to push the limits of intelligence and help accelerate progress toward AGI.",
                 "我们希望，让更多人有机会挑战智能的上限，一起加速 AGI 的到来。",
