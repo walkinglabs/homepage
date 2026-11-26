@@ -40,14 +40,20 @@ function StackedCardItem({
       <motion.article
         data-ambient-motion
         style={{ scale }}
-        className="frosted-stack-card relative grid min-h-[420px] origin-top will-change-transform md:grid-cols-2"
+        className={`frosted-stack-card relative grid min-h-[420px] origin-top will-change-transform md:grid-cols-2 ${
+          idx === 0
+            ? 'frosted-stack-card--violet'
+            : idx === 1
+              ? 'frosted-stack-card--blue'
+              : 'frosted-stack-card--bridge'
+        }`}
       >
         {/* Subtle recession dimming veil as newer cards stack over this card */}
         {!isLast && (
           <motion.div
             aria-hidden="true"
             style={{ opacity: veilOpacity }}
-            className="pointer-events-none absolute inset-0 z-20 bg-[#030710]"
+            className="pointer-events-none absolute inset-0 z-20 bg-[#04050e]"
           />
         )}
 
@@ -75,7 +81,7 @@ function StackedCardItem({
             </p>
             {card.ctaPrompt && (
               <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-                <span className="text-[12.5px] text-[#a9dbe8]/85">
+                <span className="text-[12.5px] text-[var(--fg-cool)]/85">
                   {t(card.ctaPrompt)}
                 </span>
                 <WipeLink

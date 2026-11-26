@@ -173,7 +173,7 @@ export default function App() {
         <header
           className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
             scrolled
-              ? 'border-[#edf5fa]/[0.06] bg-[#050a14]/86 backdrop-blur-md'
+              ? 'border-[#eff2fb]/[0.06] bg-[#060714]/86 backdrop-blur-md'
               : 'border-transparent bg-transparent'
           }`}
         >
@@ -319,7 +319,7 @@ export default function App() {
                       external
                       arrow
                       alwaysUnderline
-                      className="text-sm text-[#a9dbe8]"
+                      className="text-sm text-[var(--fg-cool)]"
                     >
                       {t(['Join Discord Community', '加入 Discord 社区'])}
                     </WipeLink>
@@ -380,7 +380,7 @@ export default function App() {
                       href={siteMeta.discord}
                       external
                       arrow
-                      className="text-[15px] text-[#a9dbe8]/85 hover:text-[#edf5fa]"
+                      className="text-[15px] text-[var(--fg-cool)]/86 hover:text-[#eff2fb]"
                     >
                       {t(['Join Discord', '加入 Discord'])}
                     </WipeLink>
@@ -392,9 +392,9 @@ export default function App() {
                     target="_blank"
                     rel="noreferrer"
                     aria-label="Open WalkingLab on GitHub"
-                    className="group/ghbar relative mt-8 inline-flex max-w-full items-center gap-3 rounded-lg border border-[#edf5fa]/[0.11] bg-[#040914]/78 px-3.5 py-2 font-mono text-[11px] text-[#a9dbe8] backdrop-blur-md transition-colors duration-200 hover:border-[#edf5fa]/25 hover:bg-[#071122]/85"
+                    className="group/ghbar relative mt-8 inline-flex max-w-full items-center gap-3 rounded-lg border border-[#eff2fb]/[0.11] bg-[#070818]/78 px-3.5 py-2 font-mono text-[11px] text-[var(--fg-cool)] backdrop-blur-md transition-colors duration-200 hover:border-[#eff2fb]/25 hover:bg-[#0d0f28]/85"
                   >
-                    <Terminal className="size-3.5 shrink-0 text-[#00e5b0]" aria-hidden="true" />
+                    <Terminal className="size-3.5 shrink-0 text-[#7dd3fc]" aria-hidden="true" />
                     <code className="truncate text-[#edf5fa]/90 transition-colors group-hover/ghbar:text-white">
                       {siteMeta.github}
                     </code>
@@ -443,7 +443,7 @@ export default function App() {
                             tabIndex={idx >= contributors.length ? -1 : undefined}
                             aria-hidden={idx >= contributors.length || undefined}
                             title={`@${person.login} · ${person.commits} commits`}
-                            className="avatar-site-grade relative block size-7 shrink-0 overflow-hidden rounded-full ring-1 ring-[#edf5fa]/25 shadow-[0_4px_14px_rgba(0,0,0,0.55)] hover:-translate-y-0.5 hover:scale-110 hover:ring-[#00e5b0]/80 hover:shadow-[0_0_14px_rgba(0,229,176,0.35)]"
+                            className="avatar-site-grade relative block size-7 shrink-0 overflow-hidden rounded-full ring-1 ring-[#eff2fb]/25 shadow-[0_4px_14px_rgba(0,0,0,0.55)] hover:-translate-y-0.5 hover:scale-110 hover:ring-[#7dd3fc]/80 hover:shadow-[0_0_14px_rgba(56,189,248,0.35)]"
                           >
                             <img
                               src={person.avatar}
@@ -458,7 +458,7 @@ export default function App() {
                         ))}
                       </div>
                     </div>
-                    <span className="text-[12.5px] whitespace-nowrap text-[#a9dbe8]/85">
+                    <span className="text-[12.5px] whitespace-nowrap text-[var(--fg-cool)]/85">
                       {contributors.length} {t(['contributors', '位贡献者'])}
                     </span>
                   </div>
@@ -471,7 +471,7 @@ export default function App() {
                     rel="noreferrer"
                     className="wipe-link text-[13px] text-[var(--fg-cool)]"
                   >
-                    <Star className="size-3.5 fill-[#00e5b0]/25 stroke-[#00e5b0]" strokeWidth={1.6} aria-hidden="true" />
+                    <Star className="size-3.5 fill-[#7dd3fc]/25 stroke-[#7dd3fc]" strokeWidth={1.6} aria-hidden="true" />
                     {siteMeta.stars} {t(['stars', '星标'])}
                   </a>
                 </div>
@@ -782,7 +782,7 @@ export default function App() {
                     href={siteMeta.discord}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[#00e5b0] underline-offset-4 hover:underline"
+                    className="text-[#a5b4fc] underline-offset-4 hover:underline"
                   >
                     {t(['Ask us on Discord.', '欢迎到 Discord 提问。'])}
                   </a>
@@ -807,7 +807,7 @@ export default function App() {
              ================================================================ */}
           <footer id="start" className="relative overflow-x-clip bg-transparent">
             {/* Part 1: Clean Lab Info, Projects, Navigation & Community Links with silky side vignette */}
-            <div className="section-vignette bg-[#03060c]">
+            <div className="section-vignette bg-[#04050d]">
               <div className="rail-1164 relative z-10 grid gap-12 px-4 py-16 md:grid-cols-[1.25fr_1.15fr] sm:px-6">
                 <div className="flex flex-col items-start justify-between gap-6">
                   <div>

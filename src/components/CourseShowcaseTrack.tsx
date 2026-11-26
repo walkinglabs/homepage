@@ -21,7 +21,7 @@ function SliceProgressBar({
     <motion.span
       aria-hidden="true"
       style={{ scaleX }}
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-[1.5px] origin-left bg-gradient-to-r from-[#38bdf8] via-[#00e5b0] to-[#a7f3d0] will-change-transform"
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-[1.5px] origin-left bg-gradient-to-r from-[#38bdf8] via-[#a855f7] to-[#eef2ff] will-change-transform"
     />
   )
 }
@@ -103,9 +103,9 @@ export function CourseShowcaseTrack({ lang }: { lang: Lang }) {
                     >
                       <defs>
                         <linearGradient id={`${uid}-num-${idx}`} x1="0.88" y1="0" x2="0.12" y2="1">
-                          <stop offset="0%" stopColor="#ddeefa" stopOpacity="0.145" />
-                          <stop offset="56%" stopColor="#8ec4dc" stopOpacity="0.062" />
-                          <stop offset="100%" stopColor="#3889b8" stopOpacity="0.012" />
+                          <stop offset="0%" stopColor={idx % 2 === 0 ? '#f3e8ff' : '#e0f2fe'} stopOpacity="0.15" />
+                          <stop offset="56%" stopColor={idx % 2 === 0 ? '#c084fc' : '#60a5fa'} stopOpacity="0.068" />
+                          <stop offset="100%" stopColor={idx % 2 === 0 ? '#7c3aed' : '#2563eb'} stopOpacity="0.014" />
                         </linearGradient>
                       </defs>
                       <text

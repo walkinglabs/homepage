@@ -64,7 +64,7 @@ export function FinaleCurtain({ lang }: { lang: Lang }) {
             className="h-full w-full"
             style={{
               background:
-                'radial-gradient(ellipse 62% 50% at 50% 34%, rgba(3, 6, 12, 0.76) 0%, rgba(3, 6, 12, 0.28) 58%, transparent 100%)',
+                'radial-gradient(ellipse 62% 50% at 50% 34%, rgba(5, 5, 16, 0.76) 0%, rgba(5, 5, 16, 0.28) 58%, transparent 100%)',
             }}
           />
         </motion.div>
@@ -75,7 +75,7 @@ export function FinaleCurtain({ lang }: { lang: Lang }) {
           className="pointer-events-none absolute inset-0 z-[1]"
           style={{
             background:
-              'radial-gradient(ellipse 56% 32% at 50% 52%, rgba(3, 6, 12, 0.32) 0%, transparent 72%)',
+              'radial-gradient(ellipse 56% 32% at 50% 52%, rgba(5, 5, 16, 0.32) 0%, transparent 72%)',
           }}
         />
 
@@ -138,7 +138,7 @@ export function FinaleCurtain({ lang }: { lang: Lang }) {
               external
               alwaysUnderline
               arrow
-              className="text-[clamp(1.35rem,1.05rem+1.05vw,2.05rem)] font-[450] tracking-[-0.025em] text-[#cde9f7] drop-shadow-[0_8px_30px_rgba(3,6,12,0.72)]"
+              className="text-[clamp(1.35rem,1.05rem+1.05vw,2.05rem)] font-[450] tracking-[-0.025em] text-[#d8defc] drop-shadow-[0_8px_30px_rgba(5,5,16,0.72)]"
             >
               {t(['Join Discord', '加入 Discord'])}
             </WipeLink>

@@ -1,4 +1,5 @@
-import { useId, useState, type RefObject } from 'react'
+import { useEffect, useId, useRef, useState, type RefObject } from 'react'
+import { motion, useScroll, useTransform, type MotionValue } from 'motion/react'
 import { ArrowUpRight } from 'lucide-react'
 import { type buildShowcases, type Lang } from '@/data'
 import { Cube3D } from './ShadersAndEffects'
@@ -9,39 +10,78 @@ function IsoCubeSvg({
   r = 46,
   dashed = false,
   highlight = false,
+  tone = 'violet',
 }: {
   cx: number
   cy: number
   r?: number
   dashed?: boolean
   highlight?: boolean
+  tone?: 'violet' | 'blue'
 }) {
   const dx = r * 0.866
   const dy = r * 0.5
   const top = `${cx},${cy - r} ${cx + dx},${cy - dy} ${cx},${cy} ${cx - dx},${cy - dy}`
   const left = `${cx - dx},${cy - dy} ${cx},${cy} ${cx},${cy + r} ${cx - dx},${cy + dy}`
   const right = `${cx + dx},${cy - dy} ${cx + dx},${cy + dy} ${cx},${cy + r} ${cx},${cy}`
+  const isBlue = tone === 'blue'
 
   return (
     <g className="iso-cube cursor-pointer">
       <polygon
         points={top}
-        fill={highlight ? 'rgba(0, 229, 176, 0.14)' : 'rgba(237, 245, 250, 0.08)'}
-        stroke={highlight ? 'rgba(0, 229, 176, 0.82)' : 'rgba(237, 245, 250, 0.44)'}
+        fill={
+          highlight
+            ? isBlue
+              ? 'rgba(96, 165, 250, 0.16)'
+              : 'rgba(192, 132, 252, 0.16)'
+            : 'rgba(239, 242, 251, 0.08)'
+        }
+        stroke={
+          highlight
+            ? isBlue
+              ? 'rgba(125, 211, 252, 0.86)'
+              : 'rgba(216, 180, 254, 0.86)'
+            : 'rgba(239, 242, 251, 0.44)'
+        }
         strokeWidth={highlight ? '1.15' : '0.95'}
         strokeDasharray={dashed ? '4 4' : undefined}
       />
       <polygon
         points={left}
-        fill={highlight ? 'rgba(56, 189, 248, 0.11)' : 'rgba(237, 245, 250, 0.04)'}
-        stroke={highlight ? 'rgba(56, 189, 248, 0.72)' : 'rgba(237, 245, 250, 0.30)'}
+        fill={
+          highlight
+            ? isBlue
+              ? 'rgba(56, 189, 248, 0.12)'
+              : 'rgba(168, 85, 247, 0.13)'
+            : 'rgba(239, 242, 251, 0.04)'
+        }
+        stroke={
+          highlight
+            ? isBlue
+              ? 'rgba(56, 189, 248, 0.74)'
+              : 'rgba(168, 85, 247, 0.76)'
+            : 'rgba(239, 242, 251, 0.30)'
+        }
         strokeWidth={highlight ? '1.1' : '0.9'}
         strokeDasharray={dashed ? '4 4' : undefined}
       />
       <polygon
         points={right}
-        fill={highlight ? 'rgba(0, 229, 176, 0.07)' : 'rgba(3, 6, 12, 0.24)'}
-        stroke={highlight ? 'rgba(0, 229, 176, 0.72)' : 'rgba(237, 245, 250, 0.36)'}
+        fill={
+          highlight
+            ? isBlue
+              ? 'rgba(59, 130, 246, 0.09)'
+              : 'rgba(124, 58, 237, 0.10)'
+            : 'rgba(5, 6, 16, 0.26)'
+        }
+        stroke={
+          highlight
+            ? isBlue
+              ? 'rgba(96, 165, 250, 0.72)'
+              : 'rgba(192, 132, 252, 0.72)'
+            : 'rgba(239, 242, 251, 0.36)'
+        }
         strokeWidth={highlight ? '1.1' : '0.9'}
         strokeDasharray={dashed ? '4 4' : undefined}
       />
@@ -147,9 +187,9 @@ export function HeroCubeStage({
                   y1={y1}
                   x2={x2}
                   y2={y2}
-                  stroke="#00e5b0"
+                  stroke="#7dd3fc"
                   strokeWidth="1"
-                  strokeOpacity={energized ? '0.68' : '0.52'}
+                  strokeOpacity={energized ? '0.72' : '0.50'}
                   className="pulse-dash"
                 />
               </g>
@@ -176,7 +216,7 @@ export function HeroCubeStage({
 const posterTypeStyle = {
   fontFamily: 'var(--font-display)',
   background:
-    'linear-gradient(180deg, rgba(237, 245, 250, 0.16) 0%, rgba(169, 219, 232, 0.06) 68%, rgba(169, 219, 232, 0.01) 100%)',
+    'linear-gradient(180deg, rgba(239, 242, 251, 0.16) 0%, rgba(199, 210, 254, 0.065) 68%, rgba(199, 210, 254, 0.01) 100%)',
   WebkitBackgroundClip: 'text',
   backgroundClip: 'text',
   color: 'transparent',
@@ -185,13 +225,15 @@ const posterTypeStyle = {
 const posterTypeAccentStyle = {
   fontFamily: 'var(--font-display)',
   background:
-    'linear-gradient(180deg, rgba(169, 219, 232, 0.22) 0%, rgba(0, 229, 176, 0.08) 68%, rgba(169, 219, 232, 0.01) 100%)',
+    'linear-gradient(180deg, rgba(199, 210, 254, 0.22) 0%, rgba(167, 139, 250, 0.09) 68%, rgba(199, 210, 254, 0.01) 100%)',
   WebkitBackgroundClip: 'text',
   backgroundClip: 'text',
   color: 'transparent',
 } as const
 
 export function GapDiagram({ variant }: { variant: 'cubes3' | 'orbitRisk' | 'gapBridge' }) {
+  const uid = useId()
+
   if (variant === 'cubes3') {
     return (
       <div className="relative flex h-full min-h-[300px] w-full items-center justify-center overflow-hidden p-6">
@@ -208,15 +250,15 @@ export function GapDiagram({ variant }: { variant: 'cubes3' | 'orbitRisk' | 'gap
           className="pointer-events-none absolute right-6 bottom-5 flex items-baseline gap-3 select-none text-[19px] font-semibold tracking-[-0.035em]"
           style={{ fontFamily: 'var(--font-display)' }}
         >
-          <span className="text-[#edf5fa]/28">RL</span>
-          <span className="text-[#a9dbe8]/46">LLM</span>
-          <span className="text-[#edf5fa]/28">Agent</span>
+          <span className="text-[#eff2fb]/28">RL</span>
+          <span className="text-[#d8b4fe]/58">LLM</span>
+          <span className="text-[#eff2fb]/28">Agent</span>
         </div>
 
         <svg viewBox="0 0 420 300" className="relative z-10 h-full w-full" aria-hidden="true">
-          {/* 3 silent sculptural frosted glass cubes stepping diagonally upward */}
+          {/* 3 silent sculptural frosted glass cubes stepping diagonally upward — Amethyst Violet core */}
           <IsoCubeSvg cx={154} cy={182} r={44} />
-          <IsoCubeSvg cx={210} cy={150} r={44} highlight />
+          <IsoCubeSvg cx={210} cy={150} r={44} highlight tone="violet" />
           <IsoCubeSvg cx={266} cy={118} r={44} />
         </svg>
       </div>
@@ -244,17 +286,17 @@ export function GapDiagram({ variant }: { variant: 'cubes3' | 'orbitRisk' | 'gap
 
         <div
           aria-hidden="true"
-          className="radar-sweep pointer-events-none absolute size-[224px] rounded-full opacity-40"
+          className="radar-sweep pointer-events-none absolute size-[224px] rounded-full opacity-45"
         />
         <svg viewBox="0 0 420 290" className="relative z-10 h-full w-full" aria-hidden="true">
-          <circle cx="210" cy="145" r="106" fill="none" stroke="rgba(237,245,250,0.16)" strokeDasharray="4 7" />
-          <circle cx="210" cy="145" r="68" fill="none" stroke="rgba(0,229,176,0.22)" />
+          <circle cx="210" cy="145" r="106" fill="none" stroke="rgba(192,132,252,0.22)" strokeDasharray="4 7" />
+          <circle cx="210" cy="145" r="68" fill="none" stroke="rgba(56,189,248,0.32)" />
 
-          <circle cx="210" cy="39" r="3" fill="#00e5b0" fillOpacity="0.85" />
-          <circle cx="316" cy="145" r="3" fill="#38bdf8" fillOpacity="0.85" />
-          <circle cx="104" cy="145" r="2.5" fill="#edf5fa" fillOpacity="0.65" />
+          <circle cx="210" cy="39" r="3.2" fill="#c084fc" fillOpacity="0.92" />
+          <circle cx="316" cy="145" r="3.2" fill="#38bdf8" fillOpacity="0.92" />
+          <circle cx="104" cy="145" r="2.5" fill="#eff2fb" fillOpacity="0.72" />
 
-          <IsoCubeSvg cx={210} cy={145} r={48} highlight />
+          <IsoCubeSvg cx={210} cy={145} r={48} highlight tone="blue" />
         </svg>
       </div>
     )
@@ -262,7 +304,7 @@ export function GapDiagram({ variant }: { variant: 'cubes3' | 'orbitRisk' | 'gap
 
   return (
     <div className="relative flex h-full min-h-[300px] w-full items-center justify-center overflow-hidden p-6">
-      {/* Bold sculptural contrast: Paper -> Shipped */}
+      {/* Bold sculptural contrast: Paper (Sapphire Blue) -> Shipped (Amethyst Violet) */}
       <span
         aria-hidden="true"
         style={posterTypeStyle}
@@ -279,20 +321,27 @@ export function GapDiagram({ variant }: { variant: 'cubes3' | 'orbitRisk' | 'gap
       </span>
 
       <svg viewBox="0 0 420 230" className="relative z-10 h-auto w-full" aria-hidden="true">
-        <line x1="146" y1="115" x2="274" y2="115" stroke="rgba(237,245,250,0.12)" strokeWidth="1" />
+        <defs>
+          <linearGradient id={`${uid}-bridge`} x1="146" y1="115" x2="274" y2="115" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#38bdf8" />
+            <stop offset="52%" stopColor="#818cf8" />
+            <stop offset="100%" stopColor="#c084fc" />
+          </linearGradient>
+        </defs>
+        <line x1="146" y1="115" x2="274" y2="115" stroke="rgba(239,242,251,0.14)" strokeWidth="1" />
         <line
           x1="146"
           y1="115"
           x2="274"
           y2="115"
-          stroke="#00e5b0"
-          strokeWidth="1.4"
-          strokeOpacity="0.75"
+          stroke={`url(#${uid}-bridge)`}
+          strokeWidth="1.6"
+          strokeOpacity="0.9"
           className="pulse-dash"
         />
 
-        <IsoCubeSvg cx={102} cy={115} r={46} />
-        <IsoCubeSvg cx={318} cy={115} r={46} dashed highlight />
+        <IsoCubeSvg cx={102} cy={115} r={46} highlight tone="blue" />
+        <IsoCubeSvg cx={318} cy={115} r={46} dashed highlight tone="violet" />
       </svg>
     </div>
   )
@@ -306,58 +355,74 @@ export function GapDiagram({ variant }: { variant: 'cubes3' | 'orbitRisk' | 'gap
 const frontierDetails = [
   {
     roman: 'I',
+    tone: 'violet' as const,
     label: 'Agentic AI',
     metric: '14 Lectures · 8 Projects',
-    mist: 'radial-gradient(88% 84% at 18% 18%, #8ea8bd 0%, transparent 56%), radial-gradient(80% 82% at 86% 24%, #6a8ca8 0%, transparent 56%), radial-gradient(92% 90% at 54% 78%, #1a3556 0%, transparent 64%), linear-gradient(135deg, #3a526e 0%, #243958 48%, #111f36 86%, #1d314d 100%)',
+    // Velvet Royal Amethyst-Violet mist
+    mist: 'radial-gradient(88% 84% at 18% 18%, #b99ce0 0%, transparent 56%), radial-gradient(80% 82% at 86% 24%, #8a64c6 0%, transparent 56%), radial-gradient(92% 90% at 54% 78%, #34196c 0%, transparent 64%), linear-gradient(135deg, #56348c 0%, #361c68 48%, #160c34 86%, #2a1756 100%)',
     desc: ['Planning, tool use, checkpoints, and execution loops for coding agents.', '规划、工具调用、检查点与可靠执行循环。'],
   },
   {
     roman: 'II',
+    tone: 'blue' as const,
     label: 'Harness Engineering',
     metric: '24.3k ★ Flagship',
-    mist: 'radial-gradient(88% 85% at 14% 16%, #9cb5c4 0%, transparent 56%), radial-gradient(78% 82% at 88% 18%, #8ea8b8 0%, transparent 55%), radial-gradient(90% 90% at 62% 72%, #294670 0%, transparent 62%), linear-gradient(132deg, #4b627b 0%, #394d72 44%, #1f3354 78%, #2e4866 100%)',
+    // Deep Sapphire-Glacier Steel Blue mist
+    mist: 'radial-gradient(88% 85% at 14% 16%, #8ebae0 0%, transparent 56%), radial-gradient(78% 82% at 88% 18%, #528bc8 0%, transparent 55%), radial-gradient(90% 90% at 62% 72%, #14366e 0%, transparent 62%), linear-gradient(132deg, #325e92 0%, #1c4076 44%, #0c1d40 78%, #1a3766 100%)',
     desc: ['Repositories, verification loops, scope control, and observability.', '代码仓约束、验收闭环、范围控制与可观测性。'],
   },
   {
     roman: 'III',
+    tone: 'violet' as const,
     label: 'LLM Systems',
     metric: 'PyTorch From Scratch',
-    mist: 'radial-gradient(82% 80% at 16% 18%, #a6b4c8 0%, transparent 54%), radial-gradient(80% 80% at 85% 22%, #7f98ba 0%, transparent 54%), radial-gradient(90% 90% at 48% 76%, #243866 0%, transparent 62%), linear-gradient(135deg, #4a5b7c 0%, #2f4168 46%, #182546 80%, #2b3f63 100%)',
+    // Cosmic Violet-Blue Collision (amethyst zenith meeting electric cobalt horizon)
+    mist: 'radial-gradient(84% 80% at 16% 18%, #be9ae6 0%, transparent 54%), radial-gradient(82% 82% at 86% 24%, #4f82d2 0%, transparent 54%), radial-gradient(90% 90% at 48% 78%, #371d72 0%, transparent 62%), linear-gradient(135deg, #52388c 0%, #2b3276 48%, #121846 82%, #2c1c62 100%)',
     desc: ['Tokenization, RoPE, KV-cache, attention, training & inference.', '分词、RoPE、KV-Cache、注意力与训练推理栈。'],
   },
   {
     roman: 'IV',
+    tone: 'blue' as const,
     label: 'Reinforcement Learning',
     metric: '26 Chapters · 4.9k ★',
-    mist: 'radial-gradient(84% 82% at 18% 20%, #8fb8be 0%, transparent 56%), radial-gradient(82% 84% at 86% 24%, #6a99ad 0%, transparent 56%), radial-gradient(92% 88% at 54% 82%, #193d54 0%, transparent 64%), linear-gradient(138deg, #3c6173 0%, #264a66 48%, #152b44 82%, #214a5c 100%)',
+    // Crisp Cerulean-Oceanic Twilight Blue
+    mist: 'radial-gradient(84% 82% at 18% 20%, #84bddb 0%, transparent 56%), radial-gradient(82% 84% at 86% 24%, #4484c2 0%, transparent 56%), radial-gradient(92% 88% at 54% 82%, #103562 0%, transparent 64%), linear-gradient(138deg, #2d5c8c 0%, #19406e 48%, #0b1c3a 82%, #183a64 100%)',
     desc: ['From CartPole and DQN to PPO, RLHF, DPO, GRPO, and RLVR.', '从 CartPole、DQN 贯通 PPO、DPO、GRPO 与 RLVR。'],
   },
   {
     roman: 'V',
+    tone: 'violet' as const,
     label: 'Multi-Agent Systems',
     metric: 'Orchestration & Evals',
-    mist: 'radial-gradient(86% 82% at 22% 18%, #98adc2 0%, transparent 55%), radial-gradient(82% 84% at 84% 28%, #6d89aa 0%, transparent 55%), radial-gradient(90% 88% at 52% 80%, #1d3257 0%, transparent 64%), linear-gradient(136deg, #405372 0%, #273c5f 46%, #14223e 82%, #243857 100%)',
+    // Dramatic Smoked Orchid-Amethyst
+    mist: 'radial-gradient(86% 82% at 22% 18%, #c49ce4 0%, transparent 55%), radial-gradient(82% 84% at 84% 28%, #905ec8 0%, transparent 55%), radial-gradient(90% 88% at 52% 80%, #3c1870 0%, transparent 64%), linear-gradient(136deg, #5d3692 0%, #3a1c6c 46%, #180c38 82%, #31175c 100%)',
     desc: ['Coordination, handoffs, and communication between specialist agents.', '多智能体协作、会话交接与任务编排。'],
   },
   {
     roman: 'VI',
+    tone: 'blue' as const,
     label: 'Embodied Intelligence',
     metric: 'Perception → Action',
-    mist: 'radial-gradient(84% 84% at 16% 22%, #90b2bd 0%, transparent 56%), radial-gradient(80% 82% at 86% 20%, #6c92a6 0%, transparent 55%), radial-gradient(92% 88% at 50% 82%, #183a4f 0%, transparent 64%), linear-gradient(134deg, #3c5d6f 0%, #24455d 48%, #13283d 84%, #1e4155 100%)',
+    // Abyssal Cobalt & Glacier Mist
+    mist: 'radial-gradient(84% 84% at 16% 22%, #86b2da 0%, transparent 56%), radial-gradient(80% 82% at 86% 20%, #4e7fc2 0%, transparent 55%), radial-gradient(92% 88% at 50% 82%, #153466 0%, transparent 64%), linear-gradient(134deg, #30588c 0%, #1a3b6e 48%, #0c1b3c 84%, #193662 100%)',
     desc: ['Closed-loop perception, planning, VLA, and robotic control.', '感知、规划、VLA 与具身控制闭环。'],
   },
   {
     roman: 'VII',
+    tone: 'violet' as const,
     label: 'World Models',
     metric: 'JEPA · 3D/4D Dynamics',
-    mist: 'radial-gradient(86% 84% at 20% 16%, #9cb5c6 0%, transparent 55%), radial-gradient(84% 84% at 84% 28%, #7396b2 0%, transparent 55%), radial-gradient(92% 88% at 52% 80%, #1d395c 0%, transparent 62%), linear-gradient(136deg, #435e78 0%, #294366 48%, #152540 82%, #24405c 100%)',
+    // Twilight Nebula Split (Vivid Violet + Deep Electric Cobalt)
+    mist: 'radial-gradient(86% 84% at 20% 16%, #b694e6 0%, transparent 55%), radial-gradient(84% 84% at 84% 28%, #4c78d4 0%, transparent 55%), radial-gradient(92% 88% at 52% 80%, #32186e 0%, transparent 62%), linear-gradient(136deg, #54328e 0%, #2a2c74 48%, #121542 82%, #2c1e64 100%)',
     desc: ['Latent dynamics, JEPA architectures, and interactive world simulation.', '隐空间动力学、JEPA 架构与交互式世界模拟。'],
   },
   {
     roman: 'VIII',
+    tone: 'blue' as const,
     label: 'Open Source AI',
     metric: '198 Contributors · MIT',
-    mist: 'radial-gradient(86% 84% at 18% 18%, #98b4c4 0%, transparent 56%), radial-gradient(82% 82% at 84% 20%, #7a9bb3 0%, transparent 55%), radial-gradient(90% 90% at 50% 80%, #1c3a54 0%, transparent 64%), linear-gradient(134deg, #415c74 0%, #294561 48%, #14273e 82%, #23425a 100%)',
+    // Aurora Horizon (Electric Sapphire with soft Violet Zenith)
+    mist: 'radial-gradient(86% 84% at 18% 18%, #8ab6e2 0%, transparent 56%), radial-gradient(82% 82% at 84% 20%, #9272d4 0%, transparent 55%), radial-gradient(90% 90% at 50% 80%, #16366c 0%, transparent 64%), linear-gradient(134deg, #345a94 0%, #223874 48%, #0d183e 82%, #1e3268 100%)',
     desc: ['Forkable, translatable code and experiments shared across 12 locales.', '12 种语言版本，全部开源可 Fork 与复现。'],
   },
 ] as const
@@ -632,124 +697,204 @@ function FrontierStageVisual({ idx, uid }: { idx: number; uid: string }) {
   }
 }
 
-export function HubOrbitDiagram({ lang }: { lang: Lang }) {
-  const uid = useId()
-  const [selected, setSelected] = useState(1)
-  const active = frontierDetails[selected]
+/* Whisper-thin zero-rerender progress line inside the active frontier tab */
+function FrontierSliceProgress({
+  progress,
+  idx,
+  total,
+}: {
+  progress: MotionValue<number>
+  idx: number
+  total: number
+}) {
+  const start = idx / total
+  const end = (idx + 1) / total
+  const scaleX = useTransform(progress, [start, end], [0, 1])
 
   return (
-    <div data-ambient-motion className="w-full py-4">
-      <div className="grid gap-6 lg:grid-cols-[310px_1fr] lg:items-stretch">
-        {/* Left: Calm frameless typographic index (8 research frontiers) */}
-        <div className="flex flex-col justify-between gap-1" role="tablist" aria-label="Research frontiers">
-          {frontierDetails.map((item, idx) => {
-            const isSel = idx === selected
-            return (
-              <button
-                key={item.label}
-                type="button"
-                role="tab"
-                aria-selected={isSel}
-                onMouseEnter={() => setSelected(idx)}
-                onFocus={() => setSelected(idx)}
-                onClick={() => setSelected(idx)}
-                className={`group flex w-full cursor-pointer items-baseline justify-between gap-4 rounded-xl px-4 py-3 text-left transition-all duration-200 ${
-                  isSel
-                    ? 'bg-[#edf5fa]/[0.065] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.09)]'
-                    : 'text-[#edf5fa]/42 hover:bg-[#edf5fa]/[0.025] hover:text-[#edf5fa]/78'
-                }`}
-              >
-                <span
-                  className="text-[17.5px] font-[450] tracking-[-0.03em]"
-                  style={{ fontFamily: 'var(--font-display)' }}
+    <motion.span
+      aria-hidden="true"
+      style={{ scaleX }}
+      className="pointer-events-none absolute inset-x-3 bottom-0 hidden h-[1.5px] origin-left rounded-full bg-gradient-to-r from-[#38bdf8] via-[#a855f7] to-white will-change-transform lg:block"
+    />
+  )
+}
+
+export function HubOrbitDiagram({ lang }: { lang: Lang }) {
+  const uid = useId()
+  const trackRef = useRef<HTMLDivElement>(null)
+  const selectedRef = useRef(0)
+  const [selected, setSelected] = useState(0)
+  const active = frontierDetails[selected]
+
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ['start start', 'end end'],
+  })
+
+  useEffect(() => {
+    return scrollYProgress.on('change', (v) => {
+      if (window.innerWidth < 1024) return
+      const idx = Math.min(
+        frontierDetails.length - 1,
+        Math.max(0, Math.floor(v * frontierDetails.length * 0.999)),
+      )
+      if (selectedRef.current !== idx) {
+        selectedRef.current = idx
+        setSelected(idx)
+      }
+    })
+  }, [scrollYProgress])
+
+  const selectFrontier = (idx: number, scrollToStop = false) => {
+    selectedRef.current = idx
+    setSelected(idx)
+    if (!scrollToStop) return
+    const el = trackRef.current
+    if (!el || window.innerWidth < 1024) return
+    const scrollable = el.offsetHeight - window.innerHeight
+    if (scrollable <= 0) return
+    const top = el.getBoundingClientRect().top + window.scrollY
+    const targetProgress = (idx + 0.18) / frontierDetails.length
+    window.scrollTo({
+      top: top + scrollable * targetProgress,
+      behavior: 'smooth',
+    })
+  }
+
+  return (
+    <div ref={trackRef} className="relative w-full py-4 lg:h-[340vh]">
+      <div
+        data-ambient-motion
+        className="lg:sticky lg:top-0 lg:flex lg:h-[100svh] lg:items-center"
+      >
+        <div className="grid w-full gap-6 lg:grid-cols-[310px_1fr] lg:items-stretch">
+          {/* Left: Calm frameless typographic index (8 research frontiers, auto-scrubbed on scroll) */}
+          <div className="flex flex-col justify-between gap-1" role="tablist" aria-label="Research frontiers">
+            {frontierDetails.map((item, idx) => {
+              const isSel = idx === selected
+              return (
+                <button
+                  key={item.label}
+                  type="button"
+                  role="tab"
+                  aria-selected={isSel}
+                  onMouseEnter={() => selectFrontier(idx, false)}
+                  onFocus={() => selectFrontier(idx, false)}
+                  onClick={() => selectFrontier(idx, true)}
+                  className={`group relative flex w-full cursor-pointer items-baseline justify-between gap-4 overflow-hidden rounded-xl px-4 py-3 text-left transition-all duration-200 ${
+                    isSel
+                      ? 'bg-[#edf5fa]/[0.065] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.09)]'
+                      : 'text-[#edf5fa]/42 hover:bg-[#edf5fa]/[0.025] hover:text-[#edf5fa]/78'
+                  }`}
                 >
-                  {item.label}
-                </span>
-                {isSel && (
                   <span
-                    className="text-[12.5px] tracking-[0.06em] text-[#edf5fa]/38"
-                    style={{ fontFamily: "'Iowan Old Style', 'Palatino Linotype', Georgia, serif" }}
+                    className="text-[17.5px] font-[450] tracking-[-0.03em]"
+                    style={{ fontFamily: 'var(--font-display)' }}
                   >
-                    {item.roman}
+                    {item.label}
                   </span>
-                )}
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Right: Full-fill painterly film-grain atmospheric motion canvas */}
-        <div className="relative flex min-h-[380px] flex-col justify-end overflow-hidden rounded-2xl border border-[#edf5fa]/[0.08] shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:min-h-[430px]">
-          {/* Bespoke muted painterly misty backdrop matching BuildStageVisual */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 transition-all duration-500"
-            style={{ background: active.mist }}
-          />
-
-          {/* Tactile photographic film grain */}
-          <div aria-hidden="true" className="course-film-grain pointer-events-none absolute inset-0 opacity-32" />
-
-          {/* Full-fill pure-white & frosted-glass minimalist motion artwork */}
-          <div key={selected} className="course-scene pointer-events-none absolute inset-0">
-            <FrontierStageVisual idx={selected} uid={uid} />
+                  {isSel && (
+                    <span
+                      className="text-[12.5px] tracking-[0.06em] text-[#edf5fa]/38"
+                      style={{ fontFamily: "'Iowan Old Style', 'Palatino Linotype', Georgia, serif" }}
+                    >
+                      {item.roman}
+                    </span>
+                  )}
+                  {isSel && (
+                    <FrontierSliceProgress
+                      progress={scrollYProgress}
+                      idx={idx}
+                      total={frontierDetails.length}
+                    />
+                  )}
+                </button>
+              )
+            })}
           </div>
 
-          {/* Soft lower reading veil so editorial caption sits effortlessly over the motion canvas */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(180deg, rgba(6, 12, 24, 0.08) 0%, rgba(6, 12, 24, 0.02) 48%, rgba(4, 9, 18, 0.72) 100%)',
-            }}
-          />
+          {/* Right: Full-fill painterly film-grain atmospheric motion canvas */}
+          <div className="relative flex min-h-[380px] flex-col justify-end overflow-hidden rounded-2xl border border-[#edf5fa]/[0.08] shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:min-h-[430px]">
+            {/* Bespoke muted painterly misty backdrop matching BuildStageVisual */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 transition-all duration-500"
+              style={{ background: active.mist }}
+            />
 
-          {/* Whisper-subtle condensed Roman numeral flush to bottom-right */}
-          <svg
-            viewBox="0 0 260 240"
-            preserveAspectRatio="xMaxYMax meet"
-            aria-hidden="true"
-            className="pointer-events-none absolute right-0 bottom-0 h-[44%] max-h-[156px] w-auto select-none"
-          >
-            <defs>
-              <linearGradient id={`${uid}-rom-${selected}`} x1="0.88" y1="0" x2="0.12" y2="1">
-                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.14" />
-                <stop offset="60%" stopColor="#d4ecf8" stopOpacity="0.055" />
-                <stop offset="100%" stopColor="#94c4dc" stopOpacity="0.01" />
-              </linearGradient>
-            </defs>
-            <text
-              x="262"
-              y="238"
-              textAnchor="end"
-              fill={`url(#${uid}-rom-${selected})`}
-              fontFamily="'Iowan Old Style', 'Palatino Linotype', 'Baskerville', Georgia, serif"
-              fontSize="276"
-              fontWeight="400"
-              letterSpacing="-0.04em"
-              transform="translate(260, 238) scale(0.66, 1.06) translate(-260, -238)"
-            >
-              {active.roman}
-            </text>
-          </svg>
+            {/* Tactile photographic film grain */}
+            <div aria-hidden="true" className="course-film-grain pointer-events-none absolute inset-0 opacity-32" />
 
-          {/* Clean bottom editorial caption — zero clunky external HUD box */}
-          <div className="relative z-10 flex flex-col gap-1.5 p-6 pr-28 sm:p-8 sm:pr-36">
-            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-              <h3
-                className="text-[22px] font-medium tracking-[-0.04em] text-white sm:text-[24px]"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                {active.label}
-              </h3>
-              <span className="t-body text-[14px] text-[#edf5fa]/48">
-                {active.metric}
-              </span>
+            {/* Full-fill pure-white & frosted-glass minimalist motion artwork */}
+            <div key={selected} className="course-scene pointer-events-none absolute inset-0">
+              <FrontierStageVisual idx={selected} uid={uid} />
             </div>
-            <p className="t-body max-w-[48ch] text-[14.5px] text-[#edf5fa]/78">
-              {lang === 'zh' ? active.desc[1] : active.desc[0]}
-            </p>
+
+            {/* Soft lower reading veil so editorial caption sits effortlessly over the motion canvas */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  'linear-gradient(180deg, rgba(8, 8, 22, 0.08) 0%, rgba(8, 8, 22, 0.02) 48%, rgba(6, 7, 19, 0.72) 100%)',
+              }}
+            />
+
+            {/* Whisper-subtle condensed Roman numeral flush to bottom-right */}
+            <svg
+              viewBox="0 0 260 240"
+              preserveAspectRatio="xMaxYMax meet"
+              aria-hidden="true"
+              className="pointer-events-none absolute right-0 bottom-0 h-[44%] max-h-[156px] w-auto select-none"
+            >
+              <defs>
+                <linearGradient id={`${uid}-rom-${selected}`} x1="0.88" y1="0" x2="0.12" y2="1">
+                  <stop offset="0%" stopColor="#ffffff" stopOpacity="0.145" />
+                  <stop
+                    offset="60%"
+                    stopColor={active.tone === 'violet' ? '#e9d5ff' : '#bae6fd'}
+                    stopOpacity="0.062"
+                  />
+                  <stop
+                    offset="100%"
+                    stopColor={active.tone === 'violet' ? '#a855f7' : '#38bdf8'}
+                    stopOpacity="0.014"
+                  />
+                </linearGradient>
+              </defs>
+              <text
+                x="252"
+                y="238"
+                textAnchor="end"
+                fill={`url(#${uid}-rom-${selected})`}
+                fontFamily="'Iowan Old Style', 'Palatino Linotype', 'Baskerville', Georgia, serif"
+                fontSize="276"
+                fontWeight="400"
+                letterSpacing="-0.04em"
+                transform="translate(252, 238) scale(0.66, 1.06) translate(-252, -238)"
+              >
+                {active.roman}
+              </text>
+            </svg>
+
+            {/* Clean bottom editorial caption — zero clunky external HUD box */}
+            <div className="relative z-10 flex flex-col gap-1.5 p-6 pr-28 sm:p-8 sm:pr-36">
+              <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                <h3
+                  className="text-[22px] font-medium tracking-[-0.04em] text-white sm:text-[24px]"
+                  style={{ fontFamily: 'var(--font-display)' }}
+                >
+                  {active.label}
+                </h3>
+                <span className="t-body text-[14px] text-[#edf5fa]/48">
+                  {active.metric}
+                </span>
+              </div>
+              <p className="t-body max-w-[48ch] text-[14.5px] text-[#edf5fa]/78">
+                {lang === 'zh' ? active.desc[1] : active.desc[0]}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -763,14 +908,18 @@ export function HubOrbitDiagram({ lang }: { lang: Lang }) {
    translucent outline UI pills, tailored to each of the 4 courses.
    ============================================================================ */
 const COURSE_MIST_BACKDROPS: Record<string, string> = {
+  // I: Velvet Royal Amethyst-Violet
   harness:
-    'radial-gradient(88% 85% at 14% 16%, #9cb5c4 0%, transparent 56%), radial-gradient(78% 82% at 88% 18%, #8ea8b8 0%, transparent 55%), radial-gradient(90% 90% at 62% 72%, #294670 0%, transparent 62%), linear-gradient(132deg, #4b627b 0%, #394d72 44%, #1f3354 78%, #2e4866 100%)',
+    'radial-gradient(88% 85% at 14% 16%, #be9ee2 0%, transparent 56%), radial-gradient(78% 82% at 88% 18%, #8f64cb 0%, transparent 55%), radial-gradient(90% 90% at 62% 72%, #391a72 0%, transparent 62%), linear-gradient(132deg, #5d3794 0%, #3a1e6e 44%, #180c38 78%, #2f185e 100%)',
+  // II: Deep Electric Sapphire-Glacier Blue
   rl:
-    'radial-gradient(84% 82% at 18% 20%, #8fb8be 0%, transparent 56%), radial-gradient(82% 84% at 86% 24%, #6a99ad 0%, transparent 56%), radial-gradient(92% 88% at 54% 82%, #193d54 0%, transparent 64%), linear-gradient(138deg, #3c6173 0%, #264a66 48%, #152b44 82%, #214a5c 100%)',
+    'radial-gradient(84% 82% at 18% 20%, #86bee0 0%, transparent 56%), radial-gradient(82% 84% at 86% 24%, #4686c6 0%, transparent 56%), radial-gradient(92% 88% at 54% 82%, #113566 0%, transparent 64%), linear-gradient(138deg, #2e5e92 0%, #194172 48%, #0b1c3c 82%, #193b66 100%)',
+  // III: Cosmic Violet-Blue Collision
   llm:
-    'radial-gradient(82% 80% at 16% 18%, #a6b4c8 0%, transparent 54%), radial-gradient(80% 80% at 85% 22%, #7f98ba 0%, transparent 54%), radial-gradient(90% 90% at 48% 76%, #243866 0%, transparent 62%), linear-gradient(135deg, #4a5b7c 0%, #2f4168 46%, #182546 80%, #2b3f63 100%)',
+    'radial-gradient(84% 80% at 16% 18%, #c09ae6 0%, transparent 54%), radial-gradient(82% 82% at 86% 22%, #4e80d2 0%, transparent 54%), radial-gradient(90% 90% at 48% 76%, #361c72 0%, transparent 62%), linear-gradient(135deg, #553690 0%, #2c3178 46%, #131846 80%, #2c1e66 100%)',
+  // IV: Royal Sapphire with Soft Amethyst Haze (bridging cleanly into Blue Finale)
   world:
-    'radial-gradient(86% 84% at 18% 18%, #95b9be 0%, transparent 56%), radial-gradient(80% 82% at 86% 22%, #7baab6 0%, transparent 54%), radial-gradient(92% 88% at 58% 78%, #1c445c 0%, transparent 62%), linear-gradient(134deg, #426474 0%, #2b4e69 46%, #162c45 80%, #264c5f 100%)',
+    'radial-gradient(86% 84% at 18% 18%, #88b6e2 0%, transparent 56%), radial-gradient(80% 82% at 86% 22%, #8e6ed2 0%, transparent 54%), radial-gradient(92% 88% at 58% 78%, #16366c 0%, transparent 62%), linear-gradient(134deg, #345b96 0%, #213a76 46%, #0d1940 80%, #1d346a 100%)',
 }
 
 function ThinkingDots() {
@@ -960,7 +1109,7 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
                 <path
                   d={`M2 30 Q ${24 + i * 6} ${20 - i * 2} 62 28`}
                   fill="none"
-                  stroke="#0f766e"
+                  stroke="#4f46e5"
                   strokeWidth="1.6"
                 />
               </svg>
@@ -1033,7 +1182,7 @@ export function BuildStageVisual({
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              'radial-gradient(85% 85% at 50% 50%, transparent 45%, rgba(6, 12, 24, 0.28) 100%)',
+              'radial-gradient(85% 85% at 50% 50%, transparent 45%, rgba(8, 8, 22, 0.28) 100%)',
           }}
         />
 

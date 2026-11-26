@@ -224,7 +224,7 @@ export function StarProgressFlight({
             className="absolute top-0 right-0 h-[2px] w-[86px] origin-right opacity-0 will-change-transform"
             style={{
               background:
-                'linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.16) 42%, rgba(169, 219, 232, 0.62) 82%, rgba(255, 255, 255, 0.95) 100%)',
+                'linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.24) 38%, rgba(192, 132, 252, 0.62) 78%, rgba(255, 255, 255, 0.96) 100%)',
             }}
           />
 
@@ -234,7 +234,7 @@ export function StarProgressFlight({
             className="absolute top-0 left-0 h-[2px] w-[48px] -translate-x-[72%] -translate-y-1/2 opacity-0"
             style={{
               background:
-                'linear-gradient(90deg, transparent 0%, rgba(169, 219, 232, 0.55) 45%, rgba(255, 255, 255, 0.96) 76%, transparent 100%)',
+                'linear-gradient(90deg, transparent 0%, rgba(168, 85, 247, 0.48) 38%, rgba(186, 230, 253, 0.72) 66%, rgba(255, 255, 255, 0.96) 80%, transparent 100%)',
             }}
           />
 
@@ -245,14 +245,14 @@ export function StarProgressFlight({
             fill="none"
             className="absolute top-0 left-0 size-[22px] will-change-transform"
             style={{
-              filter: 'drop-shadow(0 0 6px rgba(169, 219, 232, 0.62))',
+              filter: 'drop-shadow(0 0 6px rgba(168, 139, 250, 0.68))',
             }}
           >
             <defs>
               <linearGradient id={starGradId} x1="580" y1="0" x2="580" y2="42" gradientUnits="userSpaceOnUse">
                 <stop offset="0%" stopColor="#ffffff" />
-                <stop offset="55%" stopColor="#d4f3fc" />
-                <stop offset="100%" stopColor="#67e8f9" />
+                <stop offset="52%" stopColor="#dbeafe" />
+                <stop offset="100%" stopColor="#c084fc" />
               </linearGradient>
             </defs>
             <path

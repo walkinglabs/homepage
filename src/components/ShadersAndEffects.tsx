@@ -64,11 +64,11 @@ const FRAG_SILK = `
     float lum = clamp(crest * 0.78 + secondaryWave * 0.38, 0.0, 1.0);
     lum *= (0.28 + 0.72 * clamp(curtainTL * 0.85 + curtainBR * 1.05, 0.0, 1.15));
 
-    vec3 cDark    = vec3(0.012, 0.024, 0.048);
-    vec3 cCobalt  = vec3(0.042, 0.185, 0.395);
-    vec3 cCyan    = vec3(0.110, 0.565, 0.780);
-    vec3 cEmerald = vec3(0.030, 0.865, 0.700);
-    vec3 cSilver  = vec3(0.760, 0.945, 0.985);
+    vec3 cDark    = vec3(0.014, 0.016, 0.044);
+    vec3 cCobalt  = vec3(0.095, 0.110, 0.415);
+    vec3 cCyan    = vec3(0.275, 0.345, 0.790);
+    vec3 cEmerald = vec3(0.420, 0.460, 0.900);
+    vec3 cSilver  = vec3(0.845, 0.875, 0.995);
 
     vec3 baseCol = mix(cDark, cCobalt, smoothstep(0.08, 0.55, lum));
     baseCol = mix(baseCol, cCyan, smoothstep(0.38, 0.82, lum));
@@ -109,29 +109,46 @@ const FRAG_CAUSTICS = `
 
     // Interactive light ONLY: a silky vertical spotlight column glides smoothly to follow the active button
     float focusX = mix(-0.78, 0.78, stepNorm);
-    float veilLeft  = exp(-pow((p.x + 0.96 + sway1 * 0.3) * 1.35, 2.0)) * 0.65;
-    float veilRight = exp(-pow((p.x - 0.98 + sway2 * 0.3) * 1.35, 2.0)) * 0.65;
-    float activeBeam = exp(-pow((p.x - focusX) * 1.45, 2.0)) * (0.48 + u_pulse * 0.46);
+    float dxL = (p.x + 0.96 + sway1 * 0.3) * 1.32;
+    float dxR = (p.x - 0.98 + sway2 * 0.3) * 1.32;
+    float dxB = (p.x - focusX) * 1.42;
+    float veilLeft  = exp(-(dxL * dxL)) * 0.72;
+    float veilRight = exp(-(dxR * dxR)) * 0.74;
+    float activeBeam = exp(-(dxB * dxB)) * (0.52 + u_pulse * 0.48);
     float centerCalm = smoothstep(0.16, 0.88, length(p * vec2(0.88, 1.08)));
 
     float verticalLift = smoothstep(1.15, -0.85, p.y) * 0.58 + 0.42;
-    float lum = clamp((veilLeft + veilRight + activeBeam) * verticalLift, 0.0, 1.1);
+    float lum = clamp((veilLeft + veilRight + activeBeam) * verticalLift, 0.0, 1.15);
     lum *= (0.28 + 0.72 * centerCalm);
 
-    // Gentle, refined color temperature shift across 01 -> 05 (cobalt -> sky -> emerald-cyan)
-    vec3 cDark    = vec3(0.012, 0.024, 0.047);
-    vec3 cCobalt  = mix(vec3(0.032, 0.140, 0.360), vec3(0.018, 0.205, 0.320), stepNorm);
-    vec3 cSky     = mix(vec3(0.095, 0.425, 0.710), vec3(0.040, 0.545, 0.680), stepNorm);
-    vec3 cEmerald = mix(vec3(0.025, 0.660, 0.620), vec3(0.000, 0.900, 0.710), stepNorm);
-    vec3 cIce     = vec3(0.760, 0.950, 0.995);
+    // Dramatic Violet <-> Electric Sapphire duality:
+    // Left silk curtain glows deep sapphire blue; right silk curtain glows royal amethyst-violet;
+    // active beam arches from sapphire (01) -> amethyst climax (03) -> electric blue (05).
+    float sideBalance = smoothstep(-0.85, 0.85, p.x + sway1 * 0.35);
+    float stepViolet = sin(stepNorm * 3.14159265);
+    float violetField = clamp(mix(sideBalance, stepViolet, 0.48 * clamp(activeBeam * 1.6, 0.0, 1.0)), 0.0, 1.0);
 
-    vec3 baseCol = mix(cDark, cCobalt, smoothstep(0.06, 0.52, lum));
-    baseCol = mix(baseCol, cSky, smoothstep(0.36, 0.86, lum) * 0.72);
-    baseCol = mix(baseCol, cEmerald, smoothstep(0.56, 1.02, lum) * (0.38 + u_pulse * 0.28));
+    vec3 cDark        = vec3(0.014, 0.016, 0.044);
+    vec3 cBlueDeep    = vec3(0.045, 0.135, 0.420);
+    vec3 cBlueBright  = vec3(0.165, 0.440, 0.890);
+    vec3 cBlueGlacier = vec3(0.380, 0.680, 0.980);
 
-    vec3 col = baseCol * (0.40 + 0.72 * strands);
+    vec3 cViolDeep    = vec3(0.200, 0.065, 0.435);
+    vec3 cViolBright  = vec3(0.495, 0.210, 0.865);
+    vec3 cViolOrchid  = vec3(0.685, 0.430, 0.960);
+
+    vec3 cDeep   = mix(cBlueDeep, cViolDeep, violetField);
+    vec3 cMid    = mix(cBlueBright, cViolBright, violetField);
+    vec3 cHigh   = mix(cBlueGlacier, cViolOrchid, violetField);
+    vec3 cIce    = mix(vec3(0.840, 0.925, 1.000), vec3(0.935, 0.875, 1.000), violetField);
+
+    vec3 baseCol = mix(cDark, cDeep, smoothstep(0.05, 0.50, lum));
+    baseCol = mix(baseCol, cMid, smoothstep(0.32, 0.84, lum) * 0.78);
+    baseCol = mix(baseCol, cHigh, smoothstep(0.54, 1.04, lum) * (0.44 + u_pulse * 0.28));
+
+    vec3 col = baseCol * (0.40 + 0.74 * strands);
     // Soft luminous breath along the active button column on switch (pure illumination, zero warp)
-    col += cIce * pow(strands, 2.8) * activeBeam * (0.14 + u_pulse * 0.24) * verticalLift;
+    col += cIce * pow(max(0.0001, strands), 2.8) * activeBeam * (0.16 + u_pulse * 0.26) * verticalLift;
 
     float vFade = smoothstep(0.0, 0.14, uv.y) * smoothstep(1.0, 0.82, uv.y);
     col = mix(cDark, col, vFade);
@@ -214,11 +231,11 @@ const FRAG_HORIZON = `
     float along2 = sin((y0 + 0.16 - waveSecond) * 38.0 + t * 2.4 - wakePhase * 0.9) * 0.5 + 0.5;
     float surge = 0.72 + 0.28 * sin(p.x * 3.2 - t * 2.6);
 
-    vec3 cDark    = vec3(0.012, 0.024, 0.047);
-    vec3 cCobalt  = vec3(0.045, 0.215, 0.520);
-    vec3 cSky     = vec3(0.090, 0.580, 0.890);
-    vec3 cEmerald = vec3(0.000, 0.920, 0.720);
-    vec3 cWhite   = vec3(0.860, 0.985, 1.000);
+    vec3 cDark    = vec3(0.014, 0.016, 0.044);
+    vec3 cCobalt  = vec3(0.125, 0.115, 0.505);
+    vec3 cSky     = vec3(0.315, 0.320, 0.875);
+    vec3 cEmerald = vec3(0.475, 0.520, 0.955);
+    vec3 cWhite   = vec3(0.920, 0.935, 1.000);
 
     vec3 col = cDark;
     col += cCobalt * (halo1 * 0.78 + halo2 * 0.65);
@@ -229,9 +246,9 @@ const FRAG_HORIZON = `
     // Subtle specular sheen catching ONLY the glowing wave ribbons along the drifting wake
     col += mix(cSky, cWhite, 0.55) * wakeSheen * (core1 * 0.36 + core2 * 0.22 + halo1 * 0.14);
 
-    // Clean top fade from info links strip; keep luminous deep-cobalt ambient extension all the way to bottom edge
+    // Clean top fade from info links strip; keep luminous deep-indigo ambient extension all the way to bottom edge
     float topFade = smoothstep(1.0, 0.72, uv.y);
-    vec3 cFloor = vec3(0.020, 0.080, 0.135);
+    vec3 cFloor = vec3(0.040, 0.042, 0.140);
     col = mix(cDark, col, topFade);
     col = mix(col, max(col, cFloor), smoothstep(0.32, 0.0, uv.y) * 0.65);
 
@@ -612,7 +629,7 @@ export function ArchitecturalPreloader() {
           className="fixed inset-0 z-[180] flex cursor-pointer flex-col justify-between overflow-hidden p-6"
           style={{
             background:
-              'linear-gradient(180deg, #03060c 20%, #072b48 78%, #00b894 148%)',
+              'linear-gradient(180deg, #040612 20%, #101b4d 78%, #2c4ec4 148%)',
           }}
         >
           <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-[#edf5fa]/20" />
@@ -620,7 +637,7 @@ export function ArchitecturalPreloader() {
 
           <div className="relative z-10 flex items-center justify-between">
             <WalkingLabsMark />
-            <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#a9dbe8]/75">
+            <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#c7d2fe]/75">
               INIT // LAB.SYS
             </span>
           </div>

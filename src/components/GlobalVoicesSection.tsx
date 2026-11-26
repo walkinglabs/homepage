@@ -279,7 +279,7 @@ function MeridianHorizonBackdrop({
           className="h-full w-full"
           style={{
             background:
-              'radial-gradient(92% 76% at 50% 106%, rgba(0, 229, 176, 0.22) 0%, rgba(14, 165, 233, 0.16) 38%, rgba(3, 6, 12, 0) 74%)',
+              'radial-gradient(64% 64% at 34% 106%, rgba(147, 51, 234, 0.30) 0%, transparent 68%), radial-gradient(66% 66% at 68% 106%, rgba(37, 99, 235, 0.28) 0%, rgba(56, 189, 248, 0.14) 38%, rgba(4, 5, 13, 0) 74%)',
           }}
         />
       </motion.div>
@@ -295,15 +295,15 @@ function MeridianHorizonBackdrop({
         >
           <defs>
             <radialGradient id="globeLimb" cx="50%" cy="100%" r="72%">
-              <stop offset="0%" stopColor="#0a3b52" stopOpacity="0.65" />
-              <stop offset="48%" stopColor="#07223c" stopOpacity="0.48" />
-              <stop offset="86%" stopColor="#051326" stopOpacity="0.22" />
-              <stop offset="100%" stopColor="#03060c" stopOpacity="0" />
+              <stop offset="0%" stopColor="#1c2f6e" stopOpacity="0.72" />
+              <stop offset="46%" stopColor="#1b184c" stopOpacity="0.52" />
+              <stop offset="86%" stopColor="#090c24" stopOpacity="0.24" />
+              <stop offset="100%" stopColor="#04050d" stopOpacity="0" />
             </radialGradient>
             <linearGradient id="meridianFade" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#9ce1f0" stopOpacity="0.3" />
-              <stop offset="55%" stopColor="#00e5b0" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="#03060c" stopOpacity="0.02" />
+              <stop offset="0%" stopColor="#93c5fd" stopOpacity="0.30" />
+              <stop offset="55%" stopColor="#c084fc" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#04050d" stopOpacity="0.02" />
             </linearGradient>
           </defs>
 
@@ -313,12 +313,12 @@ function MeridianHorizonBackdrop({
             cy="790"
             r="695"
             fill="url(#globeLimb)"
-            stroke="rgba(169, 219, 232, 0.34)"
+            stroke="rgba(196, 181, 253, 0.34)"
             strokeWidth="1.2"
           />
-          <circle cx="600" cy="790" r="615" fill="none" stroke="rgba(169, 219, 232, 0.14)" strokeWidth="0.9" />
-          <circle cx="600" cy="790" r="535" fill="none" stroke="rgba(169, 219, 232, 0.09)" strokeWidth="0.8" />
-          <circle cx="600" cy="790" r="758" fill="none" stroke="rgba(0, 229, 176, 0.14)" strokeDasharray="3 9" />
+          <circle cx="600" cy="790" r="615" fill="none" stroke="rgba(147, 197, 253, 0.15)" strokeWidth="0.9" />
+          <circle cx="600" cy="790" r="535" fill="none" stroke="rgba(196, 181, 253, 0.09)" strokeWidth="0.8" />
+          <circle cx="600" cy="790" r="758" fill="none" stroke="rgba(192, 132, 252, 0.20)" strokeDasharray="3 9" />
 
           {/* Graceful curved longitude meridians */}
           {[-360, -230, -110, 0, 110, 230, 360].map((offset) => (
@@ -331,36 +331,49 @@ function MeridianHorizonBackdrop({
             />
           ))}
 
-          {/* Sweeping great-circle arcs connecting regions */}
+          {/* Sweeping great-circle arcs alternating luminous Sapphire Blue & Amethyst Violet */}
           {[
             'M 215 205 Q 480 42 745 136',
             'M 345 148 Q 635 32 925 178',
             'M 528 122 Q 780 65 1030 256',
             'M 215 205 Q 370 118 528 122',
-          ].map((d, i) => (
-            <g key={i}>
-              <path d={d} fill="none" stroke="rgba(56, 189, 248, 0.2)" strokeWidth="1" />
-              <path
-                d={d}
-                fill="none"
-                stroke="#00e5b0"
-                strokeWidth="1.25"
-                strokeOpacity="0.65"
-                className="pulse-dash"
-              />
-            </g>
-          ))}
+          ].map((d, i) => {
+            const isViolet = i % 2 === 1
+            return (
+              <g key={i}>
+                <path
+                  d={d}
+                  fill="none"
+                  stroke={isViolet ? 'rgba(192, 132, 252, 0.24)' : 'rgba(56, 189, 248, 0.24)'}
+                  strokeWidth="1"
+                />
+                <path
+                  d={d}
+                  fill="none"
+                  stroke={isViolet ? '#c084fc' : '#38bdf8'}
+                  strokeWidth="1.25"
+                  strokeOpacity="0.72"
+                  className="pulse-dash"
+                />
+              </g>
+            )
+          })}
 
           {/* Distant orbital beacons that fade gently as human clusters materialize in close-up */}
           <motion.g style={{ opacity: beaconOpacity }}>
-            {beacons.map((b) => (
+            {beacons.map((b, i) => (
               <g key={b.label}>
-                <circle cx={b.x} cy={b.y} r="9" fill="rgba(0, 229, 176, 0.15)" />
-                <circle cx={b.x} cy={b.y} r="2.2" fill="#edf5fa" />
+                <circle
+                  cx={b.x}
+                  cy={b.y}
+                  r="9"
+                  fill={i % 2 === 0 ? 'rgba(56, 189, 248, 0.18)' : 'rgba(192, 132, 252, 0.18)'}
+                />
+                <circle cx={b.x} cy={b.y} r="2.2" fill="#eff2fb" />
                 <text
                   x={b.x + 8}
                   y={b.y - 6}
-                  fill="rgba(169, 219, 232, 0.48)"
+                  fill="rgba(199, 210, 254, 0.54)"
                   fontSize="9.5"
                   style={{ fontFamily: 'var(--font-sans)' }}
                   letterSpacing="0.02em"
@@ -406,10 +419,12 @@ function PeopleCluster({
       className="absolute -translate-x-1/2 translate-y-1/2 will-change-transform"
     >
       <div className="relative flex items-center justify-center">
-        {/* Soft warm community halo behind each cluster of people */}
+        {/* Soft alternating violet & sapphire community halo behind each cluster of people */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute size-32 rounded-full bg-[#38bdf8]/12 blur-2xl"
+          className={`pointer-events-none absolute size-32 rounded-full blur-2xl ${
+            cluster.startIdx % 2 === 0 ? 'bg-[#a855f7]/16' : 'bg-[#38bdf8]/15'
+          }`}
         />
 
         {cluster.slots.map((slot, idx) => {
@@ -427,7 +442,7 @@ function PeopleCluster({
                 transform: `translate(${slot.dx}px, ${slot.dy}px)`,
                 zIndex: 10 - idx,
               }}
-              className="avatar-site-grade absolute block overflow-hidden rounded-full ring-1 ring-[#edf5fa]/40 shadow-[0_8px_22px_rgba(0,0,0,0.65)] transition-transform duration-300 hover:z-30 hover:scale-125 hover:ring-[#5fffe0]"
+              className="avatar-site-grade absolute block overflow-hidden rounded-full ring-1 ring-[#eff2fb]/40 shadow-[0_8px_22px_rgba(0,0,0,0.65)] transition-transform duration-300 hover:z-30 hover:scale-125 hover:ring-[#c084fc]"
             >
               <img
                 src={person.avatar}
@@ -443,7 +458,7 @@ function PeopleCluster({
         })}
 
         {/* Quiet regional label floating subtly below the group of people */}
-        <span className="pointer-events-none absolute top-[54px] whitespace-nowrap text-[11.5px] font-medium text-[#a9dbe8]/78 drop-shadow-[0_2px_10px_rgba(3,6,12,0.9)]">
+        <span className="pointer-events-none absolute top-[54px] whitespace-nowrap text-[11.5px] font-medium text-[var(--fg-cool)]/82 drop-shadow-[0_2px_10px_rgba(4,5,13,0.9)]">
           {lang === 'zh' ? cluster.label[1] : cluster.label[0]}
         </span>
       </div>
@@ -519,7 +534,7 @@ export function GlobalVoicesSection({ lang }: { lang: Lang }) {
                 ? t(['Resume scrolling voices', '继续滚动读者评价'])
                 : t(['Pause scrolling voices', '暂停滚动读者评价'])
             }
-            className={`inline-flex cursor-pointer items-center gap-1.5 px-1 py-1 text-[12.5px] font-medium text-[#a9dbe8]/78 transition-colors hover:text-[#edf5fa] ${
+            className={`inline-flex cursor-pointer items-center gap-1.5 px-1 py-1 text-[12.5px] font-medium text-[var(--fg-cool)]/78 transition-colors hover:text-[#eff2fb] ${
               tweetsInteractive ? '' : 'pointer-events-none'
             }`}
           >
@@ -585,7 +600,7 @@ export function GlobalVoicesSection({ lang }: { lang: Lang }) {
                             <div className="truncate text-sm font-medium text-[#edf5fa]">
                               {voice.name}
                             </div>
-                            <div className="text-[12px] text-[#a9dbe8]/65">
+                            <div className="text-[12px] text-[var(--fg-cool)]/65">
                               {voice.handle}
                             </div>
                           </div>
