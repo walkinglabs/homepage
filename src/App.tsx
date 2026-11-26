@@ -232,7 +232,7 @@ export default function App() {
                 type="button"
                 onClick={() => setLang((l) => (l === 'en' ? 'zh' : 'en'))}
                 aria-label="Switch language"
-                className="group inline-flex cursor-pointer items-center gap-1.5 px-1 py-1 font-mono text-[12px] tracking-[0.04em] transition-colors"
+                className="group inline-flex cursor-pointer items-center gap-1.5 px-1 py-1 text-[12px] transition-colors"
               >
                 <span
                   className={
@@ -276,7 +276,7 @@ export default function App() {
                   {t(['Browse GitHub', '浏览 GitHub'])}
                 </span>
                 <span aria-hidden="true" className="relative z-10 h-3.5 w-px bg-white/15" />
-                <span className="relative z-10 inline-flex items-center gap-1 text-[12.5px] font-[450] tracking-[-0.01em] text-[#edf5fa]/82 tabular-nums">
+                <span className="relative z-10 inline-flex items-center gap-1 text-[12.5px] text-[#edf5fa]/82 tabular-nums">
                   <Star className="size-3 fill-[#edf5fa]/15 stroke-[#edf5fa]/75" strokeWidth={1.6} aria-hidden="true" />
                   {siteMeta.stars}
                 </span>
@@ -299,7 +299,7 @@ export default function App() {
                 transition={{ duration: 0.22 }}
                 className="frosted-card frosted-grain mx-auto mt-2 w-[min(369px,calc(100%-32px))] p-6"
               >
-                <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.14em] text-[#edf5fa]/35">
+                <p className="mb-4 text-[11px] uppercase text-[#edf5fa]/35">
                   {t(['Navigation', '导航菜单'])}
                 </p>
                 <ul className="flex flex-col gap-3">
@@ -353,7 +353,7 @@ export default function App() {
                   }}
                   className="pointer-events-auto relative max-w-[560px] origin-left will-change-transform"
                 >
-                  <p className="mb-3 text-[17px] font-medium tracking-[-0.03em] text-[var(--fg-cool)]/80">
+                  <p className="mb-3 font-display text-[17px] font-[450] tracking-[-0.03em] text-[var(--fg-cool)]/80">
                     {t(['Open-Source AI Engineering Lab', '开源 AI 研究与工程实验室'])}
                   </p>
                   <h1 className="t-display t-hero t-gradient">
@@ -413,7 +413,7 @@ export default function App() {
                 style={{ opacity: heroBottomOpacity, y: heroBottomY }}
                 className="pointer-events-none relative z-[14] mx-auto flex w-full max-w-[1440px] flex-wrap items-end justify-between gap-6 px-[var(--pad)] pt-6 will-change-transform"
               >
-                <p className="pointer-events-auto t-body max-w-[38ch] text-[15px] leading-[1.52] tracking-[-0.02em] text-[var(--fg-cool)]/85">
+                <p className="pointer-events-auto t-body max-w-[38ch] text-[15px] text-[var(--fg-cool)]/85">
                   {t([
                     'WalkingLab turns real-world AI engineering practices from industry into open-source, hands-on courses anyone can run and verify.',
                     'WalkingLab 把真实项目中的 AI 工程实践，打造成人人都能亲手运行、可复现的开源课程。',
@@ -456,7 +456,7 @@ export default function App() {
                         ))}
                       </div>
                     </div>
-                    <span className="text-[12.5px] font-[450] whitespace-nowrap tracking-[-0.015em] text-[#a9dbe8]/85">
+                    <span className="text-[12.5px] whitespace-nowrap text-[#a9dbe8]/85">
                       {contributors.length} {t(['contributors', '位贡献者'])}
                     </span>
                   </div>
@@ -467,7 +467,7 @@ export default function App() {
                     href={siteMeta.github}
                     target="_blank"
                     rel="noreferrer"
-                    className="wipe-link text-[13px] font-[450] tracking-[-0.015em] text-[var(--fg-cool)]"
+                    className="wipe-link text-[13px] text-[var(--fg-cool)]"
                   >
                     <Star className="size-3.5 fill-[#00e5b0]/25 stroke-[#00e5b0]" strokeWidth={1.6} aria-hidden="true" />
                     {siteMeta.stars} {t(['stars', '星标'])}
@@ -535,7 +535,7 @@ export default function App() {
                           delay={idx * 110}
                         />
                       </div>
-                      <div className="mt-1 text-[12.5px] font-[450] tracking-[-0.015em] text-[#edf5fa]/58">
+                      <div className="mt-1 text-[12.5px] text-[#edf5fa]/58">
                         {stat.label}
                       </div>
                     </div>
@@ -567,13 +567,13 @@ export default function App() {
                   </h2>
                 </LineReveal>
                 <div className="mt-8 flex flex-wrap items-end justify-between gap-6">
-                  <p className="t-body max-w-[52ch] text-[14.5px] leading-[1.65] text-[#edf5fa]/72">
+                  <p className="t-body max-w-[52ch] text-[14.5px] text-[#edf5fa]/72">
                     {t([
                       'Start with your first runnable notebook, ship real agents and training loops, and grow into reproducing and extending frontier AI research.',
                       '从第一份可运行代码起步，亲手构建智能体与训练系统，一路进阶到独立复现与探索前沿 AI 研究。',
                     ])}
                   </p>
-                  <div className="flex flex-wrap items-center gap-2.5 text-[12.5px] font-[450] tracking-[-0.015em] text-[#a9dbe8]/85">
+                  <div className="flex flex-wrap items-center gap-2.5 text-[12.5px] text-[#a9dbe8]/85">
                     <span className="text-[#edf5fa]/65">{t(['01 Beginner', '01 初学者'])}</span>
                     <span aria-hidden="true" className="text-[#00e5b0]/70">→</span>
                     <span className="text-[#edf5fa]/85">{t(['02 AI Builder', '02 AI 构建者'])}</span>
@@ -624,7 +624,7 @@ export default function App() {
                         >
                           {repo.title}
                         </h3>
-                        <p className="t-body mt-5 max-w-[52ch] text-[14.5px] leading-[1.6] text-[#edf5fa]/70">
+                        <p className="t-body mt-5 max-w-[52ch] text-[14.5px] text-[#edf5fa]/70">
                           {t(repo.description)}
                         </p>
                       </div>
@@ -677,7 +677,7 @@ export default function App() {
                   </h2>
                 </LineReveal>
                 <div className="mt-14 flex flex-wrap items-end justify-between gap-4">
-                  <p className="t-body max-w-[52ch] text-[14.5px] leading-[1.65] text-[#edf5fa]/74">
+                  <p className="t-body max-w-[52ch] text-[14.5px] text-[#edf5fa]/74">
                     {t([
                       'Turn what you learn into systems that truly matter — from everyday tools that remove friction in your own life to open-source agents, auditors, and research tackling the world’s toughest problems.',
                       '把学到的 AI 工程能力变成真正有用的系统——从解决身边日常痛点的实用工具，到直面世界级难题的开源智能体、审计器与前沿复现。',
@@ -722,10 +722,10 @@ export default function App() {
                         </div>
 
                         <div className="mt-10">
-                          <p className="t-body text-[13.5px] leading-[1.52] text-[#edf5fa]/65">
+                          <p className="t-body text-[13.5px] text-[#edf5fa]/65">
                             {t(card.body)}
                           </p>
-                          <p className="mt-3 text-[12px] font-[450] tracking-[-0.012em] text-[#a9dbe8]/68">
+                          <p className="mt-3 text-[12px] text-[#a9dbe8]/68">
                             {card.author} · {card.course}
                           </p>
                         </div>
@@ -762,13 +762,13 @@ export default function App() {
                   </h2>
                 </LineReveal>
                 <div className="mt-8 flex flex-wrap items-end justify-between gap-6">
-                  <p className="t-body max-w-[54ch] text-[14.5px] leading-[1.65] text-[#edf5fa]/74">
+                  <p className="t-body max-w-[54ch] text-[14.5px] text-[#edf5fa]/74">
                     {t([
                       'No isolated toy snippets or passive slide decks. Every course is engineered around one evolving real-world project — pairing clear theory with progressive milestones, runnable code, and verifiable checkpoints.',
                       '拒绝碎片化玩具代码与被动看 PPT。每门课都围绕一个持续演进的真实工程项目展开，把原理拆解成阶梯式里程碑、可运行代码与可复现验收闭环。',
                     ])}
                   </p>
-                  <div className="flex flex-wrap items-center gap-2 text-[12.5px] font-[450] tracking-[-0.015em] text-[#a9dbe8]/85">
+                  <div className="flex flex-wrap items-center gap-2 text-[12.5px] text-[#a9dbe8]/85">
                     <span className="text-[#edf5fa]/80">{t(['1 Evolving Project', '单主线真实项目'])}</span>
                     <span aria-hidden="true" className="text-[#00e5b0]/65">·</span>
                     <span className="text-[#edf5fa]/80">{t(['Milestone-Driven', '阶梯式里程碑'])}</span>
@@ -811,7 +811,7 @@ export default function App() {
                 {faqItems.map((item) => (
                   <details key={item.q[0]}>
                     <summary>{t(item.q)}</summary>
-                    <p className="t-body max-w-[64ch] px-10 pb-6 text-[14.5px] leading-[1.65] text-[#edf5fa]/74">
+                    <p className="t-body max-w-[64ch] px-10 pb-6 text-[14.5px] text-[#edf5fa]/74">
                       {t(item.a)}
                     </p>
                   </details>
@@ -831,7 +831,7 @@ export default function App() {
                 <div className="flex flex-col items-start justify-between gap-6">
                   <div>
                     <WalkingLabsMark />
-                    <p className="t-body mt-4 max-w-[38ch] text-[14px] leading-[1.65] text-[#edf5fa]/72">
+                    <p className="t-body mt-4 max-w-[38ch] text-[14px] text-[#edf5fa]/72">
                       {t([
                         'An open-source lab turning frontier AI research and industry engineering practices into runnable, reproducible courses anyone can fork and learn from.',
                         '专注 AI 前沿研究与工程实践的开源实验室，把论文方法与真实工程经验做成可运行、可复现的开源课程。',
@@ -849,7 +849,7 @@ export default function App() {
                     >
                       github.com/walkinglabs
                     </WipeLink>
-                    <span className="text-[12px] font-[450] tracking-[-0.012em] text-[#edf5fa]/48">
+                    <span className="text-[12px] text-[#edf5fa]/48">
                       © 2026 WalkingLab · MIT / CC BY-NC-SA 4.0
                     </span>
                   </div>
@@ -857,7 +857,7 @@ export default function App() {
 
                 <div className="grid grid-cols-3 gap-6 md:border-l md:border-[var(--rail)] md:pl-10">
                   <div>
-                    <p className="mb-4 text-[12.5px] font-[450] tracking-[-0.012em] text-[#edf5fa]/48">
+                    <p className="mb-4 text-[12.5px] text-[#edf5fa]/48">
                       {t(['Courses', '核心课程'])}
                     </p>
                     <ul className="flex flex-col gap-2.5 text-[14px]">
@@ -885,7 +885,7 @@ export default function App() {
                   </div>
 
                   <div>
-                    <p className="mb-4 text-[12.5px] font-[450] tracking-[-0.012em] text-[#edf5fa]/48">
+                    <p className="mb-4 text-[12.5px] text-[#edf5fa]/48">
                       {t(['Navigation', '导航'])}
                     </p>
                     <ul className="flex flex-col gap-2.5 text-[14px]">
@@ -900,7 +900,7 @@ export default function App() {
                   </div>
 
                   <div>
-                    <p className="mb-4 text-[12.5px] font-[450] tracking-[-0.012em] text-[#edf5fa]/48">
+                    <p className="mb-4 text-[12.5px] text-[#edf5fa]/48">
                       {t(['Community', '社区'])}
                     </p>
                     <ul className="flex flex-col gap-2.5 text-[14px]">

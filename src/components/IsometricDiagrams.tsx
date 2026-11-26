@@ -742,7 +742,7 @@ export function HubOrbitDiagram({ lang }: { lang: Lang }) {
                   textAnchor="middle"
                   fill={isSel ? '#d7fff5' : '#edf5fa'}
                   fontSize="10.8"
-                  fontFamily="Instrument Sans, sans-serif"
+                  style={{ fontFamily: 'var(--font-sans)' }}
                   fontWeight="500"
                   letterSpacing="-0.015em"
                 >
@@ -764,7 +764,7 @@ export function HubOrbitDiagram({ lang }: { lang: Lang }) {
       </svg>
 
       {/* Clean frosted HUD readout */}
-      <div className="frosted-bcard mx-auto mt-2 flex max-w-[740px] flex-wrap items-center justify-between gap-3 px-4 py-3 text-[13px] tracking-[-0.015em]">
+      <div className="frosted-bcard mx-auto mt-2 flex max-w-[740px] flex-wrap items-center justify-between gap-3 px-4 py-3 text-[13px]">
         <div className="flex items-center gap-2.5">
           <span className="sq-dot" aria-hidden="true" />
           <span className="font-medium text-[#edf5fa]">{active.label}</span>
@@ -816,14 +816,14 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
       <div className="mx-auto flex w-full max-w-[440px] flex-col gap-3.5 px-5 py-6">
         {/* Right outline prompt pill */}
         <div
-          className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] font-[450] tracking-[-0.015em] text-white"
+          className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] text-white"
         >
           {zh ? '重构 Agent 鉴权循环并补全评测？' : 'Refactor the agent loop & add evals?'}
         </div>
 
         {/* Left solid pure-white crisp pill */}
         <div
-          className="max-w-[330px] self-start rounded-[22px] bg-white px-5 py-3.5 text-[14px] leading-[1.45] font-[450] tracking-[-0.015em] text-[#0c1420] shadow-[0_14px_34px_rgba(6,14,28,0.26)]"
+          className="max-w-[330px] self-start rounded-[22px] bg-white px-5 py-3.5 text-[14px] leading-[1.45] text-[#0c1420] shadow-[0_14px_34px_rgba(6,14,28,0.26)]"
         >
           {zh
             ? '范围已锁定。正在沙箱仓库内运行 8 项验收循环与回归检查。'
@@ -832,14 +832,14 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
 
         {/* Right outline confirmation pill */}
         <div
-          className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] font-[450] tracking-[-0.015em] text-white"
+          className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] text-white"
         >
           {zh ? '8/8 检查通过 · 0 回归错误' : '8/8 checks passed · 0 regressions'}
         </div>
 
         {/* Left compact pure-white live status pill */}
         <div
-          className="inline-flex items-center gap-2.5 self-start rounded-full bg-white px-4 py-2 text-[13.5px] font-[450] tracking-[-0.015em] text-[#556070] shadow-[0_10px_28px_rgba(6,14,28,0.22)]"
+          className="inline-flex items-center gap-2.5 self-start rounded-full bg-white px-4 py-2 text-[13.5px] text-[#556070] shadow-[0_10px_28px_rgba(6,14,28,0.22)]"
         >
           <ThinkingDots />
           <span>{zh ? '正在生成会话交接...' : 'Verifying handoff...'}</span>
@@ -852,7 +852,7 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
     return (
       <div className="mx-auto flex w-full max-w-[440px] flex-col gap-3.5 px-5 py-6">
         <div
-          className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] font-[450] tracking-[-0.015em] text-white"
+          className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] text-white"
         >
           {zh ? '用 GRPO 在可验证任务上训练策略' : 'Train GRPO with verifiable rewards'}
         </div>
@@ -861,7 +861,7 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
         <div
           className="w-full max-w-[330px] self-start rounded-[22px] bg-white px-5 py-4 text-[#0c1420] shadow-[0_14px_34px_rgba(6,14,28,0.26)]"
         >
-          <div className="flex items-center justify-between text-[12.5px] font-medium tracking-[-0.015em] text-[#526072]">
+          <div className="flex items-center justify-between text-[12.5px] font-medium text-[#526072]">
             <span>{zh ? '可验证奖励曲线' : 'Verifiable reward'}</span>
             <span className="font-semibold text-[#0b1320] tabular-nums">+0.94</span>
           </div>
@@ -889,13 +889,13 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
         </div>
 
         <div
-          className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] font-[450] tracking-[-0.015em] text-white tabular-nums"
+          className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] text-white tabular-nums"
         >
           {zh ? 'Step 1,420 · KL 散度 0.018' : 'Step 1,420 · KL 0.018'}
         </div>
 
         <div
-          className="inline-flex items-center gap-2.5 self-start rounded-full bg-white px-4 py-2 text-[13.5px] font-[450] tracking-[-0.015em] text-[#556070] shadow-[0_10px_28px_rgba(6,14,28,0.22)]"
+          className="inline-flex items-center gap-2.5 self-start rounded-full bg-white px-4 py-2 text-[13.5px] text-[#556070] shadow-[0_10px_28px_rgba(6,14,28,0.22)]"
         >
           <ThinkingDots />
           <span>{zh ? '策略持续收敛中...' : 'Updating policy...'}</span>
@@ -912,7 +912,7 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
     return (
       <div className="mx-auto flex w-full max-w-[440px] flex-col gap-3.5 px-5 py-6">
         <div
-          className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] font-[450] tracking-[-0.015em] text-white"
+          className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] text-white"
         >
           {zh ? '从零手写 Transformer 前向传播' : 'Run minimal Transformer forward pass'}
         </div>
@@ -924,27 +924,27 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
             {tokens.map((tok, i) => (
               <span
                 key={tok}
-                className="rounded-full bg-[#eef2f6] px-2.5 py-1 text-[12.5px] font-medium tracking-[-0.01em] text-[#0f172a]"
+                className="rounded-full bg-[#eef2f6] px-2.5 py-1 text-[12.5px] font-medium text-[#0f172a]"
               >
                 {tok}
                 <span className="ml-1 text-[10.5px] text-[#64748b] tabular-nums">#{i + 1}</span>
               </span>
             ))}
           </div>
-          <div className="mt-3 flex items-center justify-between border-t border-[#e2e8f0] pt-2.5 text-[12px] font-[450] text-[#526072]">
+          <div className="mt-3 flex items-center justify-between border-t border-[#e2e8f0] pt-2.5 text-[12px] text-[#526072]">
             <span>RoPE · GQA · KV-Cache</span>
             <span className="font-medium text-[#0f172a] tabular-nums">loss 1.84 ↓</span>
           </div>
         </div>
 
         <div
-          className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] font-[450] tracking-[-0.015em] text-white tabular-nums"
+          className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] text-white tabular-nums"
         >
           {zh ? '纯 PyTorch · 42k tokens/s' : 'Pure PyTorch · 42k tokens/s'}
         </div>
 
         <div
-          className="inline-flex items-center gap-2.5 self-start rounded-full bg-white px-4 py-2 text-[13.5px] font-[450] tracking-[-0.015em] text-[#556070] shadow-[0_10px_28px_rgba(6,14,28,0.22)]"
+          className="inline-flex items-center gap-2.5 self-start rounded-full bg-white px-4 py-2 text-[13.5px] text-[#556070] shadow-[0_10px_28px_rgba(6,14,28,0.22)]"
         >
           <ThinkingDots />
           <span>{zh ? '采样下一个词元...' : 'Decoding next token...'}</span>
@@ -957,7 +957,7 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
   return (
     <div className="mx-auto flex w-full max-w-[440px] flex-col gap-3.5 px-5 py-6">
       <div
-        className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] font-[450] tracking-[-0.015em] text-white"
+        className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] text-white"
       >
         {zh ? '在隐空间推演未来 12 步状态' : 'Roll out latent world state Δt = 12'}
       </div>
@@ -993,13 +993,13 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
       </div>
 
       <div
-        className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] font-[450] tracking-[-0.015em] text-white"
+        className="self-end rounded-full border border-white/55 bg-white/[0.08] px-5 py-2.5 text-[14px] text-white"
       >
         {zh ? 'JEPA 预测误差 0.024 · 时空一致' : 'JEPA error 0.024 · temporally coherent'}
       </div>
 
       <div
-        className="inline-flex items-center gap-2.5 self-start rounded-full bg-white px-4 py-2 text-[13.5px] font-[450] tracking-[-0.015em] text-[#556070] shadow-[0_10px_28px_rgba(6,14,28,0.22)]"
+        className="inline-flex items-center gap-2.5 self-start rounded-full bg-white px-4 py-2 text-[13.5px] text-[#556070] shadow-[0_10px_28px_rgba(6,14,28,0.22)]"
       >
         <ThinkingDots />
         <span>{zh ? '推演下一帧场景...' : 'Simulating next frame...'}</span>
@@ -1032,7 +1032,7 @@ export function BuildStageVisual({
           href={item.href}
           target="_blank"
           rel="noreferrer"
-          className="wipe-link text-[13px] font-medium tracking-[-0.015em] text-[#a9dbe8]"
+          className="wipe-link text-[13px] font-medium text-[#a9dbe8]"
         >
           {ctaLabel}
           <ArrowUpRight className="size-3.5" aria-hidden="true" />
@@ -1067,7 +1067,7 @@ export function BuildStageVisual({
         </div>
       </div>
 
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--rail)] pt-3 text-[12px] font-[450] tracking-[-0.012em] text-[#a9dbe8]/80">
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--rail)] pt-3 text-[12px] text-[#a9dbe8]/80">
         <span className="truncate">{item.caption}</span>
         <span className="text-[#00e5b0]/90">
           {lang === 'zh' ? '开源可复现 · MIT' : 'Open Source · Verified'}

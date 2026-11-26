@@ -362,7 +362,7 @@ function MeridianHorizonBackdrop({
                   y={b.y - 6}
                   fill="rgba(169, 219, 232, 0.48)"
                   fontSize="9.5"
-                  fontFamily="Instrument Sans, sans-serif"
+                  style={{ fontFamily: 'var(--font-sans)' }}
                   letterSpacing="0.02em"
                 >
                   {b.label}
@@ -443,7 +443,7 @@ function PeopleCluster({
         })}
 
         {/* Quiet regional label floating subtly below the group of people */}
-        <span className="pointer-events-none absolute top-[54px] whitespace-nowrap text-[11.5px] font-medium tracking-[-0.015em] text-[#a9dbe8]/78 drop-shadow-[0_2px_10px_rgba(3,6,12,0.9)]">
+        <span className="pointer-events-none absolute top-[54px] whitespace-nowrap text-[11.5px] font-medium text-[#a9dbe8]/78 drop-shadow-[0_2px_10px_rgba(3,6,12,0.9)]">
           {lang === 'zh' ? cluster.label[1] : cluster.label[0]}
         </span>
       </div>
@@ -506,7 +506,7 @@ export function GlobalVoicesSection({ lang }: { lang: Lang }) {
             </h3>
 
             {/* Quiet typographic native-script line */}
-            <p className="mt-3 text-[12.5px] font-[450] leading-relaxed tracking-[-0.012em] text-[#a9dbe8]/72">
+            <p className="mt-3 text-[12.5px] leading-relaxed text-[#a9dbe8]/72">
               {globalLocales.join(' · ')}
             </p>
           </div>
@@ -520,7 +520,7 @@ export function GlobalVoicesSection({ lang }: { lang: Lang }) {
                 ? t(['Resume scrolling voices', '继续滚动读者评价'])
                 : t(['Pause scrolling voices', '暂停滚动读者评价'])
             }
-            className={`inline-flex cursor-pointer items-center gap-1.5 px-1 py-1 text-[12.5px] font-medium tracking-[-0.015em] text-[#a9dbe8]/78 transition-colors hover:text-[#edf5fa] ${
+            className={`inline-flex cursor-pointer items-center gap-1.5 px-1 py-1 text-[12.5px] font-medium text-[#a9dbe8]/78 transition-colors hover:text-[#edf5fa] ${
               tweetsInteractive ? '' : 'pointer-events-none'
             }`}
           >
@@ -586,21 +586,21 @@ export function GlobalVoicesSection({ lang }: { lang: Lang }) {
                             <div className="truncate text-sm font-medium text-[#edf5fa]">
                               {voice.name}
                             </div>
-                            <div className="text-[12px] font-[450] tracking-[-0.01em] text-[#a9dbe8]/65">
+                            <div className="text-[12px] text-[#a9dbe8]/65">
                               {voice.handle}
                             </div>
                           </div>
                         </div>
-                        <span className="shrink-0 text-[11px] font-medium tracking-[-0.01em] text-[#00e5b0]/85">
+                        <span className="shrink-0 text-[11px] font-medium text-[#00e5b0]/85">
                           {voice.localeTag}
                         </span>
                       </div>
 
-                      <p className="t-body mt-4 text-[13.5px] leading-[1.55] text-[#edf5fa]/86">
+                      <p className="t-body mt-4 text-[13.5px] text-[#edf5fa]/86">
                         “{t(voice.quote)}”
                       </p>
 
-                      <div className="mt-4 flex items-center justify-between text-[11.5px] font-[450] tracking-[-0.01em] text-[#a9dbe8]/65">
+                      <div className="mt-4 flex items-center justify-between text-[11.5px] text-[#a9dbe8]/65">
                         <span>{voice.metric}</span>
                         <span className="text-[#00e5b0]">X ↗</span>
                       </div>
@@ -634,7 +634,7 @@ export function GlobalVoicesSection({ lang }: { lang: Lang }) {
           style={{ opacity: footerCaptionOpacity, y: footerCaptionY }}
           className="pointer-events-none relative z-20 px-6 text-center will-change-transform"
         >
-          <p className="text-[13.5px] font-[450] tracking-[-0.015em] text-[#edf5fa]/82 drop-shadow-[0_2px_14px_rgba(3,6,12,0.9)]">
+          <p className="text-[13.5px] text-[#edf5fa]/82 drop-shadow-[0_2px_14px_rgba(3,6,12,0.9)]">
             {t([
               `${contributors.length} open-source contributors & learners gathering side by side across every timezone.`,
               `${contributors.length} 位开源贡献者与全球学习者，正跨越时区在同一颗星球上并肩探索。`,

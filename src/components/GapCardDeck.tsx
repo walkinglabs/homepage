@@ -69,12 +69,12 @@ function StackedCardItem({
           </div>
 
           <div className="mt-10 border-t border-[var(--rail)] pt-6">
-            <p className="t-body max-w-[40ch] text-[14.5px] leading-[1.6] text-[#edf5fa]/78">
+            <p className="t-body max-w-[40ch] text-[14.5px] text-[#edf5fa]/78">
               {t(card.body)}
             </p>
             {card.ctaPrompt && (
               <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-                <span className="text-[12.5px] font-[450] tracking-[-0.012em] text-[#a9dbe8]/85">
+                <span className="text-[12.5px] text-[#a9dbe8]/85">
                   {t(card.ctaPrompt)}
                 </span>
                 <WipeLink

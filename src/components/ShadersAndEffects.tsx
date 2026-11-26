@@ -140,24 +140,57 @@ const FRAG_CAUSTICS = `
   }
 `
 
-/* MODE 3: FAST KINETIC ELECTRIC WAVE SURGE (Snappy, lively, rhythmic 跃动感 behind Final CTA) */
+/* MODE 3: FAST KINETIC ELECTRIC WAVE SURGE (Original glowing wave rendering + aerodynamic trailing wake & spring momentum) */
 const FRAG_HORIZON = `
   precision highp float;
   uniform vec2 u_res;
   uniform float u_time;
+  uniform float u_flowTime;
   uniform vec2 u_mouse;
+  uniform float u_mouseActive;
+  uniform vec4 u_trail[6];
 
   void main() {
     vec2 uv = gl_FragCoord.xy / u_res.xy;
-    vec2 p = uv * 2.0 - 1.0;
-    p.x *= u_res.x / max(u_res.y, 1.0);
+    float aspect = u_res.x / max(u_res.y, 1.0);
+    vec2 p = (uv * 2.0 - 1.0) * vec2(aspect, 1.0);
 
-    // Energetic, brisk kinetic flow speed for unmistakable lively pulse ("快速急促的跃动感")
-    float t = u_time * 1.15;
-    vec2 m = (u_mouse - 0.5) * 0.25;
+    // Monotonically integrated kinetic flow speed: base 1.15x pulse + smooth momentum boost when sweeping with the wave
+    float t = u_flowTime * 1.15;
+    vec2 m = (u_mouse - 0.5) * 0.25 * u_mouseActive;
+
+    // Continuous 5-segment aerodynamic silk wake trailing behind pointer motion & surfing downstream with the wave
+    float wakeLift = 0.0;
+    float wakePhase = 0.0;
+    float wakeSheen = 0.0;
+
+    vec4 prev = u_trail[0];
+    for (int i = 1; i < 6; i++) {
+      vec4 curr = u_trail[i];
+      vec2 a = (prev.xy * 2.0 - 1.0) * vec2(aspect, 1.0);
+      vec2 b = (curr.xy * 2.0 - 1.0) * vec2(aspect, 1.0);
+      vec2 ab = b - a;
+      float h = clamp(dot(p - a, ab) / (dot(ab, ab) + 0.0001), 0.0, 1.0);
+      vec2 delta = p - (a + ab * h);
+
+      // Elongated horizontally along the wave stream so disturbance merges naturally into the ribbons
+      vec2 aniso = delta * vec2(0.68, 1.15);
+      float d2 = dot(aniso, aniso);
+      float segEnergy = mix(prev.z, curr.z, h);
+      float segVy = mix(prev.w, curr.w, h);
+      float w = exp(-d2 * 3.4) * segEnergy;
+
+      wakeLift += w * (delta.y * 0.22 + segVy * 0.18);
+      wakePhase += w * 1.15;
+      wakeSheen += exp(-d2 * 5.4) * segEnergy;
+      prev = curr;
+    }
+    wakeLift = clamp(wakeLift, -0.24, 0.24);
+    wakePhase = clamp(wakePhase, 0.0, 1.85);
+    wakeSheen = clamp(wakeSheen, 0.0, 1.15);
 
     // Multi-harmonic rapid kinetic wave crest racing horizontally across the lower horizon
-    float y0 = p.y + 0.36;
+    float y0 = p.y + 0.36 - wakeLift;
     float waveMain =
       sin(p.x * 2.35 - t * 1.35 + m.x * 2.0) * 0.22 +
       sin(p.x * 4.90 - t * 2.25) * 0.085 +
@@ -177,8 +210,8 @@ const FRAG_HORIZON = `
     float halo2 = exp(-dist2 * 2.6);
 
     // Rapid pulsing high-frequency silk harmonics traveling strictly along the wave curve (zero grid moire)
-    float along1 = sin((y0 - waveMain) * 44.0 - t * 2.8) * 0.5 + 0.5;
-    float along2 = sin((y0 + 0.16 - waveSecond) * 38.0 + t * 2.4) * 0.5 + 0.5;
+    float along1 = sin((y0 - waveMain) * 44.0 - t * 2.8 - wakePhase * 1.25) * 0.5 + 0.5;
+    float along2 = sin((y0 + 0.16 - waveSecond) * 38.0 + t * 2.4 - wakePhase * 0.9) * 0.5 + 0.5;
     float surge = 0.72 + 0.28 * sin(p.x * 3.2 - t * 2.6);
 
     vec3 cDark    = vec3(0.012, 0.024, 0.047);
@@ -191,7 +224,10 @@ const FRAG_HORIZON = `
     col += cCobalt * (halo1 * 0.78 + halo2 * 0.65);
     col += cSky * (halo1 * along1 * 0.62 + halo2 * along2 * 0.52) * surge;
     col += cEmerald * (core1 * 0.78 + core2 * 0.58) * (0.55 + 0.45 * along1) * surge;
-    col += cWhite * pow(core1, 2.2) * 0.48 * surge;
+    col += cWhite * pow(max(0.0001, core1), 2.2) * 0.48 * surge;
+
+    // Subtle specular sheen catching ONLY the glowing wave ribbons along the drifting wake
+    col += mix(cSky, cWhite, 0.55) * wakeSheen * (core1 * 0.36 + core2 * 0.22 + halo1 * 0.14);
 
     // Clean top fade from info links strip; keep luminous deep-cobalt ambient extension all the way to bottom edge
     float topFade = smoothstep(1.0, 0.72, uv.y);
@@ -285,36 +321,116 @@ export function FlowingSilkShader({
 
     const uRes = gl.getUniformLocation(prog, 'u_res')
     const uTime = gl.getUniformLocation(prog, 'u_time')
+    const uFlowTime = gl.getUniformLocation(prog, 'u_flowTime')
     const uMouse = gl.getUniformLocation(prog, 'u_mouse')
+    const uMouseActive = gl.getUniformLocation(prog, 'u_mouseActive')
+    const uTrail = gl.getUniformLocation(prog, 'u_trail') || gl.getUniformLocation(prog, 'u_trail[0]')
     const uStep = gl.getUniformLocation(prog, 'u_step')
     const uPulse = gl.getUniformLocation(prog, 'u_pulse')
 
-    const mouse = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 }
+    const mouse = {
+      x: 0.5,
+      y: 0.5,
+      tx: 0.5,
+      ty: 0.5,
+      vx: 0,
+      vy: 0,
+      active: 0,
+      activeTarget: 0,
+      hasPointer: false,
+    }
+    const TRAIL_LEN = 6
+    const trail = Array.from({ length: TRAIL_LEN }, () => ({
+      x: 0.5,
+      y: 0.5,
+      energy: 0,
+      vy: 0,
+    }))
+    const trailBuf = new Float32Array(TRAIL_LEN * 4)
+
     let curStep = stepTargetRef.current
     let raf = 0
     let visible = false
     let lastDraw = 0
+    let prevNow = performance.now()
+    let flowTime = 3.0
+    let flowRate = 1.0
     const start = performance.now()
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect()
-      const maxW = mode === 'silk' ? 920 : 800
-      const scale = Math.min(0.82, maxW / Math.max(1, rect.width))
+      const maxW = mode === 'horizon' ? 960 : mode === 'silk' ? 920 : 800
+      const maxScale = mode === 'horizon' ? 0.9 : 0.82
+      const scale = Math.min(maxScale, maxW / Math.max(1, rect.width))
       canvas.width = Math.max(300, Math.round(rect.width * scale))
       canvas.height = Math.max(180, Math.round(rect.height * scale))
       gl.viewport(0, 0, canvas.width, canvas.height)
     }
 
     const drawFrame = (now: number) => {
-      mouse.x += (mouse.tx - mouse.x) * 0.06
-      mouse.y += (mouse.ty - mouse.y) * 0.06
+      const dt = Math.min(0.05, Math.max(0.001, (now - prevNow) * 0.001))
+      prevNow = now
+
+      if (mode === 'horizon') {
+        // Critically-damped 2nd-order spring for velvety, weighty cursor motion (zero snappy jitter)
+        const k = 38.0
+        const damp = 12.2
+        const ax = (mouse.tx - mouse.x) * k - mouse.vx * damp
+        const ay = (mouse.ty - mouse.y) * k - mouse.vy * damp
+        mouse.vx += ax * dt
+        mouse.vy += ay * dt
+        mouse.x += mouse.vx * dt
+        mouse.y += mouse.vy * dt
+        mouse.active += (mouse.activeTarget - mouse.active) * Math.min(1, dt * 5.2)
+
+        // Monotonically integrated rotational momentum: sweeping with the stream accelerates it smoothly
+        const targetRate = 1.0 + Math.max(-0.42, Math.min(1.55, mouse.vx * 0.78 * mouse.active))
+        flowRate += (targetRate - flowRate) * Math.min(1, dt * 4.2)
+        if (!reduced) flowTime += dt * flowRate
+
+        // 6-node trailing silk wake: follows smoothly AND drifts downstream along the orbital arc, melting away when idle
+        const speed = Math.hypot(mouse.vx, mouse.vy)
+        const headTargetEnergy = Math.min(1.0, speed * 0.48) * mouse.active
+        trail[0].x = mouse.x
+        trail[0].y = mouse.y
+        trail[0].energy += (headTargetEnergy - trail[0].energy) * Math.min(1, dt * (headTargetEnergy > trail[0].energy ? 10.0 : 2.8))
+        trail[0].vy += (Math.max(-1.2, Math.min(1.2, mouse.vy * 0.45)) - trail[0].vy) * Math.min(1, dt * 8.0)
+
+        for (let i = 1; i < TRAIL_LEN; i++) {
+          const prevNode = trail[i - 1]
+          const node = trail[i]
+          const follow = 1 - Math.exp(-dt * (10.5 - i * 1.15))
+          // Smooth horizontal downstream drift matching the racing kinetic wave direction
+          const driftX = 0.22 * dt * flowRate
+          node.x += (prevNode.x - node.x) * follow + driftX * node.energy
+          node.y += (prevNode.y - node.y) * follow
+          node.energy += (prevNode.energy * 0.86 - node.energy) * Math.min(1, dt * 7.5)
+          node.energy *= Math.exp(-dt * 1.15)
+          node.vy += (prevNode.vy * 0.9 - node.vy) * follow
+        }
+
+        for (let i = 0; i < TRAIL_LEN; i++) {
+          const base = i * 4
+          trailBuf[base] = trail[i].x
+          trailBuf[base + 1] = trail[i].y
+          trailBuf[base + 2] = reduced ? 0 : trail[i].energy
+          trailBuf[base + 3] = reduced ? 0 : trail[i].vy
+        }
+      } else {
+        mouse.x += (mouse.tx - mouse.x) * 0.06
+        mouse.y += (mouse.ty - mouse.y) * 0.06
+      }
+
       curStep += (stepTargetRef.current - curStep) * 0.1
       pulseImpulseRef.current *= 0.9
 
       const elapsed = reduced ? 3.5 : (now - start) * 0.001 + 3.0
       gl.uniform2f(uRes, canvas.width, canvas.height)
       gl.uniform1f(uTime, elapsed)
+      if (uFlowTime) gl.uniform1f(uFlowTime, reduced ? 3.5 : flowTime)
       gl.uniform2f(uMouse, mouse.x, mouse.y)
+      if (uMouseActive) gl.uniform1f(uMouseActive, reduced ? 0 : mouse.active)
+      if (uTrail) gl.uniform4fv(uTrail, trailBuf)
       if (uStep) gl.uniform1f(uStep, curStep)
       if (uPulse) gl.uniform1f(uPulse, reduced ? 0 : pulseImpulseRef.current)
       gl.drawArrays(gl.TRIANGLES, 0, 6)
@@ -325,7 +441,8 @@ export function FlowingSilkShader({
         raf = 0
         return
       }
-      if (!reduced && now - lastDraw < 32) {
+      const frameBudget = mode === 'horizon' ? 14 : 32
+      if (!reduced && now - lastDraw < frameBudget) {
         raf = requestAnimationFrame(render)
         return
       }
@@ -336,15 +453,72 @@ export function FlowingSilkShader({
 
     const onMove = (e: PointerEvent) => {
       if (!visible) return
-      mouse.tx = e.clientX / window.innerWidth
-      mouse.ty = 1.0 - e.clientY / window.innerHeight
+      if (mode === 'horizon') {
+        const rect = canvas.getBoundingClientRect()
+        if (rect.width <= 0 || rect.height <= 0) return
+        const nx = (e.clientX - rect.left) / rect.width
+        const ny = 1.0 - (e.clientY - rect.top) / rect.height
+        const inside = nx >= -0.06 && nx <= 1.06 && ny >= -0.06 && ny <= 1.06
+        if (inside) {
+          const cx = Math.max(0, Math.min(1, nx))
+          const cy = Math.max(0, Math.min(1, ny))
+          if (!mouse.hasPointer) {
+            mouse.hasPointer = true
+            mouse.x = cx
+            mouse.y = cy
+            mouse.tx = cx
+            mouse.ty = cy
+            mouse.vx = 0
+            mouse.vy = 0
+            for (let i = 0; i < TRAIL_LEN; i++) {
+              trail[i].x = cx
+              trail[i].y = cy
+              trail[i].energy = 0
+              trail[i].vy = 0
+            }
+          } else {
+            mouse.tx = cx
+            mouse.ty = cy
+          }
+          mouse.activeTarget = 1
+        } else {
+          mouse.activeTarget = 0
+          mouse.hasPointer = false
+        }
+      } else {
+        mouse.tx = e.clientX / window.innerWidth
+        mouse.ty = 1.0 - e.clientY / window.innerHeight
+      }
+    }
+
+    const onDown = (e: PointerEvent) => {
+      if (!visible || mode !== 'horizon') return
+      const rect = canvas.getBoundingClientRect()
+      if (rect.width <= 0 || rect.height <= 0) return
+      const nx = (e.clientX - rect.left) / rect.width
+      const ny = 1.0 - (e.clientY - rect.top) / rect.height
+      if (nx >= 0 && nx <= 1 && ny >= 0 && ny <= 1) {
+        mouse.tx = nx
+        mouse.ty = ny
+        mouse.hasPointer = true
+        mouse.activeTarget = 1
+        // Gentle forward flow breeze on click (smooth surge, no harsh bullseye shockwave)
+        flowRate = Math.min(2.4, flowRate + 0.72)
+        trail[0].energy = Math.min(1.0, trail[0].energy + 0.55)
+      }
+    }
+
+    const onLeave = () => {
+      mouse.activeTarget = 0
+      mouse.hasPointer = false
     }
 
     const io = new IntersectionObserver(
       ([entry]) => {
         visible = entry.isIntersecting
         if (visible) {
-          drawFrame(performance.now())
+          prevNow = performance.now()
+          drawFrame(prevNow)
           if (!reduced && !raf) raf = requestAnimationFrame(render)
         }
       },
@@ -367,6 +541,8 @@ export function FlowingSilkShader({
     io.observe(canvas)
     ro.observe(canvas)
     window.addEventListener('pointermove', onMove, { passive: true })
+    window.addEventListener('pointerdown', onDown, { passive: true })
+    document.addEventListener('pointerleave', onLeave)
     document.addEventListener('visibilitychange', onVis)
 
     return () => {
@@ -374,6 +550,8 @@ export function FlowingSilkShader({
       io.disconnect()
       ro.disconnect()
       window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerdown', onDown)
+      document.removeEventListener('pointerleave', onLeave)
       document.removeEventListener('visibilitychange', onVis)
       gl.deleteProgram(prog)
       gl.deleteShader(vs)

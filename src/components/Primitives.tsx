@@ -100,7 +100,7 @@ export function WipeLink({
 }
 
 export function WalkingLabsIcon({
-  className = 'h-[21px] w-auto',
+  className = 'h-[17px] w-auto',
 }: {
   className?: string
 }) {
@@ -116,54 +116,54 @@ export function WalkingLabsIcon({
       viewBox="-36 -36 1545 651"
       fill="none"
       aria-hidden="true"
-      className={`shrink-0 drop-shadow-[0_2px_10px_rgba(0,229,176,0.22)] ${className}`}
+      className={`shrink-0 ${className}`}
     >
       <defs>
-        {/* Brushed liquid-titanium & frosted glacier fill for main W */}
+        {/* Understated matte cool-platinum / slate-silver fill for main W */}
         <linearGradient id={metalMain} x1="80" y1="0" x2="1120" y2="579" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.96" />
-          <stop offset="38%" stopColor="#d4ecf8" stopOpacity="0.88" />
-          <stop offset="76%" stopColor="#72b9de" stopOpacity="0.72" />
-          <stop offset="100%" stopColor="#1b4d78" stopOpacity="0.86" />
+          <stop offset="0%" stopColor="#c5d0dc" stopOpacity="0.88" />
+          <stop offset="42%" stopColor="#93a2b4" stopOpacity="0.82" />
+          <stop offset="78%" stopColor="#647488" stopOpacity="0.76" />
+          <stop offset="100%" stopColor="#455568" stopOpacity="0.82" />
         </linearGradient>
 
-        {/* Sculpted inner facet shadow giving 3D architectural fold depth */}
+        {/* Soft inner facet shadow for subtle 3D fold depth */}
         <linearGradient id={facetShade} x1="449" y1="0" x2="960" y2="579" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#051324" stopOpacity="0.58" />
-          <stop offset="100%" stopColor="#0a2844" stopOpacity="0.16" />
+          <stop offset="0%" stopColor="#0b1623" stopOpacity="0.44" />
+          <stop offset="100%" stopColor="#16273a" stopOpacity="0.14" />
         </linearGradient>
 
-        {/* Specular chrome rim highlight */}
+        {/* Quiet satin bevel rim */}
         <linearGradient id={edgeSpec} x1="0" y1="0" x2="1241" y2="579" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="52%" stopColor="#bfe8f7" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.6" />
+          <stop offset="0%" stopColor="#dce5ef" stopOpacity="0.4" />
+          <stop offset="55%" stopColor="#9fb0c2" stopOpacity="0.24" />
+          <stop offset="100%" stopColor="#6d8196" stopOpacity="0.16" />
         </linearGradient>
 
-        {/* Bioluminescent crystal prism fill for detached top-right wing */}
+        {/* Restrained cool mist-slate prism fill for detached top-right wing */}
         <linearGradient id={wingPrism} x1="1473" y1="0" x2="1118" y2="254" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#e6fff9" />
-          <stop offset="32%" stopColor="#00e5b0" />
-          <stop offset="100%" stopColor="#0ea5e9" />
+          <stop offset="0%" stopColor="#bdd1d7" stopOpacity="0.86" />
+          <stop offset="48%" stopColor="#8ba5b2" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="#617c8d" stopOpacity="0.82" />
         </linearGradient>
 
         <linearGradient id={wingEdge} x1="1473" y1="0" x2="1118" y2="254" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="100%" stopColor="#00e5b0" />
+          <stop offset="0%" stopColor="#d8e6ea" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="#7c98a6" stopOpacity="0.22" />
         </linearGradient>
       </defs>
 
-      {/* Main WalkingLabs W sculpted metallic prism */}
+      {/* Main WalkingLab W sculpted matte-silver prism */}
       <path
         d="M449.337 579L0 0H449.337L571.912 271.776L727.615 0H959.512L1241.1 579H959.512L826.999 271.776L704.425 579H449.337Z"
         fill={`url(#${metalMain})`}
         stroke={`url(#${edgeSpec})`}
-        strokeWidth="16"
+        strokeWidth="10"
         strokeLinejoin="miter"
         strokeMiterlimit="3"
       />
 
-      {/* Sculpted 3D inner-fold shadow facet */}
+      {/* Sculpted 3D inner-fold shadow facets */}
       <path
         d="M449.337 0L571.912 271.776L704.425 579H449.337L255 190L449.337 0Z"
         fill={`url(#${facetShade})`}
@@ -171,23 +171,23 @@ export function WalkingLabsIcon({
       <path
         d="M826.999 271.776L959.512 0L1241.1 579H959.512L826.999 271.776Z"
         fill={`url(#${facetShade})`}
-        fillOpacity="0.6"
+        fillOpacity="0.52"
       />
 
-      {/* Razor specular ridge lines along the geometric valley folds */}
+      {/* Subtle specular ridge lines along the geometric valley folds */}
       <path
         d="M571.912 271.776L704.425 579M727.615 0L571.912 271.776"
-        stroke="#ffffff"
-        strokeOpacity="0.55"
-        strokeWidth="14"
+        stroke="#e4edf5"
+        strokeOpacity="0.24"
+        strokeWidth="10"
       />
 
-      {/* Signature floating top-right wing facet — luminous emerald-crystal prism */}
+      {/* Detached top-right wing facet — quiet cool-slate prism */}
       <path
         d="M1473 0H1227.85L1118.53 254.051H1357.05L1473 0Z"
         fill={`url(#${wingPrism})`}
         stroke={`url(#${wingEdge})`}
-        strokeWidth="16"
+        strokeWidth="10"
         strokeLinejoin="miter"
         strokeMiterlimit="3"
       />
@@ -204,11 +204,11 @@ export function WalkingLabsMark({ className = '' }: { className?: string }) {
       aria-label="WalkingLab"
       className={`group inline-flex items-baseline select-none ${className}`}
     >
-      {/* Sculpted metallic W prism acts directly as the initial "W" of the unified WalkingLab logotype */}
-      <WalkingLabsIcon className="h-[20px] w-auto shrink-0 translate-y-[1px] transition-transform duration-300 group-hover:scale-[1.04]" />
+      {/* Understated sculpted slate-silver W prism balanced to cap-height */}
+      <WalkingLabsIcon className="h-[16.5px] w-auto shrink-0 translate-y-[0.5px] opacity-[0.82] transition-all duration-300 group-hover:scale-[1.03] group-hover:opacity-100" />
       <span
         aria-hidden="true"
-        className="-ml-[3px] inline-flex items-baseline text-[19.5px] leading-none font-bold tracking-[0.025em] text-white"
+        className="-ml-[2.5px] inline-flex items-baseline text-[19.5px] leading-none font-bold tracking-[0.025em] text-white"
         style={{ fontFamily: 'var(--font-display)' }}
       >
         <span>alk</span>
@@ -217,13 +217,13 @@ export function WalkingLabsMark({ className = '' }: { className?: string }) {
             viewBox="556 -4 48 50"
             fill="none"
             aria-hidden="true"
-            className="pointer-events-none absolute -top-[0.3em] left-1/2 h-[0.6em] w-[0.6em] -translate-x-1/2 drop-shadow-[0_0_7px_rgba(0,229,176,0.82)] transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12"
+            className="pointer-events-none absolute -top-[0.09em] left-1/2 h-[0.38em] w-[0.38em] -translate-x-1/2 opacity-75 transition-all duration-300 group-hover:scale-110 group-hover:opacity-95"
           >
             <defs>
               <linearGradient id={starFill} x1="580" y1="0" x2="580" y2="42" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#ffffff" />
-                <stop offset="48%" stopColor="#5fffe0" />
-                <stop offset="100%" stopColor="#0ea5e9" />
+                <stop offset="0%" stopColor="#dbe4ec" />
+                <stop offset="55%" stopColor="#a2b5c4" />
+                <stop offset="100%" stopColor="#7a90a2" />
               </linearGradient>
             </defs>
             <path

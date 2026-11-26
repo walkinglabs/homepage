@@ -218,7 +218,7 @@ function DirectoryGroup({
 
   return (
     <div>
-      <h3 className="mb-3 text-[12.5px] font-[450] tracking-[-0.012em] text-[#a9dbe8]/72">
+      <h3 className="mb-3 text-[12.5px] text-[#a9dbe8]/72">
         {title}
       </h3>
       <ul className="divide-y divide-[var(--rail)] border-y border-[var(--rail)]">
@@ -279,7 +279,7 @@ export function SchoolWall({ lang }: { lang: Lang }) {
             aria-expanded={expanded}
             aria-controls="learner-directory"
             onClick={() => setExpanded((v) => !v)}
-            className="group inline-flex cursor-pointer items-center justify-center gap-2 px-2 py-1 text-[12.5px] font-[450] tracking-[-0.015em] text-[#a9dbe8]/74 transition-colors hover:text-[#00e5b0]"
+            className="group inline-flex cursor-pointer items-center justify-center gap-2 px-2 py-1 text-[12.5px] text-[#a9dbe8]/74 transition-colors hover:text-[#00e5b0]"
           >
             {lang === 'zh' ? '学员与协作者来自' : 'Learners & collaborators from'}
             <ChevronDown

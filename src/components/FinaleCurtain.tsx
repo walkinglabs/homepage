@@ -93,7 +93,7 @@ export function FinaleCurtain({ lang }: { lang: Lang }) {
             }}
             className="pointer-events-none mx-auto max-w-[860px] origin-top will-change-transform"
           >
-            <BoxTag accent>{t(['Aim Higher', '向更高处'])}</BoxTag>
+            <BoxTag accent>{t(['Aim Higher', '志存高远'])}</BoxTag>
             <LineReveal>
               <h2 className="t-display t-h2-lg t-gradient mt-5">
                 {lang === 'zh' ? (
@@ -111,10 +111,10 @@ export function FinaleCurtain({ lang }: { lang: Lang }) {
                 )}
               </h2>
             </LineReveal>
-            <p className="t-body mx-auto mt-5 max-w-[52ch] text-[15px] leading-[1.7] text-[#edf5fa]/88">
+            <p className="t-body mx-auto mt-5 max-w-[52ch] text-[15px] text-[#edf5fa]/88">
               {t([
                 'No matter how high your hopes, open engineering lets you aim higher — clone the repo, run lesson 01, and look further than you thought possible.',
-                '无论你的理想有多高，在这里都能瞄向更高。克隆仓库、跑通第 01 讲，站在开源工程的肩膀上，看见更远的前沿。',
+                '我们都很普通。但也可以尝试变得不那么普通。小心求证，非同凡想。',
               ])}
             </p>
           </motion.div>

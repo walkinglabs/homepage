@@ -110,10 +110,10 @@ export function CourseShowcaseTrack({ lang }: { lang: Lang }) {
 
                   {open && (
                     <div className="px-5 pb-6">
-                      <p className="mb-2.5 text-[12px] font-medium tracking-[-0.012em] text-[#00e5b0]/90">
+                      <p className="mb-2.5 text-[12px] font-medium text-[#00e5b0]/90">
                         {item.meta}
                       </p>
-                      <p className="t-body text-[14.5px] leading-[1.6] text-[#edf5fa]/78">
+                      <p className="t-body text-[14.5px] text-[#edf5fa]/78">
                         {t(item.body)}
                       </p>
                     </div>

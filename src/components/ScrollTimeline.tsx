@@ -67,7 +67,7 @@ export function ScrollTimeline({ lang }: { lang: Lang }) {
           style={{ scale: titleScale, opacity: titleOpacity }}
           className="relative z-20 mx-auto origin-top px-4 text-center will-change-transform"
         >
-          <p className="mb-2 text-[12.5px] font-[450] tracking-[-0.012em] text-[#a9dbe8]/72">
+          <p className="mb-2 text-[12.5px] text-[#a9dbe8]/72">
             {t(['The Method', '学习与工程方法'])}
           </p>
           <h2 className="t-display t-h2-md t-gradient mx-auto max-w-[16ch]">
@@ -95,7 +95,7 @@ export function ScrollTimeline({ lang }: { lang: Lang }) {
 
               <BoxTag accent>{t(methodSteps[activeStep].tag)}</BoxTag>
 
-              <p className="t-body mt-4 max-w-[46ch] text-[15.5px] leading-[1.65] text-[#edf5fa]/92">
+              <p className="t-body mt-4 max-w-[46ch] text-[15.5px] text-[#edf5fa]/92">
                 {t(methodSteps[activeStep].body)}
               </p>
             </motion.div>
@@ -109,7 +109,7 @@ export function ScrollTimeline({ lang }: { lang: Lang }) {
                 type="button"
                 onClick={() => jumpToStep(idx)}
                 aria-pressed={activeStep === idx}
-                className={`cursor-pointer border px-3 py-1.5 text-[12.5px] font-[460] tracking-[-0.015em] transition-all ${
+                className={`cursor-pointer border px-3 py-1.5 text-[12.5px] transition-all ${
                   activeStep === idx
                     ? 'border-[#00e5b0] bg-[#00e5b0]/18 text-[#ffffff] shadow-[0_0_16px_rgba(0,229,176,0.24)]'
                     : 'border-transparent bg-[#edf5fa]/[0.04] text-[#edf5fa]/75 hover:border-[#edf5fa]/30 hover:bg-[#edf5fa]/[0.09] hover:text-[#ffffff]'
