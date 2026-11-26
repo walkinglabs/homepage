@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type MouseEvent, type ReactNode } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 
 export function CornerBrackets({
@@ -77,7 +77,7 @@ export function WipeLink({
   alwaysUnderline?: boolean
   arrow?: boolean
   className?: string
-  onClick?: () => void
+  onClick?: (e: MouseEvent<HTMLAnchorElement>) => void
 }) {
   return (
     <a

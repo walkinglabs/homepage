@@ -62,6 +62,7 @@ const communityIcons = [Clock, Terminal, Layers, RefreshCw] as const
 export default function App() {
   const [lang, setLang] = useState<Lang>('en')
   const [scrolled, setScrolled] = useState(false)
+  const [activeSection, setActiveSection] = useState('#home')
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeRepo, setActiveRepo] = useState(0)
 
@@ -90,16 +91,32 @@ export default function App() {
   useEffect(() => {
     let raf = 0
     let wasScrolled = false
+    let lastActive = '#home'
+    const sectionIds = ['#work', '#method', '#curriculum', '#problem'] as const
 
     const update = () => {
       raf = 0
       const y = window.scrollY
-      const nextScrolled = y > window.innerHeight * 0.55
+      const nextScrolled = y > 48
       if (nextScrolled !== wasScrolled) {
         wasScrolled = nextScrolled
         setScrolled(nextScrolled)
       }
-      if (y < 120) setMenuOpen(false)
+
+      // Deterministic scroll-spy across tall sticky runways (#home -> #problem -> #curriculum -> #method -> #work)
+      const triggerY = Math.max(120, window.innerHeight * 0.36)
+      let current = '#home'
+      for (const id of sectionIds) {
+        const el = document.querySelector(id)
+        if (el && el.getBoundingClientRect().top <= triggerY) {
+          current = id
+          break
+        }
+      }
+      if (current !== lastActive) {
+        lastActive = current
+        setActiveSection(current)
+      }
     }
 
     const onScroll = () => {
@@ -108,9 +125,11 @@ export default function App() {
 
     update()
     window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
     return () => {
       if (raf) cancelAnimationFrame(raf)
       window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
     }
   }, [])
 
@@ -155,6 +174,22 @@ export default function App() {
     { href: '#work', label: t(['Work', '实战']) },
   ]
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault()
+    setActiveSection(href)
+    setMenuOpen(false)
+    if (href === '#home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      const target = document.querySelector(href)
+      if (target) {
+        const top = target.getBoundingClientRect().top + window.scrollY - 64
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+      }
+    }
+    window.history.replaceState(null, '', href)
+  }
+
   return (
     <MotionConfig reducedMotion="user">
       <div ref={pageRef} id="home" lang={lang === 'zh' ? 'zh-CN' : 'en'} className="relative min-h-screen bg-transparent text-[var(--fg-primary)]">
@@ -168,7 +203,7 @@ export default function App() {
         <CustomCursor />
 
         {/* ================================================================
-            FIXED 3-ZONE FROSTED HEADER (morphs on scroll to frosted bar + "=" drawer)
+            FIXED 3-ZONE FROSTED HEADER (persistent nav with gliding scroll-spy indicator)
            ================================================================ */}
         <header
           className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
@@ -178,29 +213,49 @@ export default function App() {
           }`}
         >
           <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-[var(--pad)]">
-            <a href="#home">
+            <a href="#home" onClick={(e) => handleNavClick(e, '#home')}>
               <WalkingLabsMark />
             </a>
 
             <div className="relative flex items-center justify-center">
               <nav
                 aria-label="Primary"
-                className={`hidden items-center gap-3 text-[15px] font-medium transition-opacity duration-300 md:flex ${
-                  scrolled ? 'pointer-events-none opacity-0' : 'opacity-100'
-                }`}
+                className="hidden items-center gap-1 text-[14.5px] font-medium md:flex"
               >
-                {navItems.map((item, idx) => (
-                  <WipeLink
-                    key={item.href}
-                    href={item.href}
-                    active={idx === 0}
-                    showStar
-                    className="text-[#edf5fa]/85 hover:text-[#edf5fa]"
-                  >
-                    {item.label}
-                    {idx < navItems.length - 1 ? ',' : ''}
-                  </WipeLink>
-                ))}
+                {navItems.map((item) => {
+                  const isActive = activeSection === item.href
+                  return (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      aria-current={isActive ? 'location' : undefined}
+                      onClick={(e) => handleNavClick(e, item.href)}
+                      className={`relative inline-flex items-center rounded-full px-3.5 py-1.5 transition-colors duration-200 ${
+                        isActive
+                          ? 'text-white drop-shadow-[0_0_12px_rgba(169,219,232,0.35)]'
+                          : 'text-[#edf5fa]/56 hover:text-[#edf5fa]/92'
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.span
+                          layoutId="header-nav-pill"
+                          aria-hidden="true"
+                          transition={{ type: 'spring', stiffness: 380, damping: 34 }}
+                          className="pointer-events-none absolute inset-0 rounded-full bg-[#edf5fa]/[0.085] shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]"
+                        />
+                      )}
+                      {isActive && (
+                        <motion.span
+                          layoutId="header-nav-underline"
+                          aria-hidden="true"
+                          transition={{ type: 'spring', stiffness: 380, damping: 34 }}
+                          className="pointer-events-none absolute inset-x-3 bottom-0 h-[1.5px] rounded-full bg-gradient-to-r from-transparent via-[#a9dbe8] to-transparent"
+                        />
+                      )}
+                      <span className="relative z-10">{item.label}</span>
+                    </a>
+                  )
+                })}
               </nav>
 
               <button
@@ -208,9 +263,7 @@ export default function App() {
                 aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
                 aria-expanded={menuOpen}
                 onClick={() => setMenuOpen((v) => !v)}
-                className={`flex h-9 w-11 cursor-pointer flex-col items-center justify-center gap-1.5 transition-opacity duration-300 md:absolute ${
-                  scrolled ? 'opacity-100' : 'md:pointer-events-none md:opacity-0'
-                }`}
+                className="flex h-9 w-11 cursor-pointer flex-col items-center justify-center gap-1.5 md:hidden"
               >
                 <span
                   className={`h-px w-6 bg-[#edf5fa] transition-transform duration-200 ${
@@ -295,24 +348,37 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.22 }}
-                className="frosted-card frosted-grain mx-auto mt-2 w-[min(369px,calc(100%-32px))] p-6"
+                className="frosted-card frosted-grain mx-auto mt-2 w-[min(369px,calc(100%-32px))] p-6 md:hidden"
               >
                 <p className="mb-4 text-[11px] uppercase text-[#edf5fa]/35">
                   {t(['Navigation', '导航菜单'])}
                 </p>
-                <ul className="flex flex-col gap-3">
-                  {navItems.map((item) => (
-                    <li key={item.href}>
-                      <WipeLink
-                        href={item.href}
-                        showStar
-                        onClick={() => setMenuOpen(false)}
-                        className="text-xl font-medium"
-                      >
-                        {item.label},
-                      </WipeLink>
-                    </li>
-                  ))}
+                <ul className="flex flex-col gap-2">
+                  {navItems.map((item) => {
+                    const isActive = activeSection === item.href
+                    return (
+                      <li key={item.href}>
+                        <a
+                          href={item.href}
+                          aria-current={isActive ? 'location' : undefined}
+                          onClick={(e) => handleNavClick(e, item.href)}
+                          className={`flex items-center justify-between rounded-lg px-3 py-2 text-lg font-medium transition-colors ${
+                            isActive
+                              ? 'bg-[#edf5fa]/[0.08] text-white'
+                              : 'text-[#edf5fa]/68 hover:bg-[#edf5fa]/[0.04] hover:text-white'
+                          }`}
+                        >
+                          <span>{item.label}</span>
+                          {isActive && (
+                            <span
+                              aria-hidden="true"
+                              className="size-1.5 rounded-full bg-[#a9dbe8] shadow-[0_0_8px_rgba(169,219,232,0.85)]"
+                            />
+                          )}
+                        </a>
+                      </li>
+                    )
+                  })}
                   <li className="mt-2 border-t border-[var(--rail)] pt-3">
                     <WipeLink
                       href={siteMeta.discord}
@@ -843,23 +909,23 @@ export default function App() {
                     </p>
                     <ul className="flex flex-col gap-2.5 text-[14px]">
                       <li>
-                        <WipeLink href={siteMeta.courseUrl} external showStar>
-                          Harness Eng,
+                        <WipeLink href={siteMeta.courseUrl} external>
+                          Harness Eng
                         </WipeLink>
                       </li>
                       <li>
-                        <WipeLink href={siteMeta.rlCourseUrl} external showStar>
-                          Modern RL,
+                        <WipeLink href={siteMeta.rlCourseUrl} external>
+                          Modern RL
                         </WipeLink>
                       </li>
                       <li>
-                        <WipeLink href="https://github.com/walkinglabs/modern-llm-notebook" external showStar>
-                          LLM Notebook,
+                        <WipeLink href="https://github.com/walkinglabs/modern-llm-notebook" external>
+                          LLM Notebook
                         </WipeLink>
                       </li>
                       <li>
-                        <WipeLink href="https://github.com/walkinglabs/hands-on-world-models" external showStar>
-                          World Models,
+                        <WipeLink href="https://github.com/walkinglabs/hands-on-world-models" external>
+                          World Models
                         </WipeLink>
                       </li>
                     </ul>
@@ -872,8 +938,11 @@ export default function App() {
                     <ul className="flex flex-col gap-2.5 text-[14px]">
                       {navItems.map((item) => (
                         <li key={item.href}>
-                          <WipeLink href={item.href} showStar>
-                            {item.label},
+                          <WipeLink
+                            href={item.href}
+                            onClick={(e) => handleNavClick(e, item.href)}
+                          >
+                            {item.label}
                           </WipeLink>
                         </li>
                       ))}
@@ -886,23 +955,23 @@ export default function App() {
                     </p>
                     <ul className="flex flex-col gap-2.5 text-[14px]">
                       <li>
-                        <WipeLink href={siteMeta.github} external showStar>
-                          GitHub,
+                        <WipeLink href={siteMeta.github} external>
+                          GitHub
                         </WipeLink>
                       </li>
                       <li>
-                        <WipeLink href={siteMeta.discord} external showStar>
-                          Discord,
+                        <WipeLink href={siteMeta.discord} external>
+                          Discord
                         </WipeLink>
                       </li>
                       <li>
-                        <WipeLink href={siteMeta.xSearch} external showStar>
-                          X / Twitter,
+                        <WipeLink href={siteMeta.xSearch} external>
+                          X / Twitter
                         </WipeLink>
                       </li>
                       <li>
-                        <WipeLink href={siteMeta.orgProfile} external showStar>
-                          Org Profile,
+                        <WipeLink href={siteMeta.orgProfile} external>
+                          Org Profile
                         </WipeLink>
                       </li>
                     </ul>
