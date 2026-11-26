@@ -279,7 +279,7 @@ export function SchoolWall({ lang }: { lang: Lang }) {
             aria-expanded={expanded}
             aria-controls="learner-directory"
             onClick={() => setExpanded((v) => !v)}
-            className="group inline-flex cursor-pointer items-center justify-center gap-2 px-2 py-1 text-[12.5px] text-[#a9dbe8]/74 transition-colors hover:text-[#00e5b0]"
+            className="group inline-flex cursor-pointer items-center justify-center gap-2 px-2 py-1 text-[12.5px] text-[#a9dbe8]/74 transition-colors hover:text-[#7dd3fc]"
           >
             {lang === 'zh' ? '学员与协作者来自' : 'Learners & collaborators from'}
             <ChevronDown

@@ -21,7 +21,7 @@ function SliceProgressBar({
     <motion.span
       aria-hidden="true"
       style={{ scaleX }}
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-[1.5px] origin-left bg-gradient-to-r from-[#38bdf8] via-[#00e5b0] to-[#a7f3d0] will-change-transform"
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-[1.5px] origin-left bg-gradient-to-r from-[#1d4ed8] via-[#38bdf8] to-[#dbeafe] will-change-transform"
     />
   )
 }

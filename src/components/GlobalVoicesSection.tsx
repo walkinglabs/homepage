@@ -279,7 +279,7 @@ function MeridianHorizonBackdrop({
           className="h-full w-full"
           style={{
             background:
-              'radial-gradient(92% 76% at 50% 106%, rgba(0, 229, 176, 0.22) 0%, rgba(14, 165, 233, 0.16) 38%, rgba(3, 6, 12, 0) 74%)',
+              'radial-gradient(92% 76% at 50% 106%, rgba(56, 189, 248, 0.24) 0%, rgba(14, 165, 233, 0.16) 38%, rgba(3, 6, 12, 0) 74%)',
           }}
         />
       </motion.div>
@@ -295,14 +295,14 @@ function MeridianHorizonBackdrop({
         >
           <defs>
             <radialGradient id="globeLimb" cx="50%" cy="100%" r="72%">
-              <stop offset="0%" stopColor="#0a3b52" stopOpacity="0.65" />
-              <stop offset="48%" stopColor="#07223c" stopOpacity="0.48" />
+              <stop offset="0%" stopColor="#0c3c64" stopOpacity="0.65" />
+              <stop offset="48%" stopColor="#072244" stopOpacity="0.48" />
               <stop offset="86%" stopColor="#051326" stopOpacity="0.22" />
               <stop offset="100%" stopColor="#03060c" stopOpacity="0" />
             </radialGradient>
             <linearGradient id="meridianFade" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#9ce1f0" stopOpacity="0.3" />
-              <stop offset="55%" stopColor="#00e5b0" stopOpacity="0.18" />
+              <stop offset="0%" stopColor="#a9dbe8" stopOpacity="0.3" />
+              <stop offset="55%" stopColor="#38bdf8" stopOpacity="0.18" />
               <stop offset="100%" stopColor="#03060c" stopOpacity="0.02" />
             </linearGradient>
           </defs>
@@ -318,7 +318,7 @@ function MeridianHorizonBackdrop({
           />
           <circle cx="600" cy="790" r="615" fill="none" stroke="rgba(169, 219, 232, 0.14)" strokeWidth="0.9" />
           <circle cx="600" cy="790" r="535" fill="none" stroke="rgba(169, 219, 232, 0.09)" strokeWidth="0.8" />
-          <circle cx="600" cy="790" r="758" fill="none" stroke="rgba(0, 229, 176, 0.14)" strokeDasharray="3 9" />
+          <circle cx="600" cy="790" r="758" fill="none" stroke="rgba(56, 189, 248, 0.16)" strokeDasharray="3 9" />
 
           {/* Graceful curved longitude meridians */}
           {[-360, -230, -110, 0, 110, 230, 360].map((offset) => (
@@ -343,9 +343,9 @@ function MeridianHorizonBackdrop({
               <path
                 d={d}
                 fill="none"
-                stroke="#00e5b0"
+                stroke="#7dd3fc"
                 strokeWidth="1.25"
-                strokeOpacity="0.65"
+                strokeOpacity="0.68"
                 className="pulse-dash"
               />
             </g>
@@ -355,7 +355,7 @@ function MeridianHorizonBackdrop({
           <motion.g style={{ opacity: beaconOpacity }}>
             {beacons.map((b) => (
               <g key={b.label}>
-                <circle cx={b.x} cy={b.y} r="9" fill="rgba(0, 229, 176, 0.15)" />
+                <circle cx={b.x} cy={b.y} r="9" fill="rgba(56, 189, 248, 0.18)" />
                 <circle cx={b.x} cy={b.y} r="2.2" fill="#edf5fa" />
                 <text
                   x={b.x + 8}
@@ -427,7 +427,7 @@ function PeopleCluster({
                 transform: `translate(${slot.dx}px, ${slot.dy}px)`,
                 zIndex: 10 - idx,
               }}
-              className="avatar-site-grade absolute block overflow-hidden rounded-full ring-1 ring-[#edf5fa]/40 shadow-[0_8px_22px_rgba(0,0,0,0.65)] transition-transform duration-300 hover:z-30 hover:scale-125 hover:ring-[#5fffe0]"
+              className="avatar-site-grade absolute block overflow-hidden rounded-full ring-1 ring-[#edf5fa]/40 shadow-[0_8px_22px_rgba(0,0,0,0.65)] transition-transform duration-300 hover:z-30 hover:scale-125 hover:ring-[#7dd3fc]"
             >
               <img
                 src={person.avatar}

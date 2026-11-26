@@ -289,7 +289,7 @@ export function MonumentalFooterWordmark() {
               <stop offset="100%" stopColor="#edf5fa" stopOpacity="0.16" />
             </linearGradient>
             <radialGradient ref={sheenRef} id={sheenGrad} gradientUnits="userSpaceOnUse" cx="600" cy="92" r="360">
-              <stop offset="0%" stopColor="#a9f4ee" stopOpacity="0.35" />
+              <stop offset="0%" stopColor="#bae6fd" stopOpacity="0.35" />
               <stop offset="60%" stopColor="#8ad1fa" stopOpacity="0.12" />
               <stop offset="100%" stopColor="#8ad1fa" stopOpacity="0" />
             </radialGradient>

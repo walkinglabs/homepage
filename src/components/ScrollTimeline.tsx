@@ -102,7 +102,7 @@ export function ScrollTimeline({ lang }: { lang: Lang }) {
               <div className="t-step-num t-gradient">{methodSteps[activeStep].num}</div>
 
               <div className="my-3.5 flex flex-col items-center" aria-hidden="true">
-                <div className="size-1.5 rounded-full bg-[#00e5b0]" />
+                <div className="size-1.5 rounded-full bg-[#38bdf8]" />
                 <div className="h-7 w-px bg-[#edf5fa]/18" />
               </div>
 

@@ -27,8 +27,8 @@ function IsoCubeSvg({
     <g className="iso-cube cursor-pointer">
       <polygon
         points={top}
-        fill={highlight ? 'rgba(0, 229, 176, 0.14)' : 'rgba(237, 245, 250, 0.08)'}
-        stroke={highlight ? 'rgba(0, 229, 176, 0.82)' : 'rgba(237, 245, 250, 0.44)'}
+        fill={highlight ? 'rgba(56, 189, 248, 0.14)' : 'rgba(237, 245, 250, 0.08)'}
+        stroke={highlight ? 'rgba(125, 211, 252, 0.84)' : 'rgba(237, 245, 250, 0.44)'}
         strokeWidth={highlight ? '1.15' : '0.95'}
         strokeDasharray={dashed ? '4 4' : undefined}
       />
@@ -41,8 +41,8 @@ function IsoCubeSvg({
       />
       <polygon
         points={right}
-        fill={highlight ? 'rgba(0, 229, 176, 0.07)' : 'rgba(3, 6, 12, 0.24)'}
-        stroke={highlight ? 'rgba(0, 229, 176, 0.72)' : 'rgba(237, 245, 250, 0.36)'}
+        fill={highlight ? 'rgba(56, 189, 248, 0.07)' : 'rgba(3, 6, 12, 0.24)'}
+        stroke={highlight ? 'rgba(56, 189, 248, 0.72)' : 'rgba(237, 245, 250, 0.36)'}
         strokeWidth={highlight ? '1.1' : '0.9'}
         strokeDasharray={dashed ? '4 4' : undefined}
       />
@@ -148,7 +148,7 @@ export function HeroCubeStage({
                   y1={y1}
                   x2={x2}
                   y2={y2}
-                  stroke="#00e5b0"
+                  stroke="#38bdf8"
                   strokeWidth="1"
                   strokeOpacity={energized ? '0.68' : '0.52'}
                   className="pulse-dash"
@@ -186,7 +186,7 @@ const posterTypeStyle = {
 const posterTypeAccentStyle = {
   fontFamily: 'var(--font-display)',
   background:
-    'linear-gradient(180deg, rgba(169, 219, 232, 0.22) 0%, rgba(0, 229, 176, 0.08) 68%, rgba(169, 219, 232, 0.01) 100%)',
+    'linear-gradient(180deg, rgba(169, 219, 232, 0.22) 0%, rgba(56, 189, 248, 0.10) 68%, rgba(169, 219, 232, 0.01) 100%)',
   WebkitBackgroundClip: 'text',
   backgroundClip: 'text',
   color: 'transparent',
@@ -249,9 +249,9 @@ export function GapDiagram({ variant }: { variant: 'cubes3' | 'orbitRisk' | 'gap
         />
         <svg viewBox="0 0 420 290" className="relative z-10 h-full w-full" aria-hidden="true">
           <circle cx="210" cy="145" r="106" fill="none" stroke="rgba(237,245,250,0.16)" strokeDasharray="4 7" />
-          <circle cx="210" cy="145" r="68" fill="none" stroke="rgba(0,229,176,0.22)" />
+          <circle cx="210" cy="145" r="68" fill="none" stroke="rgba(56,189,248,0.24)" />
 
-          <circle cx="210" cy="39" r="3" fill="#00e5b0" fillOpacity="0.85" />
+          <circle cx="210" cy="39" r="3" fill="#7dd3fc" fillOpacity="0.88" />
           <circle cx="316" cy="145" r="3" fill="#38bdf8" fillOpacity="0.85" />
           <circle cx="104" cy="145" r="2.5" fill="#edf5fa" fillOpacity="0.65" />
 
@@ -286,9 +286,9 @@ export function GapDiagram({ variant }: { variant: 'cubes3' | 'orbitRisk' | 'gap
           y1="115"
           x2="274"
           y2="115"
-          stroke="#00e5b0"
+          stroke="#38bdf8"
           strokeWidth="1.4"
-          strokeOpacity="0.75"
+          strokeOpacity="0.78"
           className="pulse-dash"
         />
 
@@ -919,8 +919,8 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
           <svg viewBox="0 0 260 64" className="mt-2.5 h-[62px] w-full overflow-visible">
             <defs>
               <linearGradient id="rlCardCurveFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#0f766e" stopOpacity="0.22" />
-                <stop offset="100%" stopColor="#0f766e" stopOpacity="0" />
+                <stop offset="0%" stopColor="#0284c7" stopOpacity="0.22" />
+                <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
               </linearGradient>
             </defs>
             <path
@@ -934,8 +934,8 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
               strokeWidth="2.2"
               strokeLinecap="round"
             />
-            <circle cx="252" cy="8" r="4" fill="#0f766e" />
-            <circle cx="252" cy="8" r="9" fill="#0f766e" fillOpacity="0.22" />
+            <circle cx="252" cy="8" r="4" fill="#0284c7" />
+            <circle cx="252" cy="8" r="9" fill="#0284c7" fillOpacity="0.22" />
           </svg>
         </div>
 
@@ -1033,7 +1033,7 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
                 <path
                   d={`M2 30 Q ${24 + i * 6} ${20 - i * 2} 62 28`}
                   fill="none"
-                  stroke="#0f766e"
+                  stroke="#0284c7"
                   strokeWidth="1.6"
                 />
               </svg>

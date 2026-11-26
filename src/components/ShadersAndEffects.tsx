@@ -67,7 +67,7 @@ const FRAG_SILK = `
     vec3 cDark    = vec3(0.012, 0.024, 0.048);
     vec3 cCobalt  = vec3(0.042, 0.185, 0.395);
     vec3 cCyan    = vec3(0.110, 0.565, 0.780);
-    vec3 cEmerald = vec3(0.030, 0.865, 0.700);
+    vec3 cEmerald = vec3(0.180, 0.720, 0.960);
     vec3 cSilver  = vec3(0.760, 0.945, 0.985);
 
     vec3 baseCol = mix(cDark, cCobalt, smoothstep(0.08, 0.55, lum));
@@ -118,12 +118,12 @@ const FRAG_CAUSTICS = `
     float lum = clamp((veilLeft + veilRight + activeBeam) * verticalLift, 0.0, 1.1);
     lum *= (0.28 + 0.72 * centerCalm);
 
-    // Gentle, refined color temperature shift across 01 -> 05 (cobalt -> sky -> emerald-cyan)
+    // Gentle, refined color temperature shift across 01 -> 05 (deep cobalt -> ocean sky -> glacier ice-blue)
     vec3 cDark    = vec3(0.012, 0.024, 0.047);
-    vec3 cCobalt  = mix(vec3(0.032, 0.140, 0.360), vec3(0.018, 0.205, 0.320), stepNorm);
-    vec3 cSky     = mix(vec3(0.095, 0.425, 0.710), vec3(0.040, 0.545, 0.680), stepNorm);
-    vec3 cEmerald = mix(vec3(0.025, 0.660, 0.620), vec3(0.000, 0.900, 0.710), stepNorm);
-    vec3 cIce     = vec3(0.760, 0.950, 0.995);
+    vec3 cCobalt  = mix(vec3(0.032, 0.140, 0.360), vec3(0.045, 0.210, 0.450), stepNorm);
+    vec3 cSky     = mix(vec3(0.095, 0.425, 0.710), vec3(0.145, 0.560, 0.880), stepNorm);
+    vec3 cEmerald = mix(vec3(0.160, 0.620, 0.910), vec3(0.320, 0.780, 0.990), stepNorm);
+    vec3 cIce     = vec3(0.780, 0.945, 1.000);
 
     vec3 baseCol = mix(cDark, cCobalt, smoothstep(0.06, 0.52, lum));
     baseCol = mix(baseCol, cSky, smoothstep(0.36, 0.86, lum) * 0.72);
@@ -217,7 +217,7 @@ const FRAG_HORIZON = `
     vec3 cDark    = vec3(0.012, 0.024, 0.047);
     vec3 cCobalt  = vec3(0.045, 0.215, 0.520);
     vec3 cSky     = vec3(0.090, 0.580, 0.890);
-    vec3 cEmerald = vec3(0.000, 0.920, 0.720);
+    vec3 cEmerald = vec3(0.220, 0.760, 0.990);
     vec3 cWhite   = vec3(0.860, 0.985, 1.000);
 
     vec3 col = cDark;
@@ -612,7 +612,7 @@ export function ArchitecturalPreloader() {
           className="fixed inset-0 z-[180] flex cursor-pointer flex-col justify-between overflow-hidden p-6"
           style={{
             background:
-              'linear-gradient(180deg, #03060c 20%, #072b48 78%, #00b894 148%)',
+              'linear-gradient(180deg, #03060c 20%, #072b48 78%, #1d7ec2 148%)',
           }}
         >
           <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-[#edf5fa]/20" />
