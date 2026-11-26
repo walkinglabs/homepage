@@ -243,40 +243,40 @@ export function WalkingLabsMark({ className = '' }: { className?: string }) {
 export function MonumentalFooterWordmark() {
   const uid = useId()
   const fillGrad = `${uid}-mfg`
-  const wrapRef = useRef<HTMLDivElement>(null)
+  const sheenGrad = `${uid}-sheen`
+  const glyphs = `${uid}-glyphs`
+  const svgRef = useRef<SVGSVGElement>(null)
+  const sheenRef = useRef<SVGRadialGradientElement>(null)
   const rafRef = useRef(0)
 
+  useEffect(() => () => cancelAnimationFrame(rafRef.current), [])
+
   const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    const el = wrapRef.current
-    if (!el || rafRef.current) return
-    const cx = e.clientX
-    const cy = e.clientY
+    if (rafRef.current) return
+    const { clientX, clientY } = e
     rafRef.current = requestAnimationFrame(() => {
       rafRef.current = 0
-      const rect = el.getBoundingClientRect()
-      el.style.setProperty('--mx', `${cx - rect.left}px`)
-      el.style.setProperty('--my', `${cy - rect.top}px`)
+      const svg = svgRef.current
+      const sheen = sheenRef.current
+      if (!svg || !sheen) return
+
+      const rect = svg.getBoundingClientRect()
+      if (!rect.width || !rect.height) return
+      const { width, height } = svg.viewBox.baseVal
+      sheen.setAttribute('cx', String((clientX - rect.left) * width / rect.width))
+      sheen.setAttribute('cy', String((clientY - rect.top) * height / rect.height))
     })
   }
 
   return (
     <div
-      ref={wrapRef}
       onPointerMove={onMove}
       aria-hidden="true"
       className="group relative z-10 w-full overflow-hidden pt-2 pb-0 select-none"
     >
-      {/* Subtle interactive cursor light sheen gliding across the clean letters */}
-      <div
-        className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{
-          background:
-            'radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(0, 229, 176, 0.18), rgba(56, 189, 248, 0.08) 45%, transparent 72%)',
-        }}
-      />
-
       <div className="mx-auto max-w-[1440px] px-[var(--pad)]">
         <svg
+          ref={svgRef}
           viewBox="0 0 1200 184"
           className="block w-full translate-y-[11%]"
           preserveAspectRatio="xMidYMax meet"
@@ -288,22 +288,32 @@ export function MonumentalFooterWordmark() {
               <stop offset="52%" stopColor="#edf5fa" stopOpacity="0.68" />
               <stop offset="100%" stopColor="#edf5fa" stopOpacity="0.16" />
             </linearGradient>
+            <radialGradient ref={sheenRef} id={sheenGrad} gradientUnits="userSpaceOnUse" cx="600" cy="92" r="360">
+              <stop offset="0%" stopColor="#a9f4ee" stopOpacity="0.35" />
+              <stop offset="60%" stopColor="#8ad1fa" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#8ad1fa" stopOpacity="0" />
+            </radialGradient>
+            <text
+              id={glyphs}
+              x="600"
+              y="162"
+              textAnchor="middle"
+              textLength="1188"
+              lengthAdjust="spacingAndGlyphs"
+              fontFamily="Geist, -apple-system, sans-serif"
+              fontSize="188"
+              fontWeight="450"
+              letterSpacing="-0.055em"
+            >
+              WALKINGLAB
+            </text>
           </defs>
-
-          <text
-            x="600"
-            y="162"
-            textAnchor="middle"
-            textLength="1188"
-            lengthAdjust="spacingAndGlyphs"
-            fill={`url(#${fillGrad})`}
-            fontFamily="Geist, -apple-system, sans-serif"
-            fontSize="188"
-            fontWeight="450"
-            letterSpacing="-0.055em"
-          >
-            WALKINGLAB
-          </text>
+          <use href={`#${glyphs}`} fill={`url(#${fillGrad})`} />
+          <use
+            href={`#${glyphs}`}
+            fill={`url(#${sheenGrad})`}
+            className="pointer-events-none opacity-0 transition-opacity duration-300 group-hover:opacity-100 motion-reduce:transition-none"
+          />
         </svg>
       </div>
     </div>
