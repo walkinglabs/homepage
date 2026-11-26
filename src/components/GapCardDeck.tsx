@@ -21,26 +21,26 @@ function StackedCardItem({
   const t = (pair: BiText) => (lang === 'zh' ? pair[1] : pair[0])
 
   const isLast = idx === total - 1
-  // Compute smooth progressive recession as subsequent cards glide over this card
+  // Tight 1:1 progressive recession locked directly to each incoming card's overlap
   const start = idx / Math.max(1, total - 1)
-  const targetScale = reducedMotion ? 1 : 1 - (total - 1 - idx) * 0.052
-  const targetVeil = isLast ? 0 : Math.min(0.66, (total - 1 - idx) * 0.34)
+  const targetScale = reducedMotion ? 1 : 1 - (total - 1 - idx) * 0.038
+  const targetVeil = isLast ? 0 : Math.min(0.56, (total - 1 - idx) * 0.28)
 
   const scale = useTransform(progress, [start, 1], [1, isLast ? 1 : targetScale])
   const veilOpacity = useTransform(progress, [start, 1], [0, targetVeil])
 
   return (
     <div
-      className={`sticky ${isLast ? 'mb-2' : 'mb-[24vh] sm:mb-[28vh]'}`}
+      className={`sticky ${isLast ? 'mb-2' : 'mb-6 sm:mb-8'}`}
       style={{
-        top: `calc(84px + ${idx * 22}px)`,
+        top: `calc(84px + ${idx * 16}px)`,
         zIndex: 10 + idx * 10,
       }}
     >
       <motion.article
         data-ambient-motion
         style={{ scale }}
-        className="frosted-stack-card relative grid min-h-[420px] origin-top will-change-transform md:grid-cols-2"
+        className="frosted-stack-card relative grid min-h-[396px] origin-top will-change-transform md:grid-cols-[0.92fr_1.08fr]"
       >
         {/* Subtle recession dimming veil as newer cards stack over this card */}
         {!isLast && (
@@ -53,7 +53,7 @@ function StackedCardItem({
 
         {/* Left/Text Frosted Half */}
         <div
-          className={`relative z-10 flex flex-col justify-between p-8 sm:p-11 ${
+          className={`relative z-10 flex flex-col justify-between p-7 sm:p-10 ${
             card.flipped ? 'md:order-2' : ''
           }`}
         >
@@ -64,12 +64,12 @@ function StackedCardItem({
             >
               {card.num}
             </span>
-            <h3 className="t-display mt-5 text-[clamp(1.7rem,1.3rem+1.1vw,2.15rem)] leading-[1.04] text-[#edf5fa]">
+            <h3 className="t-display mt-5 text-[clamp(1.65rem,1.25rem+1.05vw,2.1rem)] leading-[1.06] text-[#edf5fa]">
               {t(card.title)}
             </h3>
           </div>
 
-          <div className="mt-10 pt-2">
+          <div className="mt-8 pt-2">
             <p className="t-body max-w-[40ch] text-[14.5px] text-[#edf5fa]/78">
               {t(card.body)}
             </p>
@@ -92,13 +92,13 @@ function StackedCardItem({
           </div>
         </div>
 
-        {/* Right/Diagram Frosted Grain Pane */}
+        {/* Right/Authentic Figure Plate Half */}
         <div
-          className={`frosted-pane relative z-10 flex items-center justify-center p-4 ${
+          className={`frosted-pane relative z-10 flex items-stretch justify-center p-4 sm:p-5 ${
             card.flipped ? 'md:order-1' : ''
           }`}
         >
-          <GapDiagram variant={card.diagram} />
+          <GapDiagram variant={card.diagram} lang={lang} />
         </div>
       </motion.article>
     </div>
@@ -106,15 +106,15 @@ function StackedCardItem({
 }
 
 /* ============================================================================
-   STACKED SCROLL-FLIPPING CARD DECK (01 -> 02 -> 03)
-   Each card pins with a stepped top rim; scrolling down glides the next card
-   smoothly on top while receding cards scale back and dim behind it.
+   STACKED SCROLL-FLIPPING CARD DECK (1 -> 2 -> 3)
+   Tight initial spacing (24-32px) + 1:1 overlap scroll lock so Card 2 peeks
+   immediately beneath Card 1 and glides into place responsively as you scroll.
    ============================================================================ */
 export function GapCardDeck({ lang }: { lang: Lang }) {
   const deckRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: deckRef,
-    offset: ['start start', 'end end'],
+    offset: ['start 84px', 'end 520px'],
   })
 
   return (

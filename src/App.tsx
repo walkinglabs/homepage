@@ -606,7 +606,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="mt-20 sm:mt-24">
+              <div className="mt-14 sm:mt-16">
                 {/* 3 Sticky Overlapping Scroll-Flipping Frosted Glass Cards (1 -> 2 -> 3) */}
                 <GapCardDeck lang={lang} />
               </div>

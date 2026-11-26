@@ -378,16 +378,16 @@ pre {
 /* Soft luminous clouds behind #problem so frosted glass cards glow through */
 .problem-nebula {
   background:
-    radial-gradient(62% 42% at 22% 28%, rgba(14, 165, 233, 0.34), transparent 72%),
-    radial-gradient(56% 38% at 78% 48%, rgba(0, 214, 164, 0.28), transparent 70%),
+    radial-gradient(62% 42% at 22% 28%, rgba(14, 165, 233, 0.32), transparent 72%),
+    radial-gradient(56% 38% at 78% 48%, rgba(99, 102, 241, 0.24), transparent 70%),
     radial-gradient(60% 42% at 32% 76%, rgba(37, 99, 235, 0.32), transparent 72%),
-    radial-gradient(50% 35% at 72% 88%, rgba(56, 189, 248, 0.22), transparent 72%),
-    linear-gradient(180deg var(--in-oklab), #040914 0%, #07192c 48%, #03060c 100%);
+    radial-gradient(50% 35% at 72% 88%, rgba(129, 140, 248, 0.20), transparent 72%),
+    linear-gradient(180deg var(--in-oklab), #040914 0%, #07172d 48%, #03060c 100%);
 }
 
 .results-atmosphere {
   background:
-    radial-gradient(1600px 1500px at calc(50% + 70px) 0%, rgba(14, 165, 233, 0.28), rgba(0, 214, 164, 0.14) 42%, rgba(3, 6, 12, 0.04) 76%),
+    radial-gradient(1600px 1500px at calc(50% + 70px) 0%, rgba(14, 165, 233, 0.26), rgba(99, 102, 241, 0.14) 42%, rgba(3, 6, 12, 0.04) 76%),
     #03060c;
 }
 

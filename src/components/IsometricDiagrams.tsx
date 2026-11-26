@@ -1,54 +1,9 @@
 import { useEffect, useId, useRef, useState, type RefObject } from 'react'
 import { motion, useScroll, useTransform, type MotionValue } from 'motion/react'
 import { ArrowUpRight } from 'lucide-react'
-import { type buildShowcases, type Lang } from '@/data'
+import { siteMeta, type buildShowcases, type Lang } from '@/data'
+import { publicAsset } from '@/lib/utils'
 import { Cube3D } from './ShadersAndEffects'
-
-function IsoCubeSvg({
-  cx,
-  cy,
-  r = 46,
-  dashed = false,
-  highlight = false,
-}: {
-  cx: number
-  cy: number
-  r?: number
-  dashed?: boolean
-  highlight?: boolean
-}) {
-  const dx = r * 0.866
-  const dy = r * 0.5
-  const top = `${cx},${cy - r} ${cx + dx},${cy - dy} ${cx},${cy} ${cx - dx},${cy - dy}`
-  const left = `${cx - dx},${cy - dy} ${cx},${cy} ${cx},${cy + r} ${cx - dx},${cy + dy}`
-  const right = `${cx + dx},${cy - dy} ${cx + dx},${cy + dy} ${cx},${cy + r} ${cx},${cy}`
-
-  return (
-    <g className="iso-cube cursor-pointer">
-      <polygon
-        points={top}
-        fill={highlight ? 'rgba(56, 189, 248, 0.14)' : 'rgba(237, 245, 250, 0.08)'}
-        stroke={highlight ? 'rgba(125, 211, 252, 0.84)' : 'rgba(237, 245, 250, 0.44)'}
-        strokeWidth={highlight ? '1.15' : '0.95'}
-        strokeDasharray={dashed ? '4 4' : undefined}
-      />
-      <polygon
-        points={left}
-        fill={highlight ? 'rgba(56, 189, 248, 0.11)' : 'rgba(237, 245, 250, 0.04)'}
-        stroke={highlight ? 'rgba(56, 189, 248, 0.72)' : 'rgba(237, 245, 250, 0.30)'}
-        strokeWidth={highlight ? '1.1' : '0.9'}
-        strokeDasharray={dashed ? '4 4' : undefined}
-      />
-      <polygon
-        points={right}
-        fill={highlight ? 'rgba(56, 189, 248, 0.07)' : 'rgba(3, 6, 12, 0.24)'}
-        stroke={highlight ? 'rgba(56, 189, 248, 0.72)' : 'rgba(237, 245, 250, 0.36)'}
-        strokeWidth={highlight ? '1.1' : '0.9'}
-        strokeDasharray={dashed ? '4 4' : undefined}
-      />
-    </g>
-  )
-}
 
 /* ============================================================================
    HERO 3D STAGE (Interactive frosted glass cube -> coordinated StarProgressFlight refs)
@@ -171,131 +126,112 @@ export function HeroCubeStage({
 }
 
 /* ============================================================================
-   FROSTED GAP DIAGRAMS — Pure silent glass prisms + bold editorial Swiss typography
-   (Zero tiny monospace cube buzzwords, zero boxy HUD tags)
+   AUTHENTIC WALKINGLAB RESEARCH & COURSE PLATES (Section 1 Stacked Deck Visuals)
+   Replaces generic isometric wireframe boxes with real WalkingLab architecture
+   diagrams & live bilingual Lecture 01 screenshots framed in the unified
+   painterly film-grain glacier stage.
    ============================================================================ */
-const posterTypeStyle = {
-  fontFamily: 'var(--font-display)',
-  background:
-    'linear-gradient(180deg, rgba(237, 245, 250, 0.16) 0%, rgba(169, 219, 232, 0.06) 68%, rgba(169, 219, 232, 0.01) 100%)',
-  WebkitBackgroundClip: 'text',
-  backgroundClip: 'text',
-  color: 'transparent',
+const GAP_PLATES = {
+  cubes3: {
+    mist: 'radial-gradient(86% 84% at 16% 18%, #9cb5c6 0%, transparent 56%), radial-gradient(80% 82% at 86% 22%, #7194b4 0%, transparent 55%), radial-gradient(92% 90% at 52% 82%, #19365b 0%, transparent 64%), linear-gradient(134deg, #435e7a 0%, #274064 48%, #12213b 86%, #1f3958 100%)',
+    href: 'https://github.com/walkinglabs/hands-on-world-models',
+    repo: 'hands-on-world-models',
+    caption: ['World Model · Latent Dynamics & Rollout', '世界模型 · 隐空间动力学与前向推演'] as const,
+    alt: ['World Model latent dynamics and forward rollout diagram', '世界模型隐空间动力学与前向推演架构图'] as const,
+  },
+  orbitRisk: {
+    mist: 'radial-gradient(84% 82% at 18% 18%, #a4b4c8 0%, transparent 54%), radial-gradient(80% 80% at 84% 24%, #7996ba 0%, transparent 55%), radial-gradient(90% 90% at 50% 80%, #1f3762 0%, transparent 64%), linear-gradient(135deg, #475b7c 0%, #2c4168 46%, #152342 84%, #253d60 100%)',
+    href: 'https://github.com/walkinglabs/modern-llm-notebook',
+    repo: 'modern-llm-notebook',
+    caption: ['Modern LLM · End-to-End Training Stack', '现代大模型 · 全链路透明训练架构'] as const,
+    alt: ['Modern LLM Notebook end-to-end training workflow from raw text to evaluation', 'Modern LLM Notebook 从原始语料到预训练与微调的完整链路图'] as const,
+  },
+  gapBridge: {
+    mist: 'radial-gradient(88% 85% at 14% 16%, #9cb5c4 0%, transparent 56%), radial-gradient(78% 82% at 88% 18%, #7d9eb8 0%, transparent 55%), radial-gradient(90% 90% at 58% 76%, #23426b 0%, transparent 62%), linear-gradient(132deg, #49617b 0%, #31496e 44%, #182b4b 82%, #264262 100%)',
+    href: siteMeta.courseUrl,
+    repo: 'learn-harness-engineering',
+    caption: ['Lecture 01 · Runnable Code & Project 01', '第 1 讲 · 配套代码与实战项目'] as const,
+    alt: ['Learn Harness Engineering Lecture 01 live course page', 'Learn Harness Engineering 第 1 讲真实课程页面'] as const,
+  },
 } as const
 
-const posterTypeAccentStyle = {
-  fontFamily: 'var(--font-display)',
-  background:
-    'linear-gradient(180deg, rgba(169, 219, 232, 0.22) 0%, rgba(56, 189, 248, 0.10) 68%, rgba(169, 219, 232, 0.01) 100%)',
-  WebkitBackgroundClip: 'text',
-  backgroundClip: 'text',
-  color: 'transparent',
-} as const
-
-export function GapDiagram({ variant }: { variant: 'cubes3' | 'orbitRisk' | 'gapBridge' }) {
-  if (variant === 'cubes3') {
-    return (
-      <div className="relative flex h-full min-h-[300px] w-full items-center justify-center overflow-hidden p-6">
-        {/* Bold editorial background typography anchored cleanly off-axis */}
-        <span
-          aria-hidden="true"
-          style={posterTypeStyle}
-          className="pointer-events-none absolute top-5 left-6 select-none text-[50px] leading-[0.88] font-bold tracking-[-0.06em] sm:text-[62px]"
-        >
-          Frontier
-        </span>
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute right-6 bottom-5 flex items-baseline gap-3 select-none text-[19px] font-semibold tracking-[-0.035em]"
-          style={{ fontFamily: 'var(--font-display)' }}
-        >
-          <span className="text-[#edf5fa]/28">RL</span>
-          <span className="text-[#a9dbe8]/46">LLM</span>
-          <span className="text-[#edf5fa]/28">Agent</span>
-        </div>
-
-        <svg viewBox="0 0 420 300" className="relative z-10 h-full w-full" aria-hidden="true">
-          {/* 3 silent sculptural frosted glass cubes stepping diagonally upward */}
-          <IsoCubeSvg cx={154} cy={182} r={44} />
-          <IsoCubeSvg cx={210} cy={150} r={44} highlight />
-          <IsoCubeSvg cx={266} cy={118} r={44} />
-        </svg>
-      </div>
-    )
-  }
-
-  if (variant === 'orbitRisk') {
-    return (
-      <div className="relative flex h-full min-h-[300px] w-full items-center justify-center overflow-hidden p-6">
-        {/* Bold Swiss poster typography framing the transparent orbital core */}
-        <span
-          aria-hidden="true"
-          style={posterTypeStyle}
-          className="pointer-events-none absolute top-5 left-6 select-none text-[52px] leading-[0.88] font-bold tracking-[-0.06em] sm:text-[64px]"
-        >
-          Open
-        </span>
-        <span
-          aria-hidden="true"
-          style={posterTypeAccentStyle}
-          className="pointer-events-none absolute right-6 bottom-4 select-none text-[50px] leading-[0.88] font-bold tracking-[-0.06em] sm:text-[60px]"
-        >
-          System
-        </span>
-
-        <div
-          aria-hidden="true"
-          className="radar-sweep pointer-events-none absolute size-[224px] rounded-full opacity-40"
-        />
-        <svg viewBox="0 0 420 290" className="relative z-10 h-full w-full" aria-hidden="true">
-          <circle cx="210" cy="145" r="106" fill="none" stroke="rgba(237,245,250,0.16)" strokeDasharray="4 7" />
-          <circle cx="210" cy="145" r="68" fill="none" stroke="rgba(56,189,248,0.24)" />
-
-          <circle cx="210" cy="39" r="3" fill="#7dd3fc" fillOpacity="0.88" />
-          <circle cx="316" cy="145" r="3" fill="#38bdf8" fillOpacity="0.85" />
-          <circle cx="104" cy="145" r="2.5" fill="#edf5fa" fillOpacity="0.65" />
-
-          <IsoCubeSvg cx={210} cy={145} r={48} highlight />
-        </svg>
-      </div>
-    )
-  }
+export function GapDiagram({
+  variant,
+  lang,
+}: {
+  variant: 'cubes3' | 'orbitRisk' | 'gapBridge'
+  lang: Lang
+}) {
+  const plate = GAP_PLATES[variant]
+  const zh = lang === 'zh'
+  const imgSrc =
+    variant === 'cubes3'
+      ? publicAsset('media/repos/world-models-feature.webp')
+      : variant === 'orbitRisk'
+        ? publicAsset('media/repos/llm-training-workflow.png')
+        : publicAsset(zh ? 'media/shots/zh-lecture-01.png' : 'media/shots/en-lecture-01.png')
 
   return (
-    <div className="relative flex h-full min-h-[300px] w-full items-center justify-center overflow-hidden p-6">
-      {/* Bold sculptural contrast: Paper -> Shipped */}
-      <span
+    <a
+      href={plate.href}
+      target="_blank"
+      rel="noreferrer"
+      className="group/plate relative flex h-full min-h-[296px] w-full flex-col justify-between gap-3.5 overflow-hidden rounded-xl border border-[#edf5fa]/[0.09] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.42)] transition-colors duration-300 hover:border-[#edf5fa]/[0.18] sm:p-5"
+    >
+      {/* Painterly misty glacier backdrop matching Section 2 & Section 4 */}
+      <div
         aria-hidden="true"
-        style={posterTypeStyle}
-        className="pointer-events-none absolute top-5 left-6 select-none text-[50px] leading-[0.88] font-bold tracking-[-0.06em] sm:text-[60px]"
-      >
-        Paper
-      </span>
-      <span
+        className="pointer-events-none absolute inset-0"
+        style={{ background: plate.mist }}
+      />
+      <div aria-hidden="true" className="course-film-grain pointer-events-none absolute inset-0 opacity-30" />
+      <div
         aria-hidden="true"
-        style={posterTypeAccentStyle}
-        className="pointer-events-none absolute right-6 bottom-4 select-none text-[50px] leading-[0.88] font-bold tracking-[-0.06em] sm:text-[60px]"
-      >
-        Shipped
-      </span>
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(180deg, rgba(6, 12, 24, 0.06) 0%, rgba(6, 12, 24, 0.02) 60%, rgba(4, 9, 18, 0.56) 100%)',
+        }}
+      />
 
-      <svg viewBox="0 0 420 230" className="relative z-10 h-auto w-full" aria-hidden="true">
-        <line x1="146" y1="115" x2="274" y2="115" stroke="rgba(237,245,250,0.12)" strokeWidth="1" />
-        <line
-          x1="146"
-          y1="115"
-          x2="274"
-          y2="115"
-          stroke="#38bdf8"
-          strokeWidth="1.4"
-          strokeOpacity="0.78"
-          className="pulse-dash"
+      {/* Crisp floating real architecture diagram / bilingual Lecture 01 plate */}
+      <div
+        className={`relative z-10 my-auto w-full overflow-hidden rounded-[12px] shadow-[0_18px_42px_rgba(3,8,20,0.46)] ring-1 ring-white/35 transition-transform duration-500 ease-out group-hover/plate:-translate-y-0.5 group-hover/plate:scale-[1.015] ${
+          variant === 'cubes3'
+            ? 'bg-white p-2 sm:p-2.5'
+            : variant === 'orbitRisk'
+              ? 'bg-white px-2.5 py-4 sm:px-3.5 sm:py-5'
+              : 'bg-[#f7f6f2]'
+        }`}
+      >
+        <img
+          src={imgSrc}
+          alt={zh ? plate.alt[1] : plate.alt[0]}
+          loading="lazy"
+          decoding="async"
+          className={
+            variant === 'gapBridge'
+              ? 'block aspect-[16/10] w-full object-cover object-left-top'
+              : 'block h-auto w-full rounded-[6px] object-contain'
+          }
         />
+      </div>
 
-        <IsoCubeSvg cx={102} cy={115} r={46} />
-        <IsoCubeSvg cx={318} cy={115} r={46} dashed highlight />
-      </svg>
-    </div>
+      {/* Quiet editorial figure caption */}
+      <div className="relative z-10 flex items-center justify-between gap-3 pt-0.5 text-[12.5px]">
+        <span className="truncate text-[#edf5fa]/78">
+          {zh ? plate.caption[1] : plate.caption[0]}
+        </span>
+        <span className="inline-flex shrink-0 items-center gap-1 text-[#edf5fa]/52 transition-colors duration-200 group-hover/plate:text-white">
+          <span className="hidden sm:inline">{plate.repo}</span>
+          <ArrowUpRight
+            className="size-3.5 transition-transform duration-200 group-hover/plate:translate-x-0.5 group-hover/plate:-translate-y-0.5"
+            strokeWidth={1.7}
+            aria-hidden="true"
+          />
+        </span>
+      </div>
+    </a>
   )
 }
 
@@ -330,7 +266,7 @@ const frontierDetails = [
     roman: 'IV',
     label: 'Reinforcement Learning',
     metric: '26 Chapters · 4.9k ★',
-    mist: 'radial-gradient(84% 82% at 18% 20%, #8fb8be 0%, transparent 56%), radial-gradient(82% 84% at 86% 24%, #6a99ad 0%, transparent 56%), radial-gradient(92% 88% at 54% 82%, #193d54 0%, transparent 64%), linear-gradient(138deg, #3c6173 0%, #264a66 48%, #152b44 82%, #214a5c 100%)',
+    mist: 'radial-gradient(84% 82% at 18% 20%, #98b4cc 0%, transparent 56%), radial-gradient(82% 84% at 86% 24%, #6f94bc 0%, transparent 56%), radial-gradient(92% 88% at 54% 82%, #1b3662 0%, transparent 64%), linear-gradient(138deg, #3e5b7d 0%, #27446c 48%, #142548 82%, #223e64 100%)',
     desc: ['From CartPole and DQN to PPO, RLHF, DPO, GRPO, and RLVR.', '从 CartPole、DQN 贯通 PPO、DPO、GRPO 与 RLVR。'],
   },
   {
@@ -344,7 +280,7 @@ const frontierDetails = [
     roman: 'VI',
     label: 'Embodied Intelligence',
     metric: 'Perception → Action',
-    mist: 'radial-gradient(84% 84% at 16% 22%, #90b2bd 0%, transparent 56%), radial-gradient(80% 82% at 86% 20%, #6c92a6 0%, transparent 55%), radial-gradient(92% 88% at 50% 82%, #183a4f 0%, transparent 64%), linear-gradient(134deg, #3c5d6f 0%, #24455d 48%, #13283d 84%, #1e4155 100%)',
+    mist: 'radial-gradient(84% 84% at 16% 22%, #97aec6 0%, transparent 56%), radial-gradient(80% 82% at 86% 20%, #718eb5 0%, transparent 55%), radial-gradient(92% 88% at 50% 82%, #1b355e 0%, transparent 64%), linear-gradient(134deg, #3f5878 0%, #264066 48%, #132444 84%, #213a5e 100%)',
     desc: ['Closed-loop perception, planning, VLA, and robotic control.', '感知、规划、VLA 与具身控制闭环。'],
   },
   {
@@ -839,11 +775,11 @@ const COURSE_MIST_BACKDROPS: Record<string, string> = {
   harness:
     'radial-gradient(88% 85% at 14% 16%, #9cb5c4 0%, transparent 56%), radial-gradient(78% 82% at 88% 18%, #8ea8b8 0%, transparent 55%), radial-gradient(90% 90% at 62% 72%, #294670 0%, transparent 62%), linear-gradient(132deg, #4b627b 0%, #394d72 44%, #1f3354 78%, #2e4866 100%)',
   rl:
-    'radial-gradient(84% 82% at 18% 20%, #8fb8be 0%, transparent 56%), radial-gradient(82% 84% at 86% 24%, #6a99ad 0%, transparent 56%), radial-gradient(92% 88% at 54% 82%, #193d54 0%, transparent 64%), linear-gradient(138deg, #3c6173 0%, #264a66 48%, #152b44 82%, #214a5c 100%)',
+    'radial-gradient(84% 82% at 18% 20%, #98b4cc 0%, transparent 56%), radial-gradient(82% 84% at 86% 24%, #6f94bc 0%, transparent 56%), radial-gradient(92% 88% at 54% 82%, #1b3662 0%, transparent 64%), linear-gradient(138deg, #3e5b7d 0%, #27446c 48%, #142548 82%, #223e64 100%)',
   llm:
     'radial-gradient(82% 80% at 16% 18%, #a6b4c8 0%, transparent 54%), radial-gradient(80% 80% at 85% 22%, #7f98ba 0%, transparent 54%), radial-gradient(90% 90% at 48% 76%, #243866 0%, transparent 62%), linear-gradient(135deg, #4a5b7c 0%, #2f4168 46%, #182546 80%, #2b3f63 100%)',
   world:
-    'radial-gradient(86% 84% at 18% 18%, #95b9be 0%, transparent 56%), radial-gradient(80% 82% at 86% 22%, #7baab6 0%, transparent 54%), radial-gradient(92% 88% at 58% 78%, #1c445c 0%, transparent 62%), linear-gradient(134deg, #426474 0%, #2b4e69 46%, #162c45 80%, #264c5f 100%)',
+    'radial-gradient(86% 84% at 18% 18%, #9cb4ca 0%, transparent 56%), radial-gradient(80% 82% at 86% 22%, #7898be 0%, transparent 54%), radial-gradient(92% 88% at 58% 78%, #1e3b68 0%, transparent 62%), linear-gradient(134deg, #435e80 0%, #2b4770 46%, #15274a 80%, #254168 100%)',
 }
 
 function ThinkingDots() {
