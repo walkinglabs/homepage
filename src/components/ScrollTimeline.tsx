@@ -19,9 +19,7 @@ const RULER_BARS = Array.from({ length: 260 }, (_, idx) => {
     0.12 * Math.sin(idx * 0.63)
   const major = idx % 8 === 0
   const heightPct = Math.round(Math.max(16, Math.min(98, wave * (major ? 104 : 84))))
-  // Smooth aurora bands alternating violet & electric sapphire across the 260 sculptural bars
-  const violetBand = Math.sin(idx * 0.085) > 0
-  return { major, heightPct, violetBand }
+  return { major, heightPct }
 })
 
 export function ScrollTimeline({ lang }: { lang: Lang }) {
@@ -104,12 +102,8 @@ export function ScrollTimeline({ lang }: { lang: Lang }) {
               <div className="t-step-num t-gradient">{methodSteps[activeStep].num}</div>
 
               <div className="my-3.5 flex flex-col items-center" aria-hidden="true">
-                <div
-                  className={`size-1.5 rounded-full transition-colors duration-300 ${
-                    activeStep % 2 === 1 ? 'bg-[#c084fc]' : 'bg-[#60a5fa]'
-                  }`}
-                />
-                <div className="h-7 w-px bg-[#eff2fb]/18" />
+                <div className="size-1.5 rounded-full bg-[#00e5b0]" />
+                <div className="h-7 w-px bg-[#edf5fa]/18" />
               </div>
 
               <BoxTag accent>{t(methodSteps[activeStep].tag)}</BoxTag>
@@ -154,12 +148,8 @@ export function ScrollTimeline({ lang }: { lang: Lang }) {
                   width: bar.major ? '4.5px' : '3px',
                   height: `${bar.heightPct}%`,
                   background: bar.major
-                    ? bar.violetBand
-                      ? 'linear-gradient(180deg, rgba(216, 180, 254, 0.66) 0%, rgba(168, 85, 247, 0.32) 62%, rgba(124, 58, 237, 0.08) 100%)'
-                      : 'linear-gradient(180deg, rgba(147, 197, 253, 0.66) 0%, rgba(56, 189, 248, 0.30) 62%, rgba(37, 99, 235, 0.08) 100%)'
-                    : bar.violetBand
-                      ? 'linear-gradient(180deg, rgba(233, 213, 255, 0.36) 0%, rgba(168, 85, 247, 0.16) 65%, rgba(124, 58, 237, 0.04) 100%)'
-                      : 'linear-gradient(180deg, rgba(224, 242, 254, 0.36) 0%, rgba(96, 165, 250, 0.16) 65%, rgba(37, 99, 235, 0.04) 100%)',
+                    ? 'linear-gradient(180deg, rgba(125, 240, 224, 0.62) 0%, rgba(56, 189, 248, 0.28) 65%, rgba(14, 165, 233, 0.08) 100%)'
+                    : 'linear-gradient(180deg, rgba(237, 245, 250, 0.34) 0%, rgba(169, 219, 232, 0.16) 65%, rgba(169, 219, 232, 0.04) 100%)',
                 }}
               />
             ))}

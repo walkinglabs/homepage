@@ -119,37 +119,37 @@ export function WalkingLabsIcon({
       className={`shrink-0 ${className}`}
     >
       <defs>
-        {/* Understated matte cool-platinum / slate-silver fill for main W */}
+        {/* Understated matte cool-platinum with a subtle lavender-violet metallic tint for main W */}
         <linearGradient id={metalMain} x1="80" y1="0" x2="1120" y2="579" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#c5d0dc" stopOpacity="0.88" />
-          <stop offset="42%" stopColor="#93a2b4" stopOpacity="0.82" />
-          <stop offset="78%" stopColor="#647488" stopOpacity="0.76" />
-          <stop offset="100%" stopColor="#455568" stopOpacity="0.82" />
+          <stop offset="0%" stopColor="#dad3f2" stopOpacity="0.92" />
+          <stop offset="42%" stopColor="#ab9ed1" stopOpacity="0.86" />
+          <stop offset="78%" stopColor="#7a6ea6" stopOpacity="0.80" />
+          <stop offset="100%" stopColor="#564c80" stopOpacity="0.86" />
         </linearGradient>
 
         {/* Soft inner facet shadow for subtle 3D fold depth */}
         <linearGradient id={facetShade} x1="449" y1="0" x2="960" y2="579" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#0b1623" stopOpacity="0.44" />
-          <stop offset="100%" stopColor="#16273a" stopOpacity="0.14" />
+          <stop offset="0%" stopColor="#140e29" stopOpacity="0.46" />
+          <stop offset="100%" stopColor="#231a45" stopOpacity="0.16" />
         </linearGradient>
 
-        {/* Quiet satin bevel rim */}
+        {/* Quiet satin bevel rim with whisper violet sheen */}
         <linearGradient id={edgeSpec} x1="0" y1="0" x2="1241" y2="579" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#dce5ef" stopOpacity="0.4" />
-          <stop offset="55%" stopColor="#9fb0c2" stopOpacity="0.24" />
-          <stop offset="100%" stopColor="#6d8196" stopOpacity="0.16" />
+          <stop offset="0%" stopColor="#ede9fe" stopOpacity="0.46" />
+          <stop offset="55%" stopColor="#b9a8e3" stopOpacity="0.28" />
+          <stop offset="100%" stopColor="#8574b5" stopOpacity="0.18" />
         </linearGradient>
 
-        {/* Restrained cool mist-slate prism fill for detached top-right wing */}
+        {/* Restrained cool lavender-slate prism fill for detached top-right wing */}
         <linearGradient id={wingPrism} x1="1473" y1="0" x2="1118" y2="254" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#bdd1d7" stopOpacity="0.86" />
-          <stop offset="48%" stopColor="#8ba5b2" stopOpacity="0.8" />
-          <stop offset="100%" stopColor="#617c8d" stopOpacity="0.82" />
+          <stop offset="0%" stopColor="#d4c7f5" stopOpacity="0.90" />
+          <stop offset="48%" stopColor="#a492d4" stopOpacity="0.84" />
+          <stop offset="100%" stopColor="#7764ad" stopOpacity="0.86" />
         </linearGradient>
 
         <linearGradient id={wingEdge} x1="1473" y1="0" x2="1118" y2="254" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#d8e6ea" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#7c98a6" stopOpacity="0.22" />
+          <stop offset="0%" stopColor="#ede9fe" stopOpacity="0.46" />
+          <stop offset="100%" stopColor="#9d89d1" stopOpacity="0.26" />
         </linearGradient>
       </defs>
 
@@ -221,9 +221,9 @@ export function WalkingLabsMark({ className = '' }: { className?: string }) {
           >
             <defs>
               <linearGradient id={starFill} x1="580" y1="0" x2="580" y2="42" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#dbe4ec" />
-                <stop offset="55%" stopColor="#a2b5c4" />
-                <stop offset="100%" stopColor="#7a90a2" />
+                <stop offset="0%" stopColor="#f3eefe" />
+                <stop offset="55%" stopColor="#c4b5fd" />
+                <stop offset="100%" stopColor="#937bd6" />
               </linearGradient>
             </defs>
             <path
@@ -289,9 +289,9 @@ export function MonumentalFooterWordmark() {
               <stop offset="100%" stopColor="#edf5fa" stopOpacity="0.16" />
             </linearGradient>
             <radialGradient ref={sheenRef} id={sheenGrad} gradientUnits="userSpaceOnUse" cx="600" cy="92" r="360">
-              <stop offset="0%" stopColor="#bae6fd" stopOpacity="0.34" />
-              <stop offset="60%" stopColor="#60a5fa" stopOpacity="0.14" />
-              <stop offset="100%" stopColor="#60a5fa" stopOpacity="0" />
+              <stop offset="0%" stopColor="#a9f4ee" stopOpacity="0.35" />
+              <stop offset="60%" stopColor="#8ad1fa" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#8ad1fa" stopOpacity="0" />
             </radialGradient>
             <text
               id={glyphs}
