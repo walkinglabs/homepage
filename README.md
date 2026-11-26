@@ -38,3 +38,5 @@ For deployment, configure repository settings:
 3. Push to `main` or manually run the `Deploy to GitHub Pages` workflow.
 
 The workflow builds the Vite app with the `/homepage/` base path and deploys the generated `dist/` directory.
+
+For a versioned release, create an annotated version tag on the same commit pushed to `main`. The push to `main` triggers the deployment.

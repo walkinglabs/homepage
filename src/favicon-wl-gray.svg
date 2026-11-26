@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <!-- Luma-inspired sculpted light-silver / cool-gray 3D prism W (transparent background) -->
+    <linearGradient id="grayMain" x1="60" y1="0" x2="1180" y2="580" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#c9d1da" />
+      <stop offset="42%" stop-color="#9aa3b0" />
+      <stop offset="100%" stop-color="#6d7785" />
+    </linearGradient>
+    <linearGradient id="grayFold" x1="360" y1="0" x2="860" y2="579" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#5d6673" stop-opacity="0.72" />
+      <stop offset="100%" stop-color="#7c8594" stop-opacity="0.28" />
+    </linearGradient>
+    <linearGradient id="grayWing" x1="1473" y1="0" x2="1118" y2="254" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#d7dee6" />
+      <stop offset="100%" stop-color="#9ca6b4" />
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(2.5 20.4) scale(0.0401)">
+    <!-- Main faceted light-gray W -->
+    <path
+      d="M449.337 579L0 0H449.337L571.912 271.776L727.615 0H959.512L1241.1 579H959.512L826.999 271.776L704.425 579H449.337Z"
+      fill="url(#grayMain)"
+      stroke="#848e9c"
+      stroke-width="18"
+      stroke-linejoin="miter"
+      stroke-miterlimit="3"
+    />
+    <!-- Sculpted geometric prism shadow folds -->
+    <path
+      d="M449.337 0L571.912 271.776L704.425 579H449.337L255 190L449.337 0Z"
+      fill="url(#grayFold)"
+    />
+    <path
+      d="M826.999 271.776L959.512 0L1241.1 579H959.512L826.999 271.776Z"
+      fill="url(#grayFold)"
+      fill-opacity="0.6"
+    />
+    <!-- Crisp bright silver highlight ridge -->
+    <path
+      d="M571.912 271.776L704.425 579M727.615 0L571.912 271.776"
+      stroke="#eef2f6"
+      stroke-opacity="0.78"
+      stroke-width="18"
+    />
+    <!-- Floating top-right wing in matching light silver-gray -->
+    <path
+      d="M1473 0H1227.85L1118.53 254.051H1357.05L1473 0Z"
+      fill="url(#grayWing)"
+      stroke="#8e98a6"
+      stroke-width="18"
+      stroke-linejoin="miter"
+      stroke-miterlimit="3"
+    />
+  </g>
+</svg>
