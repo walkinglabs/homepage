@@ -24,8 +24,8 @@
   --accent-sky: #38bdf8;
   --accent-cobalt: #1d4ed8;
 
-  --rail: rgba(237, 245, 250, 0.11);
-  --rail-strong: rgba(237, 245, 250, 0.24);
+  --rail: rgba(237, 245, 250, 0.065);
+  --rail-strong: rgba(237, 245, 250, 0.15);
   --pad: 20px;
 
   --font-display: "Geist", "MiSans", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -63,7 +63,7 @@ html {
   font-family: var(--font-sans);
   font-optical-sizing: auto;
   letter-spacing: -0.01em;
-  line-height: 1.4;
+  line-height: 1.25;
   scroll-behavior: smooth;
   overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
@@ -78,7 +78,7 @@ body {
   text-align: start;
 }
 
-/* Native CSS Scroll-Driven Progress Hairline */
+/* Star-docked Top Scroll Progress Hairline (synchronized 1:1 with StarProgressFlight) */
 #scroll-progress {
   position: fixed;
   top: 0;
@@ -87,23 +87,17 @@ body {
   height: 2px;
   z-index: 90;
   pointer-events: none;
-  background: linear-gradient(90deg var(--in-oklab), var(--accent-cobalt), var(--accent-sky), var(--accent-core));
+  background: linear-gradient(
+    90deg var(--in-oklab),
+    #1d4ed8 0%,
+    #38bdf8 62%,
+    #a9dbe8 90%,
+    #ffffff 100%
+  );
   transform-origin: 0 50%;
   transform: scaleX(0);
-  will-change: transform;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: scroll()) {
-    @keyframes grow-scroll-progress {
-      from { transform: scaleX(0); }
-      to { transform: scaleX(1); }
-    }
-    #scroll-progress {
-      animation: grow-scroll-progress auto linear;
-      animation-timeline: scroll(root block);
-    }
-  }
+  opacity: 0;
+  will-change: transform, opacity;
 }
 
 .frosted-grain {
@@ -111,40 +105,46 @@ body {
   background-size: 96px 96px;
 }
 
-/* Frosted Problem Card — translucent milky-ice wash letting ambient light bleed through */
+/* Frosted Surface Card — soft enterprise glass depth without harsh wireframe outlines */
 .frosted-card {
   position: relative;
-  border: 1px solid rgba(237, 245, 250, 0.14);
+  border-radius: 16px;
+  border: 1px solid rgba(237, 245, 250, 0.075);
   background:
-    radial-gradient(85% 95% at 18% 12%, rgba(237, 245, 250, 0.11), rgba(169, 219, 232, 0.03) 56%, rgba(3, 6, 12, 0.25) 100%);
-  box-shadow: inset 0 1px 0 rgba(237, 245, 250, 0.14);
+    radial-gradient(85% 95% at 18% 12%, rgba(237, 245, 250, 0.09), rgba(169, 219, 232, 0.025) 56%, rgba(3, 6, 12, 0.28) 100%);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(237, 245, 250, 0.09);
 }
 
 /* Deeper smoked-glacier frosted glass for sticky overlapping deck cards (prevents text bleed-through) */
 .frosted-stack-card {
   position: relative;
-  border: 1px solid rgba(237, 245, 250, 0.18);
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid rgba(237, 245, 250, 0.09);
   background:
     radial-gradient(85% 95% at 16% 10%, #172f48, #0c1f38 52%, #050d19 100%);
   box-shadow:
-    0 12px 28px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(237, 245, 250, 0.22);
+    0 18px 44px rgba(0, 0, 0, 0.52),
+    inset 0 1px 0 rgba(237, 245, 250, 0.12);
 }
 
-/* Slightly brighter frosted diagram pane (matches busybox Card 01 right panel) */
+/* Slightly brighter frosted diagram pane (soft tonal contrast without dividing lines) */
 .frosted-pane {
   position: relative;
   background:
-    radial-gradient(80% 80% at 50% 42%, rgba(237, 245, 250, 0.12), rgba(169, 219, 232, 0.04) 68%, rgba(3, 6, 12, 0.12) 100%);
+    radial-gradient(80% 80% at 50% 42%, rgba(237, 245, 250, 0.1), rgba(169, 219, 232, 0.03) 68%, rgba(3, 6, 12, 0.1) 100%);
 }
 
-/* Frosted 4-column Benefit / Community Glass Card (step_20_shot_1 style) */
+/* Frosted 4-column Benefit / Community Glass Card */
 .frosted-bcard {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(237, 245, 250, 0.11);
-  background: linear-gradient(180deg, rgba(237, 245, 250, 0.075), rgba(169, 219, 232, 0.025));
-  box-shadow: inset 0 1px 0 rgba(237, 245, 250, 0.12);
+  border-radius: 14px;
+  border: 1px solid rgba(237, 245, 250, 0.07);
+  background: linear-gradient(180deg, rgba(237, 245, 250, 0.065), rgba(169, 219, 232, 0.02));
+  box-shadow: inset 0 1px 0 rgba(237, 245, 250, 0.08);
   transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -157,14 +157,14 @@ body {
   transition: opacity 0.28s ease;
   background: radial-gradient(
     240px circle at var(--mx, -300px) var(--my, -300px),
-    rgba(237, 245, 250, 0.14),
-    rgba(0, 229, 176, 0.06) 45%,
+    rgba(237, 245, 250, 0.12),
+    rgba(0, 229, 176, 0.05) 45%,
     transparent 75%
   );
 }
 
 .frosted-bcard:hover {
-  border-color: rgba(237, 245, 250, 0.28);
+  border-color: rgba(237, 245, 250, 0.17);
 }
 
 .frosted-bcard:hover::before {
@@ -236,9 +236,15 @@ body {
   font-family: var(--font-sans);
   font-weight: 400;
   letter-spacing: -0.01em;
-  line-height: 1.4;
+  line-height: 1.25;
   text-wrap: pretty;
   overflow-wrap: break-word;
+}
+
+#home:lang(zh),
+.t-body:lang(zh) {
+  letter-spacing: normal;
+  line-height: 1.4;
 }
 
 #problem:lang(en) :is(.about-heading, .about-description) {
@@ -263,21 +269,76 @@ pre {
 }
 
 /* ============================================================
-   STRUCTURAL RAILS & SHARP BOXED TAGS
+   CLEAN ENTERPRISE CONTAINERS + SILKY SIDE-EDGE BLACK VIGNETTE
+   Smoothly feathers atmospheric section washes into pure black edges
+   without harsh vertical box cuts or cramped tunnel framing.
    ============================================================ */
 .rail-928 {
-  width: min(928px, calc(100% - var(--pad) * 2));
+  width: min(960px, calc(100% - var(--pad) * 2));
   margin-inline: auto;
-  border-inline: 1px solid var(--rail);
 }
 
 .rail-1164 {
   width: min(1164px, calc(100% - var(--pad) * 2));
   margin-inline: auto;
-  border-inline: 1px solid var(--rail);
 }
 
-/* Frameless editorial eyebrow / label (matches "Open-Source AI Engineering Lab" Hero style) */
+.section-vignette {
+  position: relative;
+  isolation: isolate;
+}
+
+.section-vignette::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    #000000 0%,
+    rgba(0, 0, 0, 0.92) 3.5%,
+    rgba(0, 0, 0, 0.5) 10%,
+    rgba(0, 0, 0, 0.14) 17%,
+    transparent 24%,
+    transparent 76%,
+    rgba(0, 0, 0, 0.14) 83%,
+    rgba(0, 0, 0, 0.5) 90%,
+    rgba(0, 0, 0, 0.92) 96.5%,
+    #000000 100%
+  );
+}
+
+.section-vignette--editorial::after {
+  background: linear-gradient(
+    90deg,
+    #000000 0%,
+    rgba(0, 0, 0, 0.94) 5%,
+    rgba(0, 0, 0, 0.56) 13%,
+    rgba(0, 0, 0, 0.16) 21%,
+    transparent 29%,
+    transparent 71%,
+    rgba(0, 0, 0, 0.16) 79%,
+    rgba(0, 0, 0, 0.56) 87%,
+    rgba(0, 0, 0, 0.94) 95%,
+    #000000 100%
+  );
+}
+
+@media (max-width: 768px) {
+  .section-vignette::after,
+  .section-vignette--editorial::after {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.65) 0%,
+      transparent 12%,
+      transparent 88%,
+      rgba(0, 0, 0, 0.65) 100%
+    );
+  }
+}
+
+/* Frameless editorial eyebrow / label (larger, calmer muted display scale) */
 .box-tag {
   display: inline-flex;
   align-items: center;
@@ -286,20 +347,20 @@ pre {
   padding: 0;
   background: transparent;
   font-family: var(--font-sans);
-  font-size: 0.9375rem;
+  font-size: 1.0625rem;
   font-weight: 400;
-  line-height: 1.3;
+  line-height: 1.25;
   letter-spacing: -0.01em;
-  color: rgba(169, 219, 232, 0.82);
+  color: rgba(237, 245, 250, 0.44);
 }
 
 .box-tag--accent {
-  color: rgba(169, 219, 232, 0.9);
+  color: rgba(169, 219, 232, 0.56);
 }
 
 .box-tag--sm {
-  font-size: 0.78rem;
-  color: rgba(169, 219, 232, 0.74);
+  font-size: 0.875rem;
+  color: rgba(237, 245, 250, 0.4);
 }
 
 .sq-dot {
@@ -669,7 +730,6 @@ pre {
   gap: 0.28rem;
   color: var(--fg-primary);
   text-decoration: none;
-  letter-spacing: -0.04em;
   padding-bottom: 2px;
 }
 
@@ -715,12 +775,13 @@ pre {
   max-width: 1ch;
 }
 
-/* Scroll-activated frosted solutions/repo row (matches step_10_shot_5.png!) */
+/* Scroll-activated frosted solutions/repo row */
 .srow {
   position: relative;
+  overflow: hidden;
   border-top: 1px solid var(--rail);
-  opacity: 0.44;
-  transition: opacity 0.4s ease, background-color 0.4s ease;
+  opacity: 0.72;
+  transition: opacity 0.4s ease, background-color 0.4s ease, border-radius 0.3s ease;
 }
 
 .srow:last-child {
@@ -734,7 +795,7 @@ pre {
   pointer-events: none;
   opacity: 0;
   background:
-    radial-gradient(62% 110% at 50% 100%, rgba(237, 245, 250, 0.17), rgba(56, 189, 248, 0.08) 46%, transparent 78%);
+    radial-gradient(62% 110% at 50% 100%, rgba(237, 245, 250, 0.12), rgba(56, 189, 248, 0.06) 46%, transparent 78%);
   transition: opacity 0.42s ease;
 }
 

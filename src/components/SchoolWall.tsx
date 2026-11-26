@@ -270,9 +270,9 @@ export function SchoolWall({ lang }: { lang: Lang }) {
     <section
       id="learners"
       aria-labelledby="learner-logos-title"
-      className="border-t border-[var(--rail)] bg-[#040811] py-7"
+      className="section-vignette bg-[#040811]"
     >
-      <div className="mx-auto max-w-[1164px] px-[var(--pad)]">
+      <div className="rail-1164 relative z-10 px-4 py-8 sm:px-6">
         <h2 id="learner-logos-title" className="text-center">
           <button
             type="button"

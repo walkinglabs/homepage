@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react'
 import { Pause, Play } from 'lucide-react'
 import { contributors, type BiText, type Lang } from '@/data'
-import { BoxTag, CornerBrackets } from './Primitives'
+import { BoxTag } from './Primitives'
 
 const globalLocales = [
   'English',
@@ -486,8 +486,7 @@ export function GlobalVoicesSection({ lang }: { lang: Lang }) {
 
   return (
     <div ref={trackRef} className="relative mt-16 h-[205vh] w-full">
-      <div className="sticky top-0 flex h-[100svh] flex-col justify-between overflow-hidden border-y border-[var(--rail)] pt-20 pb-8">
-        <CornerBrackets className="text-[#edf5fa]/50" />
+      <div className="sticky top-0 flex h-[100svh] flex-col justify-between overflow-hidden pt-20 pb-8">
         <MeridianHorizonBackdrop progress={scrollYProgress} reducedMotion={reducedMotion} />
 
         {/* Unified Module Header — airy, minimal, poetic */}
@@ -506,7 +505,7 @@ export function GlobalVoicesSection({ lang }: { lang: Lang }) {
             </h3>
 
             {/* Quiet typographic native-script line */}
-            <p className="mt-3 text-[12.5px] leading-relaxed text-[#a9dbe8]/72">
+            <p className="mt-3.5 text-[14.5px] leading-relaxed text-[#edf5fa]/36">
               {globalLocales.join(' · ')}
             </p>
           </div>
@@ -591,18 +590,18 @@ export function GlobalVoicesSection({ lang }: { lang: Lang }) {
                             </div>
                           </div>
                         </div>
-                        <span className="shrink-0 text-[11px] font-medium text-[#00e5b0]/85">
+                        <span className="shrink-0 text-[12.5px] text-[#edf5fa]/36">
                           {voice.localeTag}
                         </span>
                       </div>
 
-                      <p className="t-body mt-4 text-[13.5px] text-[#edf5fa]/86">
+                      <p className="t-body mt-4 text-[14px] text-[#edf5fa]/84">
                         “{t(voice.quote)}”
                       </p>
 
-                      <div className="mt-4 flex items-center justify-between text-[11.5px] text-[#a9dbe8]/65">
+                      <div className="mt-4 flex items-center justify-between text-[13px] text-[#edf5fa]/36">
                         <span>{voice.metric}</span>
-                        <span className="text-[#00e5b0]">X ↗</span>
+                        <span className="text-[#edf5fa]/52">X ↗</span>
                       </div>
                     </a>
                   ))}

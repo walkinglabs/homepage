@@ -25,7 +25,6 @@ import {
 } from '@/data'
 import {
   BoxTag,
-  CornerBrackets,
   CustomCursor,
   WalkingLabsMark,
   WipeLink,
@@ -36,7 +35,6 @@ import {
 } from '@/components/IsometricDiagrams'
 import {
   ArchitecturalPreloader,
-  BorderBeam,
   FlowingSilkShader,
   FrostedBenefitCard,
   LineReveal,
@@ -48,6 +46,7 @@ import { GlobalVoicesSection } from '@/components/GlobalVoicesSection'
 import { FinaleCurtain } from '@/components/FinaleCurtain'
 import { CourseShowcaseTrack } from '@/components/CourseShowcaseTrack'
 import { GapCardDeck } from '@/components/GapCardDeck'
+import { StarProgressFlight } from '@/components/StarProgressFlight'
 
 const repoIcons = {
   wrench: Wrench,
@@ -68,6 +67,10 @@ export default function App() {
 
   const heroRef = useRef<HTMLElement>(null)
   const pageRef = useRef<HTMLDivElement>(null)
+  const cubeAnchorRef = useRef<HTMLDivElement>(null)
+  const cubeFlightRef = useRef<HTMLDivElement>(null)
+  const cubeRaysRef = useRef<SVGSVGElement>(null)
+  const cubeAxisRef = useRef<HTMLDivElement>(null)
   const repoRefs = useRef<(HTMLElement | null)[]>([])
   const reducedMotion = useReducedMotion()
 
@@ -76,18 +79,15 @@ export default function App() {
     offset: ['start start', 'end start'],
   })
 
-  // Hero surrounding text & bottom meta dissolve cleanly on scroll, leaving only the enlarging 3D cube
-  const heroCopyOpacity = useTransform(heroScroll, [0, 0.04, 0.24], [1, 0.94, 0])
-  const heroCopyY = useTransform(heroScroll, [0, 0.26], [0, reducedMotion ? 0 : -48])
-  const heroCopyScale = useTransform(heroScroll, [0, 0.26], [1, reducedMotion ? 1 : 0.92])
-  const heroBottomOpacity = useTransform(heroScroll, [0, 0.03, 0.2], [1, 0.92, 0])
-  const heroBottomY = useTransform(heroScroll, [0, 0.22], [0, reducedMotion ? 0 : 24])
+  // Hero surrounding text & bottom meta dissolve cleanly on scroll as the cube morphs into the top star
+  const heroCopyOpacity = useTransform(heroScroll, [0, 0.04, 0.22], [1, 0.94, 0])
+  const heroCopyY = useTransform(heroScroll, [0, 0.24], [0, reducedMotion ? 0 : -48])
+  const heroCopyScale = useTransform(heroScroll, [0, 0.24], [1, reducedMotion ? 1 : 0.92])
+  const heroBottomOpacity = useTransform(heroScroll, [0, 0.03, 0.18], [1, 0.92, 0])
+  const heroBottomY = useTransform(heroScroll, [0, 0.2], [0, reducedMotion ? 0 : 24])
   const t = (pair: BiText) => (lang === 'zh' ? pair[1] : pair[0])
 
   useEffect(() => {
-    const progressEl = document.getElementById('scroll-progress')
-    const nativeScrollTimeline =
-      typeof CSS !== 'undefined' && CSS.supports?.('animation-timeline', 'scroll()')
     let raf = 0
     let wasScrolled = false
 
@@ -100,12 +100,6 @@ export default function App() {
         setScrolled(nextScrolled)
       }
       if (y < 120) setMenuOpen(false)
-
-      if (progressEl && !nativeScrollTimeline) {
-        const scrollable = document.documentElement.scrollHeight - window.innerHeight
-        const pct = scrollable > 0 ? Math.min(1, Math.max(0, y / scrollable)) : 0
-        progressEl.style.transform = `scaleX(${pct})`
-      }
     }
 
     const onScroll = () => {
@@ -163,8 +157,13 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div ref={pageRef} id="home" className="relative min-h-screen bg-transparent text-[var(--fg-primary)]">
-        <div id="scroll-progress" aria-hidden="true" />
+      <div ref={pageRef} id="home" lang={lang === 'zh' ? 'zh-CN' : 'en'} className="relative min-h-screen bg-transparent text-[var(--fg-primary)]">
+        <StarProgressFlight
+          cubeAnchorRef={cubeAnchorRef}
+          cubeFlightRef={cubeFlightRef}
+          cubeRaysRef={cubeRaysRef}
+          cubeAxisRef={cubeAxisRef}
+        />
         <ArchitecturalPreloader />
         <CustomCursor />
 
@@ -174,7 +173,7 @@ export default function App() {
         <header
           className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
             scrolled
-              ? 'border-[#edf5fa]/15 bg-[#070c16]/95'
+              ? 'border-[#edf5fa]/[0.06] bg-[#050a14]/86 backdrop-blur-md'
               : 'border-transparent bg-transparent'
           }`}
         >
@@ -272,12 +271,11 @@ export default function App() {
                 >
                   <path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.64 3.01 8.58 7.18 9.97.52.1.72-.23.72-.5 0-.25-.01-1.08-.01-1.95-2.92.63-3.54-1.24-3.54-1.24-.48-1.22-1.17-1.54-1.17-1.54-.95-.65.07-.64.07-.64 1.06.07 1.61 1.08 1.61 1.08.94 1.61 2.46 1.14 3.06.88.09-.68.37-1.15.67-1.41-2.33-.26-4.78-1.16-4.78-5.18 0-1.14.41-2.08 1.08-2.81-.11-.27-.47-1.33.1-2.77 0 0 .88-.28 2.89 1.07A10.1 10.1 0 0 1 12 6.84c.89 0 1.79.12 2.63.36 2-1.36 2.88-1.07 2.88-1.07.57 1.44.21 2.5.1 2.77.67.73 1.08 1.67 1.08 2.81 0 4.03-2.46 4.91-4.8 5.17.38.33.71.97.71 1.95 0 1.41-.01 2.55-.01 2.9 0 .28.19.61.72.5A10.51 10.51 0 0 0 22.5 12C22.5 6.2 17.8 1.5 12 1.5Z" />
                 </svg>
-                <span className="relative z-10 tracking-[-0.015em]">
+                <span className="relative z-10">
                   {t(['Browse GitHub', '浏览 GitHub'])}
                 </span>
-                <span aria-hidden="true" className="relative z-10 h-3.5 w-px bg-white/15" />
-                <span className="relative z-10 inline-flex items-center gap-1 text-[12.5px] text-[#edf5fa]/82 tabular-nums">
-                  <Star className="size-3 fill-[#edf5fa]/15 stroke-[#edf5fa]/75" strokeWidth={1.6} aria-hidden="true" />
+                <span className="relative z-10 ml-0.5 inline-flex items-center gap-1 text-[12.5px] text-[#edf5fa]/72 tabular-nums">
+                  <Star className="size-3 fill-[#edf5fa]/15 stroke-[#edf5fa]/70" strokeWidth={1.6} aria-hidden="true" />
                   {siteMeta.stars}
                 </span>
                 <ArrowUpRight
@@ -334,14 +332,19 @@ export default function App() {
 
         <main>
           {/* ================================================================
-              HERO SECTION (Combed Silk-Fiber Shader + Scroll-Parallax 3D Cube)
-              Short 138vh sticky stage: surrounding copy dissolves on scroll,
-              leaving ONLY the enlarging 3D cube over the flowing silk waves.
+              HERO SECTION (Combed Silk-Fiber Shader + Cube -> Star -> Progress Bar)
+              155vh sticky stage: surrounding copy dissolves on scroll while the 3D
+              cube shrinks, morphs into a crystal star, and docks onto the top bar.
              ================================================================ */}
-          <section ref={heroRef} className="relative h-[138vh] w-full">
+          <section ref={heroRef} className="relative h-[155vh] w-full">
             <div data-ambient-motion className="sticky top-0 flex h-[100dvh] flex-col justify-between overflow-hidden pt-24 pb-8">
               <FlowingSilkShader />
-              <HeroCubeStage heroRef={heroRef} />
+              <HeroCubeStage
+                cubeAnchorRef={cubeAnchorRef}
+                cubeFlightRef={cubeFlightRef}
+                cubeRaysRef={cubeRaysRef}
+                cubeAxisRef={cubeAxisRef}
+              />
 
               {/* Left-Middle Headline Group — pointer-events-none wrapper lets the interactive 3D cube receive clicks/drags */}
               <div className="pointer-events-none relative z-[14] mx-auto flex w-full max-w-[1440px] flex-1 items-center px-[var(--pad)]">
@@ -389,14 +392,13 @@ export default function App() {
                     target="_blank"
                     rel="noreferrer"
                     aria-label="Open WalkingLab on GitHub"
-                    className="group/ghbar relative mt-8 inline-flex max-w-full items-center gap-3 border border-[#edf5fa]/22 bg-[#03060c]/85 px-3.5 py-2 font-mono text-[11px] text-[#a9dbe8] transition-colors duration-200 hover:border-[#edf5fa]/40"
+                    className="group/ghbar relative mt-8 inline-flex max-w-full items-center gap-3 rounded-lg border border-[#edf5fa]/[0.11] bg-[#040914]/78 px-3.5 py-2 font-mono text-[11px] text-[#a9dbe8] backdrop-blur-md transition-colors duration-200 hover:border-[#edf5fa]/25 hover:bg-[#071122]/85"
                   >
-                    <BorderBeam size={58} duration={6.2} />
                     <Terminal className="size-3.5 shrink-0 text-[#00e5b0]" aria-hidden="true" />
                     <code className="truncate text-[#edf5fa]/90 transition-colors group-hover/ghbar:text-white">
                       {siteMeta.github}
                     </code>
-                    <span className="ml-1 inline-flex shrink-0 items-center gap-1 border border-[var(--rail)] bg-[#edf5fa]/10 px-2 py-0.5 text-[10px] text-[#edf5fa] transition-colors duration-200 group-hover/ghbar:border-[#edf5fa]/40 group-hover/ghbar:bg-[#edf5fa]/18">
+                    <span className="ml-1 inline-flex shrink-0 items-center gap-1 rounded-md bg-[#edf5fa]/10 px-2 py-0.5 text-[10px] text-[#edf5fa] transition-colors duration-200 group-hover/ghbar:bg-[#edf5fa]/18">
                       <span>{t(['Click', '点击'])}</span>
                       <ArrowUpRight
                         className="size-2.5 text-[#edf5fa]/80 transition-transform duration-200 group-hover/ghbar:translate-x-0.5 group-hover/ghbar:-translate-y-0.5 group-hover/ghbar:text-white"
@@ -472,9 +474,6 @@ export default function App() {
                     <Star className="size-3.5 fill-[#00e5b0]/25 stroke-[#00e5b0]" strokeWidth={1.6} aria-hidden="true" />
                     {siteMeta.stars} {t(['stars', '星标'])}
                   </a>
-                  <span aria-hidden="true" className="hidden font-mono text-sm text-[#edf5fa]/65 sm:inline">
-                    ┘
-                  </span>
                 </div>
               </motion.div>
             </div>
@@ -486,11 +485,11 @@ export default function App() {
           <SchoolWall lang={lang} />
 
           {/* ================================================================
-              SECTION 1 — ABOUT WALKINGLABS (Diffused Nebula + True Frosted Glass Cards!)
+              SECTION 1 — ABOUT WALKINGLAB (Silky Feathered Side Vignette + Seamless Metrics + Deck)
              ================================================================ */}
-          <section id="problem" lang={lang === 'zh' ? 'zh-CN' : 'en'} className="problem-nebula relative border-y border-[var(--rail)]">
-            <div className="rail-928 py-24 sm:py-32">
-              <div className="flex flex-col items-center px-6 text-center">
+          <section id="problem" lang={lang === 'zh' ? 'zh-CN' : 'en'} className="problem-nebula section-vignette section-vignette--editorial">
+            <div className="rail-928 relative z-10 px-4 py-24 sm:px-6 sm:py-32">
+              <div className="flex flex-col items-center text-center">
                 <BoxTag accent>{t(['About WalkingLab', '关于 WalkingLab'])}</BoxTag>
                 <LineReveal>
                   <h2 className="about-heading t-display t-h2-md mt-6 max-w-[16ch]">
@@ -510,8 +509,8 @@ export default function App() {
                   ])}
                 </p>
 
-                {/* Frosted Glass Metrics Strip */}
-                <div className="frosted-card frosted-grain mt-11 grid w-full max-w-[740px] grid-cols-2 sm:grid-cols-4">
+                {/* Seamless Rounded Frosted Glass Metrics Bar (zero internal divider lines) */}
+                <div className="frosted-card frosted-grain mt-12 grid w-full max-w-[760px] grid-cols-2 px-3 py-1.5 sm:grid-cols-4">
                   {[
                     { value: 33.2, decimals: 1, suffix: 'k', label: t(['GitHub stars', 'GitHub 星标']) },
                     { value: 11, decimals: 0, suffix: '', label: t(['Open repos', '开源仓库']) },
@@ -520,9 +519,7 @@ export default function App() {
                   ].map((stat, idx) => (
                     <div
                       key={stat.label}
-                      className={`px-5 py-5 text-left ${
-                        idx > 0 ? 'border-t border-[var(--rail)] sm:border-t-0 sm:border-l' : ''
-                      }`}
+                      className="px-5 py-5 text-left"
                     >
                       <div
                         className="text-3xl font-medium tracking-[-0.045em] text-[#edf5fa]"
@@ -535,7 +532,7 @@ export default function App() {
                           delay={idx * 110}
                         />
                       </div>
-                      <div className="mt-1 text-[12.5px] text-[#edf5fa]/58">
+                      <div className="mt-1 text-[13px] text-[#edf5fa]/54">
                         {stat.label}
                       </div>
                     </div>
@@ -543,53 +540,43 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="my-20 h-px w-full bg-[var(--rail)]" />
-
-              {/* 3 Sticky Overlapping Scroll-Flipping Frosted Glass Cards (01 -> 02 -> 03) */}
-              <GapCardDeck lang={lang} />
+              <div className="mt-20 sm:mt-24">
+                {/* 3 Sticky Overlapping Scroll-Flipping Frosted Glass Cards (1 -> 2 -> 3) */}
+                <GapCardDeck lang={lang} />
+              </div>
             </div>
           </section>
 
           {/* ================================================================
-              SECTION 2 — CURRICULUM & REPOS (Flowing Streamlines + Hub + Rows)
+              SECTION 2 — CURRICULUM & REPOS (Silky Side Vignette + Streamlines + Gallery + Rows)
              ================================================================ */}
-          <section id="curriculum" className="streamline-field relative border-b border-[var(--rail)] bg-[var(--bg-ground)]">
-            <div className="rail-1164 py-24 sm:py-32">
-              <div className="relative mx-4 border-y border-[var(--rail)] p-8 sm:mx-0 sm:p-16">
-                <CornerBrackets />
+          <section id="curriculum" className="streamline-field section-vignette bg-[var(--bg-ground)]">
+            <div className="rail-1164 relative z-10 px-4 py-24 sm:px-6 sm:py-32">
+              <div className="relative pb-8 sm:pb-12">
                 <BoxTag>{t(['Curriculum', '成长路径与课程'])}</BoxTag>
                 <LineReveal>
-                  <h2 className="t-display t-h2-sm mt-8 max-w-[20ch]">
+                  <h2 className="t-display t-h2-sm mt-6 max-w-[20ch]">
                     <span className="t-gradient">{t(['From curious beginner ', '从零基础初学者，'])}</span>
                     <span className="t-split-muted">
                       {t(['to AI builder & researcher.', '成长为 AI 构建者与研究者。'])}
                     </span>
                   </h2>
                 </LineReveal>
-                <div className="mt-8 flex flex-wrap items-end justify-between gap-6">
-                  <p className="t-body max-w-[52ch] text-[14.5px] text-[#edf5fa]/72">
-                    {t([
-                      'Start with your first runnable notebook, ship real agents and training loops, and grow into reproducing and extending frontier AI research.',
-                      '从第一份可运行代码起步，亲手构建智能体与训练系统，一路进阶到独立复现与探索前沿 AI 研究。',
-                    ])}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-2.5 text-[12.5px] text-[#a9dbe8]/85">
-                    <span className="text-[#edf5fa]/65">{t(['01 Beginner', '01 初学者'])}</span>
-                    <span aria-hidden="true" className="text-[#00e5b0]/70">→</span>
-                    <span className="text-[#edf5fa]/85">{t(['02 AI Builder', '02 AI 构建者'])}</span>
-                    <span aria-hidden="true" className="text-[#00e5b0]/70">→</span>
-                    <span className="text-[#5fffe0]">{t(['03 AI Researcher', '03 AI 研究者'])}</span>
-                  </div>
-                </div>
+                <p className="t-body mt-7 max-w-[52ch] text-[14.5px] text-[#edf5fa]/72">
+                  {t([
+                    'Start with your first runnable notebook, ship real agents and training loops, and grow into reproducing and extending frontier AI research.',
+                    '从第一份可运行代码起步，亲手构建智能体与训练系统，一路进阶到独立复现与探索前沿 AI 研究。',
+                  ])}
+                </p>
               </div>
 
               {/* Central Concentric Hub Orbit Diagram */}
-              <div className="px-4 py-10">
+              <div className="py-10">
                 <HubOrbitDiagram lang={lang} />
               </div>
 
-              {/* 6 Scroll-Activated Frosted Rows (exact step_10_shot_5.png glow!) */}
-              <div className="mt-2">
+              {/* 6 Scroll-Activated Frosted Rows */}
+              <div className="mt-4">
                 {repoRows.map((repo, idx) => {
                   const Icon = repoIcons[repo.icon]
                   const isActive = activeRepo === idx
@@ -603,28 +590,34 @@ export default function App() {
                       data-active={isActive || undefined}
                       onMouseEnter={() => setActiveRepo(idx)}
                       onFocus={() => setActiveRepo(idx)}
-                      className={`srow relative grid min-h-[205px] grid-cols-1 gap-6 px-6 py-8 md:grid-cols-[260px_1fr_160px] md:items-stretch md:gap-0 md:px-0 md:py-0 ${
+                      className={`srow relative grid min-h-[195px] grid-cols-1 gap-6 px-4 py-8 md:grid-cols-[240px_1fr_160px] md:items-stretch md:gap-0 md:px-0 md:py-0 ${
                         isActive ? 'frosted-grain' : ''
                       }`}
                     >
-                      {isActive && <CornerBrackets className="text-[#edf5fa]" />}
-
-                      <div className="flex flex-row items-center justify-between gap-3 md:flex-col md:items-start md:border-r md:border-[var(--rail)] md:p-9">
-                        <BoxTag dot>{repo.num}</BoxTag>
-                        <div className="flex items-center gap-2 font-mono text-xs text-[#a9dbe8]/75">
-                          <span className="box-tag box-tag--sm">{repo.lang}</span>
+                      <div className="flex flex-row items-center justify-between gap-3 md:flex-col md:items-start md:p-9">
+                        <span
+                          className={`t-body text-[28px] tabular-nums transition-colors duration-300 ${
+                            isActive ? 'text-[#edf5fa]/88' : 'text-[#edf5fa]/28'
+                          }`}
+                        >
+                          {repo.num}
+                        </span>
+                        <div
+                          className="t-body flex items-center gap-2.5 text-[14px] text-[#edf5fa]/65 tabular-nums"
+                        >
+                          <span>{repo.lang}</span>
+                          <span aria-hidden="true" className="text-[#edf5fa]/18">·</span>
                           <span>★ {repo.stars}</span>
                         </div>
                       </div>
 
-                      <div className="flex flex-col justify-between md:px-10 md:py-9">
+                      <div className="flex flex-col justify-between md:px-8 md:py-9">
                         <h3
-                          className="text-[22px] font-medium tracking-[-0.04em] text-[#edf5fa]"
-                          style={{ fontFamily: 'var(--font-display)' }}
+                          className="t-body text-[22px] text-[#edf5fa]"
                         >
                           {repo.title}
                         </h3>
-                        <p className="t-body mt-5 max-w-[52ch] text-[14.5px] text-[#edf5fa]/70">
+                        <p className="t-body mt-5 max-w-[52ch] text-[15px] text-[#edf5fa]/84">
                           {t(repo.description)}
                         </p>
                       </div>
@@ -642,7 +635,7 @@ export default function App() {
                           external
                           alwaysUnderline
                           arrow
-                          className={`text-sm font-medium transition-opacity duration-300 ${
+                          className={`t-body text-sm transition-opacity duration-300 ${
                             isActive ? 'opacity-100' : 'md:opacity-0'
                           }`}
                         >
@@ -657,125 +650,114 @@ export default function App() {
           </section>
 
           {/* ================================================================
-              SECTION 3 — IMPACT & PINNED SCROLL TIMELINE
-              Part A: Frosted 4-col Benefit Cards (step_20_shot_1.png) + Voices
-              Part B: Sticky 320vh Scroll-Scrubbed Timeline (step_20_shot_3.png)
+              SECTION 3 — IMPACT & PINNED SCROLL TIMELINE (Silky Side Vignette)
              ================================================================ */}
-          <section id="method" className="results-atmosphere relative border-b border-[var(--rail)]">
-            <div className="rail-1164 pt-28 pb-10 sm:pt-36">
-              {/* Corner-bracketed Header */}
-              <div className="relative mx-4 border-y border-[var(--rail)] p-8 sm:mx-0 sm:p-14">
-                <CornerBrackets />
-                <LineReveal>
-                  <h2 className="t-display t-h2-sm max-w-[22ch]">
-                    <span className="t-gradient block">
-                      {t(['Solve the hard problems', '解决你最想解决的，'])}
-                    </span>
-                    <span className="t-split-muted block">
-                      {t(['in your life — and the world.', '生活与世界的疑难杂症。'])}
-                    </span>
-                  </h2>
-                </LineReveal>
-                <div className="mt-14 flex flex-wrap items-end justify-between gap-4">
-                  <p className="t-body max-w-[52ch] text-[14.5px] text-[#edf5fa]/74">
-                    {t([
-                      'Turn what you learn into systems that truly matter — from everyday tools that remove friction in your own life to open-source agents, auditors, and research tackling the world’s toughest problems.',
-                      '把学到的 AI 工程能力变成真正有用的系统——从解决身边日常痛点的实用工具，到直面世界级难题的开源智能体、审计器与前沿复现。',
-                    ])}
-                  </p>
-                  <WipeLink
-                    href={siteMeta.discord}
-                    external
-                    alwaysUnderline
-                    arrow
-                    className="text-sm font-medium"
-                  >
-                    {t(['Share your build', '分享你的作品'])}
-                  </WipeLink>
+          <section id="method" className="results-atmosphere section-vignette">
+            <div className="rail-1164 relative z-10">
+              <div className="px-4 pt-28 pb-10 sm:px-6 sm:pt-36">
+                {/* Open Editorial Section Header */}
+                <div className="relative pb-8 sm:pb-12">
+                  <LineReveal>
+                    <h2 className="t-display t-h2-sm max-w-[22ch]">
+                      <span className="t-gradient block">
+                        {t(['Solve the hard problems', '解决你最想解决的，'])}
+                      </span>
+                      <span className="t-split-muted block">
+                        {t(['in your life — and the world.', '生活与世界的疑难杂症。'])}
+                      </span>
+                    </h2>
+                  </LineReveal>
+                  <div className="mt-10 flex flex-wrap items-end justify-between gap-4">
+                    <p className="t-body max-w-[52ch] text-[14.5px] text-[#edf5fa]/74">
+                      {t([
+                        'Turn what you learn into systems that truly matter — from everyday tools that remove friction in your own life to open-source agents, auditors, and research tackling the world’s toughest problems.',
+                        '把学到的 AI 工程能力变成真正有用的系统——从解决身边日常痛点的实用工具，到直面世界级难题的开源智能体、审计器与前沿复现。',
+                      ])}
+                    </p>
+                    <WipeLink
+                      href={siteMeta.discord}
+                      external
+                      alwaysUnderline
+                      arrow
+                      className="text-sm font-medium"
+                    >
+                      {t(['Share your build', '分享你的作品'])}
+                    </WipeLink>
+                  </div>
                 </div>
-              </div>
 
-              {/* 4-Column Frosted Glass Benefit Cards (exact step_20_shot_1.png proportions!) */}
-              <div className="mt-8 grid gap-5 px-4 sm:grid-cols-2 sm:px-0 lg:grid-cols-4">
-                {communityCards.map((card, i) => {
-                  const Icon = communityIcons[i % communityIcons.length]
-                  return (
-                    <FrostedBenefitCard key={card.url} className="min-h-[278px]">
-                      <a
-                        href={card.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex h-full flex-col justify-between p-5 text-left"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <h3
-                            className="text-[19px] leading-[1.2] font-medium tracking-[-0.03em] text-[#edf5fa]"
-                            style={{ fontFamily: 'var(--font-display)' }}
-                          >
-                            {t(card.title)}
-                          </h3>
-                          <Icon
-                            className="size-5 shrink-0 text-[#edf5fa]/75"
-                            strokeWidth={1.5}
-                            aria-hidden="true"
-                          />
-                        </div>
+                {/* 4-Column Frosted Glass Benefit Cards */}
+                <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                  {communityCards.map((card, i) => {
+                    const Icon = communityIcons[i % communityIcons.length]
+                    return (
+                      <FrostedBenefitCard key={card.url} className="min-h-[278px]">
+                        <a
+                          href={card.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex h-full flex-col justify-between p-5 text-left"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <h3
+                              className="text-[19px] leading-[1.2] font-medium tracking-[-0.03em] text-[#edf5fa]"
+                              style={{ fontFamily: 'var(--font-display)' }}
+                            >
+                              {t(card.title)}
+                            </h3>
+                            <Icon
+                              className="size-5 shrink-0 text-[#edf5fa]/75"
+                              strokeWidth={1.5}
+                              aria-hidden="true"
+                            />
+                          </div>
 
-                        <div className="mt-10">
-                          <p className="t-body text-[13.5px] text-[#edf5fa]/65">
-                            {t(card.body)}
-                          </p>
-                          <p className="mt-3 text-[12px] text-[#a9dbe8]/68">
-                            {card.author} · {card.course}
-                          </p>
-                        </div>
-                      </a>
-                    </FrostedBenefitCard>
-                  )
-                })}
+                          <div className="mt-10">
+                            <p className="t-body text-[13.5px] text-[#edf5fa]/65">
+                              {t(card.body)}
+                            </p>
+                            <p className="mt-3.5 text-[13.5px] text-[#edf5fa]/38">
+                              {card.author} · {card.course}
+                            </p>
+                          </div>
+                        </a>
+                      </FrostedBenefitCard>
+                    )
+                  })}
+                </div>
               </div>
 
               {/* Global Signal World Arc Map + 12 Native Locales + 2-Row Multilingual X Voices */}
               <GlobalVoicesSection lang={lang} />
             </div>
 
-            {/* Part B: TRUE BUSYBOX STICKY PINNED SCROLL TIMELINE (320vh runway!) */}
-            <div className="rail-1164">
+            {/* Part B: Sticky Pinned Scroll Timeline (full-width silk curtains smoothly feathered at sides) */}
+            <div className="relative z-10">
               <ScrollTimeline lang={lang} />
             </div>
           </section>
 
           {/* ================================================================
-              SECTION 4 — WHAT YOU ACTUALLY BUILD (Flex Accordion + Frosted Workbench)
+              SECTION 4 — WHAT YOU ACTUALLY BUILD (Silky Side Vignette + Flex Accordion)
              ================================================================ */}
-          <section id="work" className="work-atmosphere relative border-b border-[var(--rail)]">
-            <div className="rail-1164 py-24 sm:py-32">
-              <div className="relative mx-4 border-y border-[var(--rail)] p-8 sm:mx-0 sm:p-14">
-                <CornerBrackets />
+          <section id="work" className="work-atmosphere section-vignette">
+            <div className="rail-1164 relative z-10 px-4 py-24 sm:px-6 sm:py-32">
+              <div className="relative pb-6 sm:pb-10">
                 <BoxTag accent>{t(['Project-Based Curriculum', '特色项目制教学体系'])}</BoxTag>
                 <LineReveal>
-                  <h2 className="t-display t-h2-sm mt-7 max-w-[22ch]">
+                  <h2 className="t-display t-h2-sm mt-6 max-w-[22ch]">
                     <span className="t-gradient">{t(['Learn by shipping ', '以真实项目驱动，'])}</span>
                     <span className="t-split-muted">
                       {t(['one real system at a time.', '一步步搭出完整系统。'])}
                     </span>
                   </h2>
                 </LineReveal>
-                <div className="mt-8 flex flex-wrap items-end justify-between gap-6">
-                  <p className="t-body max-w-[54ch] text-[14.5px] text-[#edf5fa]/74">
-                    {t([
-                      'No isolated toy snippets or passive slide decks. Every course is engineered around one evolving real-world project — pairing clear theory with progressive milestones, runnable code, and verifiable checkpoints.',
-                      '拒绝碎片化玩具代码与被动看 PPT。每门课都围绕一个持续演进的真实工程项目展开，把原理拆解成阶梯式里程碑、可运行代码与可复现验收闭环。',
-                    ])}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-2 text-[12.5px] text-[#a9dbe8]/85">
-                    <span className="text-[#edf5fa]/80">{t(['1 Evolving Project', '单主线真实项目'])}</span>
-                    <span aria-hidden="true" className="text-[#00e5b0]/65">·</span>
-                    <span className="text-[#edf5fa]/80">{t(['Milestone-Driven', '阶梯式里程碑'])}</span>
-                    <span aria-hidden="true" className="text-[#00e5b0]/65">·</span>
-                    <span className="text-[#5fffe0]">{t(['Verified in Code', '代码级验收'])}</span>
-                  </div>
-                </div>
+                <p className="t-body mt-7 max-w-[54ch] text-[14.5px] text-[#edf5fa]/74">
+                  {t([
+                    'No isolated toy snippets or passive slide decks. Every course is engineered around one evolving real-world project — pairing clear theory with progressive milestones, runnable code, and verifiable checkpoints.',
+                    '拒绝碎片化玩具代码与被动看 PPT。每门课都围绕一个持续演进的真实工程项目展开，把原理拆解成阶梯式里程碑、可运行代码与可复现验收闭环。',
+                  ])}
+                </p>
               </div>
 
               <CourseShowcaseTrack lang={lang} />
@@ -783,11 +765,11 @@ export default function App() {
           </section>
 
           {/* ================================================================
-              SECTION 5 — FAQ (Native <details> Accordion)
+              SECTION 5 — FAQ (Silky Editorial Side Vignette + Native <details> Accordion)
              ================================================================ */}
-          <section id="faq" aria-labelledby="faq-heading" className="streamline-field--subtle border-b border-[var(--rail)] bg-[var(--bg-ground)]">
-            <div className="rail-928 py-24">
-              <div className="mb-12 px-6">
+          <section id="faq" aria-labelledby="faq-heading" className="streamline-field--subtle section-vignette section-vignette--editorial bg-[var(--bg-ground)]">
+            <div className="rail-928 relative z-10 px-4 py-24 sm:px-6">
+              <div className="mb-12">
                 <BoxTag>{t(['FAQ', '常见问题'])}</BoxTag>
                 <LineReveal>
                   <h2 id="faq-heading" className="t-display t-h2-sm t-gradient mt-5">
@@ -821,13 +803,12 @@ export default function App() {
           </section>
 
           {/* ================================================================
-              SECTION 6 — LAB DETAILS & LINKS FIRST, THEN SEAMLESS KINETIC WAVE
-              FINALE (Start Harness Engineering -> Monumental WALKINGLABS)
+              SECTION 6 — LAB DETAILS & LINKS FIRST, THEN SEAMLESS KINETIC WAVE FINALE
              ================================================================ */}
           <footer id="start" className="relative overflow-x-clip bg-transparent">
-            {/* Part 1: Clean Lab Info, Projects, Navigation & Community Links */}
-            <div className="border-b border-[var(--rail)] bg-[#03060c]">
-              <div className="rail-1164 grid gap-12 px-6 py-16 md:grid-cols-[1.25fr_1.15fr] sm:px-10">
+            {/* Part 1: Clean Lab Info, Projects, Navigation & Community Links with silky side vignette */}
+            <div className="section-vignette bg-[#03060c]">
+              <div className="rail-1164 relative z-10 grid gap-12 px-4 py-16 md:grid-cols-[1.25fr_1.15fr] sm:px-6">
                 <div className="flex flex-col items-start justify-between gap-6">
                   <div>
                     <WalkingLabsMark />
@@ -855,7 +836,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-6 md:border-l md:border-[var(--rail)] md:pl-10">
+                <div className="grid grid-cols-3 gap-6 md:pl-10">
                   <div>
                     <p className="mb-4 text-[12.5px] text-[#edf5fa]/48">
                       {t(['Courses', '核心课程'])}

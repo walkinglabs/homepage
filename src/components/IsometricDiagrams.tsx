@@ -1,24 +1,18 @@
-import { useState, type RefObject } from 'react'
-import { motion, useScroll, useTransform } from 'motion/react'
-import { ArrowUpRight, Terminal } from 'lucide-react'
+import { useId, useState, type RefObject } from 'react'
+import { ArrowUpRight } from 'lucide-react'
 import { type buildShowcases, type Lang } from '@/data'
 import { Cube3D } from './ShadersAndEffects'
-import { CornerBrackets } from './Primitives'
 
 function IsoCubeSvg({
   cx,
   cy,
   r = 46,
-  label,
-  sublabel,
   dashed = false,
   highlight = false,
 }: {
   cx: number
   cy: number
   r?: number
-  label?: string
-  sublabel?: string
   dashed?: boolean
   highlight?: boolean
 }) {
@@ -32,75 +26,46 @@ function IsoCubeSvg({
     <g className="iso-cube cursor-pointer">
       <polygon
         points={top}
-        fill={highlight ? 'rgba(0, 229, 176, 0.16)' : 'rgba(237, 245, 250, 0.09)'}
-        stroke={highlight ? '#00e5b0' : 'rgba(237, 245, 250, 0.85)'}
-        strokeWidth={highlight ? '1.25' : '1'}
+        fill={highlight ? 'rgba(0, 229, 176, 0.14)' : 'rgba(237, 245, 250, 0.08)'}
+        stroke={highlight ? 'rgba(0, 229, 176, 0.82)' : 'rgba(237, 245, 250, 0.44)'}
+        strokeWidth={highlight ? '1.15' : '0.95'}
         strokeDasharray={dashed ? '4 4' : undefined}
       />
       <polygon
         points={left}
-        fill={highlight ? 'rgba(56, 189, 248, 0.13)' : 'rgba(237, 245, 250, 0.05)'}
-        stroke={highlight ? '#38bdf8' : 'rgba(237, 245, 250, 0.62)'}
-        strokeWidth={highlight ? '1.15' : '1'}
+        fill={highlight ? 'rgba(56, 189, 248, 0.11)' : 'rgba(237, 245, 250, 0.04)'}
+        stroke={highlight ? 'rgba(56, 189, 248, 0.72)' : 'rgba(237, 245, 250, 0.30)'}
+        strokeWidth={highlight ? '1.1' : '0.9'}
         strokeDasharray={dashed ? '4 4' : undefined}
       />
       <polygon
         points={right}
-        fill={highlight ? 'rgba(0, 229, 176, 0.08)' : 'rgba(3, 6, 12, 0.25)'}
-        stroke={highlight ? '#00e5b0' : 'rgba(237, 245, 250, 0.72)'}
-        strokeWidth={highlight ? '1.15' : '1'}
+        fill={highlight ? 'rgba(0, 229, 176, 0.07)' : 'rgba(3, 6, 12, 0.24)'}
+        stroke={highlight ? 'rgba(0, 229, 176, 0.72)' : 'rgba(237, 245, 250, 0.36)'}
+        strokeWidth={highlight ? '1.1' : '0.9'}
         strokeDasharray={dashed ? '4 4' : undefined}
       />
-      {label && (
-        <text
-          x={cx}
-          y={cy + r * 0.44}
-          textAnchor="middle"
-          fill={highlight ? '#a7f3d0' : '#edf5fa'}
-          fontSize="10"
-          fontFamily="Geist Mono, monospace"
-          fontWeight="500"
-          letterSpacing="0.06em"
-        >
-          {label}
-        </text>
-      )}
-      {sublabel && (
-        <text
-          x={cx}
-          y={cy - r * 0.42}
-          textAnchor="middle"
-          fill="rgba(237, 245, 250, 0.65)"
-          fontSize="8.5"
-          fontFamily="Geist Mono, monospace"
-        >
-          {sublabel}
-        </text>
-      )}
     </g>
   )
 }
 
 /* ============================================================================
-   HERO 3D STAGE (Exact busybox step_4.png restraint + scroll-linked parallax!)
+   HERO 3D STAGE (Interactive frosted glass cube -> coordinated StarProgressFlight refs)
    ============================================================================ */
 export function HeroCubeStage({
-  heroRef,
+  cubeAnchorRef,
+  cubeFlightRef,
+  cubeRaysRef,
+  cubeAxisRef,
 }: {
-  heroRef: RefObject<HTMLElement | null>
+  cubeAnchorRef: RefObject<HTMLDivElement | null>
+  cubeFlightRef: RefObject<HTMLDivElement | null>
+  cubeRaysRef: RefObject<SVGSVGElement | null>
+  cubeAxisRef: RefObject<HTMLDivElement | null>
 }) {
   const [energized, setEnergized] = useState(false)
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ['start start', 'end start'],
-  })
 
-  const cubeScale = useTransform(scrollYProgress, [0, 0.34, 1], [1, 1.32, 1.52])
-  const cubeY = useTransform(scrollYProgress, [0, 1], ['0%', '14%'])
-  const stageOpacity = useTransform(scrollYProgress, [0, 0.4, 0.92], [1, 1, 0.14])
-  const axisOpacity = useTransform(scrollYProgress, [0, 0.28], [1, 0.28])
-
-  // 8 asymmetric delicate directional rays matching busybox step_4.png
+  // 8 asymmetric delicate directional rays framing the resting Hero cube
   const rays = [
     { angle: -145, len: 245 },
     { angle: -118, len: 145 },
@@ -113,32 +78,31 @@ export function HeroCubeStage({
   ]
 
   return (
-    <motion.div
-      style={{ opacity: stageOpacity }}
-      className="pointer-events-none absolute inset-0 z-[12] flex items-center justify-center overflow-hidden"
-    >
-      {/* Full-viewport crisp axis hairlines (soften during solo cube zoom) */}
-      <motion.div aria-hidden="true" style={{ opacity: axisOpacity }} className="absolute inset-0">
+    <div className="pointer-events-none absolute inset-0 z-[12] flex items-center justify-center overflow-hidden">
+      {/* Whisper-subtle axis hairlines (fade out cleanly as the cube launches) */}
+      <div ref={cubeAxisRef} aria-hidden="true" className="absolute inset-0 will-change-[opacity]">
         <div
           className={`absolute inset-x-0 top-1/2 h-px transition-colors duration-300 ${
-            energized ? 'bg-[#edf5fa]/34' : 'bg-[#edf5fa]/22'
+            energized ? 'bg-[#edf5fa]/18' : 'bg-[#edf5fa]/10'
           }`}
         />
         <div
           className={`absolute inset-y-0 left-1/2 w-px transition-colors duration-300 ${
-            energized ? 'bg-[#edf5fa]/34' : 'bg-[#edf5fa]/22'
+            energized ? 'bg-[#edf5fa]/18' : 'bg-[#edf5fa]/10'
           }`}
         />
-      </motion.div>
+      </div>
 
-      <motion.div
-        style={{ scale: cubeScale, y: cubeY }}
-        className="relative flex items-center justify-center opacity-50 transition-opacity will-change-transform md:opacity-80 lg:translate-x-[6%] lg:opacity-100"
+      {/* Untransformed stationary anchor so StarProgressFlight always reads exact resting cube center */}
+      <div
+        ref={cubeAnchorRef}
+        className="relative flex items-center justify-center lg:translate-x-[6%]"
       >
         <svg
+          ref={cubeRaysRef}
           aria-hidden="true"
           viewBox="0 0 640 640"
-          className={`pointer-events-none h-[min(84vw,560px)] w-[min(84vw,560px)] transition-transform duration-500 ${
+          className={`pointer-events-none h-[min(84vw,560px)] w-[min(84vw,560px)] opacity-50 transition-transform duration-500 will-change-transform md:opacity-80 lg:opacity-100 ${
             energized ? 'scale-[1.02]' : 'scale-100'
           }`}
         >
@@ -193,89 +157,12 @@ export function HeroCubeStage({
           })}
         </svg>
 
-        <div className="pointer-events-auto absolute flex items-center justify-center">
-          <Cube3D size={108} interactive onEnergyChange={setEnergized} />
-        </div>
-      </motion.div>
-    </motion.div>
-  )
-}
-
-/* ============================================================================
-   FROSTED GAP DIAGRAMS (Matches busybox step_10_shot_1.png!)
-   ============================================================================ */
-export function GapDiagram({ variant }: { variant: 'cubes3' | 'orbitRisk' | 'gapBridge' }) {
-  if (variant === 'cubes3') {
-    // Exact busybox Card 01 composition: 3 touching isometric wireframe cubes on clean crosshairs
-    return (
-      <div className="relative flex h-full w-full items-center justify-center p-4">
-        <svg viewBox="0 0 420 300" className="h-full w-full" aria-hidden="true">
-          <line x1="210" y1="24" x2="210" y2="276" stroke="rgba(237,245,250,0.16)" />
-          <line x1="32" y1="150" x2="388" y2="150" stroke="rgba(237,245,250,0.16)" />
-
-          {/* 3 adjacent touching isometric cubes along diagonal just like CRM / PMS / AML */}
-          <IsoCubeSvg cx={154} cy={182} r={42} label="RL" sublabel="GRPO" />
-          <IsoCubeSvg cx={210} cy={150} r={42} label="LLM" sublabel="ARCH" highlight />
-          <IsoCubeSvg cx={266} cy={118} r={42} label="AGENT" sublabel="HARNESS" />
-        </svg>
-      </div>
-    )
-  }
-
-  if (variant === 'orbitRisk') {
-    return (
-      <div className="relative flex h-full w-full items-center justify-center overflow-hidden p-4">
+        {/* Flight wrapper shrunk & arced up-left in lockstep with the emerging crystal star */}
         <div
-          aria-hidden="true"
-          className="radar-sweep pointer-events-none absolute size-[224px] rounded-full opacity-45"
-        />
-        <svg viewBox="0 0 420 290" className="relative z-10 h-full w-full" aria-hidden="true">
-          <line x1="210" y1="18" x2="210" y2="272" stroke="rgba(237,245,250,0.16)" />
-          <line x1="30" y1="145" x2="390" y2="145" stroke="rgba(237,245,250,0.16)" />
-
-          <circle cx="210" cy="145" r="106" fill="none" stroke="rgba(237,245,250,0.28)" strokeDasharray="4 6" />
-          <circle cx="210" cy="145" r="68" fill="none" stroke="rgba(0,229,176,0.3)" />
-
-          <circle cx="210" cy="39" r="3.5" fill="#00e5b0" />
-          <circle cx="316" cy="145" r="3.5" fill="#38bdf8" />
-          <circle cx="104" cy="145" r="3" fill="#edf5fa" />
-
-          <IsoCubeSvg cx={210} cy={145} r={48} label="OPEN" sublabel="SYSTEM" highlight />
-
-          <g transform="translate(270, 44)">
-            <rect width="114" height="22" fill="rgba(3,6,12,0.55)" stroke="rgba(237,245,250,0.65)" />
-            <text x="57" y="14" textAnchor="middle" fill="#edf5fa" fontSize="9" fontFamily="Geist Mono, monospace">
-              TRACE GRADIENTS
-            </text>
-          </g>
-          <g transform="translate(34, 224)">
-            <rect width="106" height="22" fill="rgba(3,6,12,0.55)" stroke="rgba(237,245,250,0.65)" />
-            <text x="53" y="14" textAnchor="middle" fill="#edf5fa" fontSize="9" fontFamily="Geist Mono, monospace">
-              NO BLACK BOX
-            </text>
-          </g>
-        </svg>
-      </div>
-    )
-  }
-
-  return (
-    <div className="relative flex h-full w-full flex-col justify-between p-5">
-      <svg viewBox="0 0 420 215" className="h-auto w-full" aria-hidden="true">
-        <line x1="20" y1="108" x2="400" y2="108" stroke="rgba(237,245,250,0.16)" />
-        <line x1="146" y1="108" x2="274" y2="108" stroke="#00e5b0" strokeWidth="1.3" strokeDasharray="5 13" />
-
-        <IsoCubeSvg cx={102} cy={108} r={46} label="THEORY" sublabel="PAPER" />
-        <IsoCubeSvg cx={318} cy={108} r={46} label="SHIP" sublabel="VERIFIED" dashed highlight />
-      </svg>
-
-      <div className="border border-[#edf5fa]/20 bg-[#070e19] px-3 py-2.5 font-mono text-[10.5px]">
-        <div className="flex items-center justify-between text-[#a9dbe8]/80">
-          <span className="inline-flex items-center gap-1.5">
-            <Terminal className="size-3 text-[#00e5b0]" aria-hidden="true" />
-            harness-audit.sh
-          </span>
-          <span className="text-[#00e5b0]">✓ PASS · 3/3</span>
+          ref={cubeFlightRef}
+          className="pointer-events-auto absolute flex items-center justify-center will-change-transform"
+        >
+          <Cube3D size={108} interactive onEnergyChange={setEnergized} />
         </div>
       </div>
     </div>
@@ -283,497 +170,588 @@ export function GapDiagram({ variant }: { variant: 'cubes3' | 'orbitRisk' | 'gap
 }
 
 /* ============================================================================
-   INTERACTIVE NEURAL HUB ORBIT DIAGRAM (Matches busybox step_10_shot_4.png!)
+   FROSTED GAP DIAGRAMS — Pure silent glass prisms + bold editorial Swiss typography
+   (Zero tiny monospace cube buzzwords, zero boxy HUD tags)
+   ============================================================================ */
+const posterTypeStyle = {
+  fontFamily: 'var(--font-display)',
+  background:
+    'linear-gradient(180deg, rgba(237, 245, 250, 0.16) 0%, rgba(169, 219, 232, 0.06) 68%, rgba(169, 219, 232, 0.01) 100%)',
+  WebkitBackgroundClip: 'text',
+  backgroundClip: 'text',
+  color: 'transparent',
+} as const
+
+const posterTypeAccentStyle = {
+  fontFamily: 'var(--font-display)',
+  background:
+    'linear-gradient(180deg, rgba(169, 219, 232, 0.22) 0%, rgba(0, 229, 176, 0.08) 68%, rgba(169, 219, 232, 0.01) 100%)',
+  WebkitBackgroundClip: 'text',
+  backgroundClip: 'text',
+  color: 'transparent',
+} as const
+
+export function GapDiagram({ variant }: { variant: 'cubes3' | 'orbitRisk' | 'gapBridge' }) {
+  if (variant === 'cubes3') {
+    return (
+      <div className="relative flex h-full min-h-[300px] w-full items-center justify-center overflow-hidden p-6">
+        {/* Bold editorial background typography anchored cleanly off-axis */}
+        <span
+          aria-hidden="true"
+          style={posterTypeStyle}
+          className="pointer-events-none absolute top-5 left-6 select-none text-[50px] leading-[0.88] font-bold tracking-[-0.06em] sm:text-[62px]"
+        >
+          Frontier
+        </span>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-6 bottom-5 flex items-baseline gap-3 select-none text-[19px] font-semibold tracking-[-0.035em]"
+          style={{ fontFamily: 'var(--font-display)' }}
+        >
+          <span className="text-[#edf5fa]/28">RL</span>
+          <span className="text-[#a9dbe8]/46">LLM</span>
+          <span className="text-[#edf5fa]/28">Agent</span>
+        </div>
+
+        <svg viewBox="0 0 420 300" className="relative z-10 h-full w-full" aria-hidden="true">
+          {/* 3 silent sculptural frosted glass cubes stepping diagonally upward */}
+          <IsoCubeSvg cx={154} cy={182} r={44} />
+          <IsoCubeSvg cx={210} cy={150} r={44} highlight />
+          <IsoCubeSvg cx={266} cy={118} r={44} />
+        </svg>
+      </div>
+    )
+  }
+
+  if (variant === 'orbitRisk') {
+    return (
+      <div className="relative flex h-full min-h-[300px] w-full items-center justify-center overflow-hidden p-6">
+        {/* Bold Swiss poster typography framing the transparent orbital core */}
+        <span
+          aria-hidden="true"
+          style={posterTypeStyle}
+          className="pointer-events-none absolute top-5 left-6 select-none text-[52px] leading-[0.88] font-bold tracking-[-0.06em] sm:text-[64px]"
+        >
+          Open
+        </span>
+        <span
+          aria-hidden="true"
+          style={posterTypeAccentStyle}
+          className="pointer-events-none absolute right-6 bottom-4 select-none text-[50px] leading-[0.88] font-bold tracking-[-0.06em] sm:text-[60px]"
+        >
+          System
+        </span>
+
+        <div
+          aria-hidden="true"
+          className="radar-sweep pointer-events-none absolute size-[224px] rounded-full opacity-40"
+        />
+        <svg viewBox="0 0 420 290" className="relative z-10 h-full w-full" aria-hidden="true">
+          <circle cx="210" cy="145" r="106" fill="none" stroke="rgba(237,245,250,0.16)" strokeDasharray="4 7" />
+          <circle cx="210" cy="145" r="68" fill="none" stroke="rgba(0,229,176,0.22)" />
+
+          <circle cx="210" cy="39" r="3" fill="#00e5b0" fillOpacity="0.85" />
+          <circle cx="316" cy="145" r="3" fill="#38bdf8" fillOpacity="0.85" />
+          <circle cx="104" cy="145" r="2.5" fill="#edf5fa" fillOpacity="0.65" />
+
+          <IsoCubeSvg cx={210} cy={145} r={48} highlight />
+        </svg>
+      </div>
+    )
+  }
+
+  return (
+    <div className="relative flex h-full min-h-[300px] w-full items-center justify-center overflow-hidden p-6">
+      {/* Bold sculptural contrast: Paper -> Shipped */}
+      <span
+        aria-hidden="true"
+        style={posterTypeStyle}
+        className="pointer-events-none absolute top-5 left-6 select-none text-[50px] leading-[0.88] font-bold tracking-[-0.06em] sm:text-[60px]"
+      >
+        Paper
+      </span>
+      <span
+        aria-hidden="true"
+        style={posterTypeAccentStyle}
+        className="pointer-events-none absolute right-6 bottom-4 select-none text-[50px] leading-[0.88] font-bold tracking-[-0.06em] sm:text-[60px]"
+      >
+        Shipped
+      </span>
+
+      <svg viewBox="0 0 420 230" className="relative z-10 h-auto w-full" aria-hidden="true">
+        <line x1="146" y1="115" x2="274" y2="115" stroke="rgba(237,245,250,0.12)" strokeWidth="1" />
+        <line
+          x1="146"
+          y1="115"
+          x2="274"
+          y2="115"
+          stroke="#00e5b0"
+          strokeWidth="1.4"
+          strokeOpacity="0.75"
+          className="pulse-dash"
+        />
+
+        <IsoCubeSvg cx={102} cy={115} r={46} />
+        <IsoCubeSvg cx={318} cy={115} r={46} dashed highlight />
+      </svg>
+    </div>
+  )
+}
+
+/* ============================================================================
+   INTERACTIVE RESEARCH FRONTIERS GALLERY (Unified Painterly Mist + Frosted Glass Motion)
+   Replaces generic spider-web radar + neon clip-art with a calm enterprise split gallery:
+   left frameless editorial index + right full-fill film-grain motion stage (8 themes)
    ============================================================================ */
 const frontierDetails = [
   {
+    roman: 'I',
     label: 'Agentic AI',
-    x: 118,
-    y: 92,
     metric: '14 Lectures · 8 Projects',
+    mist: 'radial-gradient(88% 84% at 18% 18%, #8ea8bd 0%, transparent 56%), radial-gradient(80% 82% at 86% 24%, #6a8ca8 0%, transparent 56%), radial-gradient(92% 90% at 54% 78%, #1a3556 0%, transparent 64%), linear-gradient(135deg, #3a526e 0%, #243958 48%, #111f36 86%, #1d314d 100%)',
     desc: ['Planning, tool use, checkpoints, and execution loops for coding agents.', '规划、工具调用、检查点与可靠执行循环。'],
   },
   {
+    roman: 'II',
     label: 'Harness Engineering',
-    x: 500,
-    y: 84,
     metric: '24.3k ★ Flagship',
+    mist: 'radial-gradient(88% 85% at 14% 16%, #9cb5c4 0%, transparent 56%), radial-gradient(78% 82% at 88% 18%, #8ea8b8 0%, transparent 55%), radial-gradient(90% 90% at 62% 72%, #294670 0%, transparent 62%), linear-gradient(132deg, #4b627b 0%, #394d72 44%, #1f3354 78%, #2e4866 100%)',
     desc: ['Repositories, verification loops, scope control, and observability.', '代码仓约束、验收闭环、范围控制与可观测性。'],
   },
   {
+    roman: 'III',
     label: 'LLM Systems',
-    x: 56,
-    y: 224,
     metric: 'PyTorch From Scratch',
+    mist: 'radial-gradient(82% 80% at 16% 18%, #a6b4c8 0%, transparent 54%), radial-gradient(80% 80% at 85% 22%, #7f98ba 0%, transparent 54%), radial-gradient(90% 90% at 48% 76%, #243866 0%, transparent 62%), linear-gradient(135deg, #4a5b7c 0%, #2f4168 46%, #182546 80%, #2b3f63 100%)',
     desc: ['Tokenization, RoPE, KV-cache, attention, training & inference.', '分词、RoPE、KV-Cache、注意力与训练推理栈。'],
   },
   {
+    roman: 'IV',
     label: 'Reinforcement Learning',
-    x: 522,
-    y: 214,
     metric: '26 Chapters · 4.9k ★',
+    mist: 'radial-gradient(84% 82% at 18% 20%, #8fb8be 0%, transparent 56%), radial-gradient(82% 84% at 86% 24%, #6a99ad 0%, transparent 56%), radial-gradient(92% 88% at 54% 82%, #193d54 0%, transparent 64%), linear-gradient(138deg, #3c6173 0%, #264a66 48%, #152b44 82%, #214a5c 100%)',
     desc: ['From CartPole and DQN to PPO, RLHF, DPO, GRPO, and RLVR.', '从 CartPole、DQN 贯通 PPO、DPO、GRPO 与 RLVR。'],
   },
   {
+    roman: 'V',
     label: 'Multi-Agent Systems',
-    x: 82,
-    y: 382,
     metric: 'Orchestration & Evals',
+    mist: 'radial-gradient(86% 82% at 22% 18%, #98adc2 0%, transparent 55%), radial-gradient(82% 84% at 84% 28%, #6d89aa 0%, transparent 55%), radial-gradient(90% 88% at 52% 80%, #1d3257 0%, transparent 64%), linear-gradient(136deg, #405372 0%, #273c5f 46%, #14223e 82%, #243857 100%)',
     desc: ['Coordination, handoffs, and communication between specialist agents.', '多智能体协作、会话交接与任务编排。'],
   },
   {
+    roman: 'VI',
     label: 'Embodied Intelligence',
-    x: 504,
-    y: 374,
     metric: 'Perception → Action',
+    mist: 'radial-gradient(84% 84% at 16% 22%, #90b2bd 0%, transparent 56%), radial-gradient(80% 82% at 86% 20%, #6c92a6 0%, transparent 55%), radial-gradient(92% 88% at 50% 82%, #183a4f 0%, transparent 64%), linear-gradient(134deg, #3c5d6f 0%, #24455d 48%, #13283d 84%, #1e4155 100%)',
     desc: ['Closed-loop perception, planning, VLA, and robotic control.', '感知、规划、VLA 与具身控制闭环。'],
   },
   {
+    roman: 'VII',
     label: 'World Models',
-    x: 224,
-    y: 454,
     metric: 'JEPA · 3D/4D Dynamics',
+    mist: 'radial-gradient(86% 84% at 20% 16%, #9cb5c6 0%, transparent 55%), radial-gradient(84% 84% at 84% 28%, #7396b2 0%, transparent 55%), radial-gradient(92% 88% at 52% 80%, #1d395c 0%, transparent 62%), linear-gradient(136deg, #435e78 0%, #294366 48%, #152540 82%, #24405c 100%)',
     desc: ['Latent dynamics, JEPA architectures, and interactive world simulation.', '隐空间动力学、JEPA 架构与交互式世界模拟。'],
   },
   {
+    roman: 'VIII',
     label: 'Open Source AI',
-    x: 410,
-    y: 446,
     metric: '198 Contributors · MIT',
+    mist: 'radial-gradient(86% 84% at 18% 18%, #98b4c4 0%, transparent 56%), radial-gradient(82% 82% at 84% 20%, #7a9bb3 0%, transparent 55%), radial-gradient(90% 90% at 50% 80%, #1c3a54 0%, transparent 64%), linear-gradient(134deg, #415c74 0%, #294561 48%, #14273e 82%, #23425a 100%)',
     desc: ['Forkable, translatable code and experiments shared across 12 locales.', '12 种语言版本，全部开源可 Fork 与复现。'],
   },
 ] as const
 
-/* Full-fill bespoke minimalist animations rendered edge-to-edge inside the center r=108 circle */
-function HubThemeVisual({ idx }: { idx: number }) {
-  // Center is (370, 260), radius 108 -> bounds x:[262..478], y:[152..368]
+/* Serene pure-white & frosted-glass full-fill optical motion artworks (640×420) */
+function FrontierStageVisual({ idx, uid }: { idx: number; uid: string }) {
+  const cx = 320
+  const cy = 192
+
   switch (idx) {
     case 0:
-      // 0: Agentic AI — Full-fill autonomous radar sweep + pulsing core + orbiting tool nodes
+      // I: Agentic AI — Serene orbital loop + translucent white sweeping light sector + floating glass satellites
       return (
-        <g>
-          <rect x="260" y="150" width="220" height="220" fill="url(#themeGrad0)" />
-          {/* Filled concentric sonar fields */}
-          <circle cx="370" cy="260" r="84" fill="#0ea5e9" fillOpacity="0.12" />
-          <circle cx="370" cy="260" r="56" fill="#00e5b0" fillOpacity="0.16" />
-          {/* Sweeping filled radar decision wedge */}
-          <g style={{ transformOrigin: '370px 260px' }} className="hub-spin-med">
-            <path d="M370 260 L370 152 A108 108 0 0 1 463 206 Z" fill="url(#radarWedge)" />
-            <line x1="370" y1="260" x2="370" y2="152" stroke="#5fffe0" strokeWidth="1.6" strokeOpacity="0.9" />
+        <svg viewBox="0 0 640 420" preserveAspectRatio="xMidYMid slice" className="h-full w-full" aria-hidden="true">
+          <defs>
+            <linearGradient id={`${uid}-w0`} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.24" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <circle cx={cx} cy={cy} r="176" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+          <circle cx={cx} cy={cy} r="124" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
+          <circle cx={cx} cy={cy} r="72" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.22)" strokeWidth="1" />
+          <g style={{ transformOrigin: `${cx}px ${cy}px` }} className="hub-spin-med">
+            <path d={`M${cx} ${cy} L${cx} ${cy - 176} A176 176 0 0 1 ${cx + 152} ${cy - 88} Z`} fill={`url(#${uid}-w0)`} />
+            <line x1={cx} y1={cy} x2={cx} y2={cy - 176} stroke="rgba(255,255,255,0.55)" strokeWidth="1.2" />
           </g>
-          {/* Orbiting tool nodes connected to core */}
-          <g style={{ transformOrigin: '370px 260px' }} className="hub-spin-rev">
-            {[0, 90, 180, 270].map((deg, i) => {
+          <g style={{ transformOrigin: `${cx}px ${cy}px` }} className="hub-spin-rev">
+            {[0, 120, 240].map((deg, i) => {
               const rad = (deg * Math.PI) / 180
-              const nx = 370 + Math.cos(rad) * 66
-              const ny = 260 + Math.sin(rad) * 66
+              const nx = cx + Math.cos(rad) * 124
+              const ny = cy + Math.sin(rad) * 124
               return (
                 <g key={deg}>
-                  <line x1="370" y1="260" x2={nx} y2={ny} stroke="#a7f3d0" strokeOpacity="0.45" strokeWidth="1.2" />
-                  <circle cx={nx} cy={ny} r={i % 2 === 0 ? 9 : 6.5} fill={i % 2 === 0 ? '#00e5b0' : '#38bdf8'} fillOpacity="0.92" />
+                  <line x1={cx} y1={cy} x2={nx} y2={ny} stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
+                  <circle cx={nx} cy={ny} r={i === 0 ? 11 : 7.5} fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.68)" strokeWidth="1.2" />
+                  <circle cx={nx} cy={ny} r={i === 0 ? 3.5 : 2.5} fill="#ffffff" />
                 </g>
               )
             })}
           </g>
-          <circle cx="370" cy="260" r="22" fill="#041525" stroke="#5fffe0" strokeWidth="1.8" />
-          <circle cx="370" cy="260" r="10" fill="#5fffe0" style={{ transformOrigin: '370px 260px' }} className="hub-pulse-soft" />
-        </g>
+          <circle cx={cx} cy={cy} r="22" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.65)" strokeWidth="1.2" />
+          <circle cx={cx} cy={cy} r="7" fill="#ffffff" style={{ transformOrigin: `${cx}px ${cy}px` }} className="hub-pulse-soft" />
+        </svg>
       )
 
     case 1:
-      // 1: Harness Engineering — Full-fill architectural rails + sweeping verification scanner & passing bars
+      // II: Harness Engineering — Edge-to-edge frosted alignment rails + gliding pure-white verification light veil
       return (
-        <g>
-          <rect x="260" y="150" width="220" height="220" fill="url(#themeGrad1)" />
-          {/* Filled structured test/constraint bands */}
-          {[184, 214, 244, 274, 304, 334].map((y, i) => (
+        <svg viewBox="0 0 640 420" preserveAspectRatio="xMidYMid slice" className="h-full w-full" aria-hidden="true">
+          <defs>
+            <linearGradient id={`${uid}-s1`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+              <stop offset="50%" stopColor="#ffffff" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          {[92, 138, 184, 230, 276].map((y, i) => (
             <g key={y}>
-              <rect x="286" y={y - 9} width="168" height="18" rx="3" fill="#0c263e" fillOpacity="0.88" />
+              <rect x="76" y={y - 12} width="488" height="24" rx="12" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)" strokeWidth="1" />
               <rect
-                x="286"
-                y={y - 9}
-                width={96 + ((i * 23) % 68)}
-                height="18"
-                rx="3"
-                fill={i % 2 === 0 ? '#00e5b0' : '#38bdf8'}
-                fillOpacity={0.28 + (i % 3) * 0.14}
+                x="76"
+                y={y - 12}
+                width={230 + ((i * 67) % 210)}
+                height="24"
+                rx="12"
+                fill="rgba(255,255,255,0.12)"
               />
-              <circle cx="442" cy={y} r="3.5" fill="#5fffe0" fillOpacity="0.8" />
+              <circle cx="546" cy={y} r="3.5" fill="rgba(255,255,255,0.72)" />
             </g>
           ))}
-          {/* Precision vertical containment rails */}
-          <line x1="286" y1="158" x2="286" y2="362" stroke="#5fffe0" strokeOpacity="0.5" strokeWidth="1.5" />
-          <line x1="454" y1="158" x2="454" y2="362" stroke="#5fffe0" strokeOpacity="0.5" strokeWidth="1.5" />
-          {/* Sweeping horizontal verification beam */}
+          <line x1="76" y1="42" x2="76" y2="326" stroke="rgba(255,255,255,0.22)" strokeWidth="1" />
+          <line x1="564" y1="42" x2="564" y2="326" stroke="rgba(255,255,255,0.22)" strokeWidth="1" />
           <g className="hub-scan-y">
-            <rect x="260" y="242" width="220" height="36" fill="url(#scanBeam)" />
-            <line x1="260" y1="260" x2="480" y2="260" stroke="#a7f3d0" strokeWidth="2" />
+            <rect x="0" y="156" width="640" height="58" fill={`url(#${uid}-s1)`} />
+            <line x1="56" y1="185" x2="584" y2="185" stroke="rgba(255,255,255,0.72)" strokeWidth="1.2" />
           </g>
-        </g>
+        </svg>
       )
 
     case 2:
-      // 2: LLM Systems — Full-fill streaming token lanes + pulsing attention matrix tiles
+      // III: LLM Systems — Full-bleed drifting frosted-glass token pills passing through an optical attention lens
       return (
-        <g>
-          <rect x="260" y="150" width="220" height="220" fill="url(#themeGrad2)" />
-          {/* Flowing horizontal token blocks filling the circular canvas */}
-          {[178, 210, 242, 274, 306, 338].map((y, row) => (
+        <svg viewBox="0 0 640 420" preserveAspectRatio="xMidYMid slice" className="h-full w-full" aria-hidden="true">
+          <defs>
+            <linearGradient id={`${uid}-lens`} x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+              <stop offset="50%" stopColor="#ffffff" stopOpacity="0.16" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          {[76, 122, 168, 214, 260, 306].map((y, row) => (
             <g
               key={y}
               className="hub-slide-x"
               style={{
-                animationDuration: `${3.4 + (row % 3) * 1.1}s`,
+                animationDuration: `${4.6 + (row % 3) * 1.3}s`,
                 animationDirection: row % 2 === 0 ? 'normal' : 'reverse',
               }}
             >
-              {[220, 272, 332, 386, 444, 498].map((x, col) => {
-                const w = 32 + ((row * 7 + col * 11) % 20)
-                const accent = (row + col) % 3 === 0
+              {[-20, 74, 178, 286, 398, 502, 604].map((x, col) => {
+                const w = 54 + ((row * 13 + col * 19) % 34)
+                const bright = (row + col) % 3 === 0
                 return (
                   <rect
                     key={`${row}-${col}`}
                     x={x}
-                    y={y - 11}
+                    y={y - 13}
                     width={w}
-                    height="22"
-                    rx="4"
-                    fill={accent ? '#00e5b0' : '#38bdf8'}
-                    fillOpacity={accent ? 0.58 : 0.28 + ((row + col) % 2) * 0.16}
+                    height="26"
+                    rx="13"
+                    fill={bright ? 'rgba(255,255,255,0.26)' : 'rgba(255,255,255,0.09)'}
+                    stroke={bright ? 'rgba(255,255,255,0.42)' : 'rgba(255,255,255,0.16)'}
+                    strokeWidth="1"
                   />
                 )
               })}
             </g>
           ))}
-          {/* Center glowing attention lens band */}
-          <rect x="348" y="150" width="44" height="220" fill="#ffffff" fillOpacity="0.08" />
-          <line x1="348" y1="150" x2="348" y2="370" stroke="#7dd3fc" strokeOpacity="0.55" strokeWidth="1" />
-          <line x1="392" y1="150" x2="392" y2="370" stroke="#7dd3fc" strokeOpacity="0.55" strokeWidth="1" />
-        </g>
+          <rect x="268" y="0" width="104" height="420" fill={`url(#${uid}-lens)`} />
+          <line x1="268" y1="24" x2="268" y2="340" stroke="rgba(255,255,255,0.26)" strokeWidth="1" />
+          <line x1="372" y1="24" x2="372" y2="340" stroke="rgba(255,255,255,0.26)" strokeWidth="1" />
+        </svg>
       )
 
     case 3:
-      // 3: Reinforcement Learning — Full-fill rising reward landscape + climbing policy pulse
+      // IV: Reinforcement Learning — Layered translucent misty policy ascent waves + luminous pearl crest
       return (
-        <g>
-          <rect x="260" y="150" width="220" height="220" fill="url(#themeGrad3)" />
-          {/* Background layered mountain/reward bands */}
+        <svg viewBox="0 0 640 420" preserveAspectRatio="xMidYMid slice" className="h-full w-full" aria-hidden="true">
+          <defs>
+            <linearGradient id={`${uid}-rl`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.28" />
+              <stop offset="68%" stopColor="#ffffff" stopOpacity="0.06" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+            </linearGradient>
+          </defs>
           <g className="hub-wave-drift">
             <path
-              d="M250 370 L250 318 C295 314, 318 286, 355 270 C395 254, 424 218, 490 206 L490 370 Z"
-              fill="#1d4ed8"
-              fillOpacity="0.45"
+              d="M-30 420 L-30 302 C110 296, 195 256, 305 224 C420 190, 505 128, 670 108 L670 420 Z"
+              fill="rgba(255,255,255,0.07)"
             />
             <path
-              d="M250 370 L250 336 C295 330, 326 298, 366 266 C402 238, 434 198, 490 190 L490 370 Z"
-              fill="url(#rlAreaFill)"
+              d="M-30 420 L-30 326 C115 316, 212 272, 330 210 C435 154, 520 102, 670 84 L670 420 Z"
+              fill={`url(#${uid}-rl)`}
             />
             <path
-              d="M250 336 C295 330, 326 298, 366 266 C402 238, 434 198, 490 190"
+              d="M-30 326 C115 316, 212 272, 330 210 C435 154, 520 102, 670 84"
               fill="none"
-              stroke="#5fffe0"
-              strokeWidth="2.8"
+              stroke="rgba(255,255,255,0.82)"
+              strokeWidth="2"
             />
           </g>
-          {/* Floating reward milestone nodes */}
-          <circle cx="332" cy="296" r="5" fill="#38bdf8" />
-          <circle cx="384" cy="250" r="6" fill="#5fffe0" />
-          <circle cx="436" cy="204" r="14" fill="#00e5b0" fillOpacity="0.28" style={{ transformOrigin: '436px 204px' }} className="hub-pulse-soft" />
-          <circle cx="436" cy="204" r="6" fill="#ffffff" />
-        </g>
+          <circle cx="236" cy="258" r="5" fill="rgba(255,255,255,0.55)" />
+          <circle cx="364" cy="190" r="6" fill="rgba(255,255,255,0.75)" />
+          <circle cx="496" cy="122" r="22" fill="rgba(255,255,255,0.16)" style={{ transformOrigin: '496px 122px' }} className="hub-pulse-soft" />
+          <circle cx="496" cy="122" r="6.5" fill="#ffffff" />
+        </svg>
       )
 
     case 4:
-      // 4: Multi-Agent Systems — Full-fill cooperative swarm rings + synchronized solid agent hubs
+      // V: Multi-Agent Systems — Balanced constellation of frosted glass orbs linked by gossamer white filaments
       return (
-        <g>
-          <rect x="260" y="150" width="220" height="220" fill="url(#themeGrad4)" />
-          {/* Filled overlapping collaboration Venn aura */}
-          <g style={{ transformOrigin: '370px 260px' }} className="hub-spin-slow">
-            {[0, 72, 144, 216, 288].map((deg, i) => {
+        <svg viewBox="0 0 640 420" preserveAspectRatio="xMidYMid slice" className="h-full w-full" aria-hidden="true">
+          <g style={{ transformOrigin: `${cx}px ${cy}px` }} className="hub-spin-slow">
+            {[0, 72, 144, 216, 288].map((deg) => {
               const rad = (deg * Math.PI) / 180
-              const nx = 370 + Math.cos(rad) * 58
-              const ny = 260 + Math.sin(rad) * 58
+              const nx = cx + Math.cos(rad) * 120
+              const ny = cy + Math.sin(rad) * 102
               const nextRad = (((deg + 144) % 360) * Math.PI) / 180
-              const tx = 370 + Math.cos(nextRad) * 58
-              const ty = 260 + Math.sin(nextRad) * 58
+              const tx = cx + Math.cos(nextRad) * 120
+              const ty = cy + Math.sin(nextRad) * 102
               return (
                 <g key={deg}>
-                  <circle cx={nx} cy={ny} r="44" fill={i % 2 === 0 ? '#0ea5e9' : '#00e5b0'} fillOpacity="0.16" />
-                  <line x1={nx} y1={ny} x2={tx} y2={ty} stroke="#a7f3d0" strokeOpacity="0.55" strokeWidth="1.3" className="pulse-dash" />
-                  <circle cx={nx} cy={ny} r="13" fill="#071b30" stroke={i % 2 === 0 ? '#38bdf8' : '#00e5b0'} strokeWidth="2" />
-                  <circle cx={nx} cy={ny} r="5" fill={i % 2 === 0 ? '#7dd3fc' : '#5fffe0'} />
+                  <circle cx={nx} cy={ny} r="44" fill="rgba(255,255,255,0.045)" />
+                  <line x1={nx} y1={ny} x2={tx} y2={ty} stroke="rgba(255,255,255,0.22)" strokeWidth="1" />
+                  <line x1={nx} y1={ny} x2={tx} y2={ty} stroke="rgba(255,255,255,0.7)" strokeWidth="1.2" className="pulse-dash" />
+                  <circle cx={nx} cy={ny} r="16" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.58)" strokeWidth="1.2" />
+                  <circle cx={nx} cy={ny} r="4.5" fill="#ffffff" />
                 </g>
               )
             })}
           </g>
-          <circle cx="370" cy="260" r="14" fill="#edf5fa" fillOpacity="0.92" style={{ transformOrigin: '370px 260px' }} className="hub-pulse-soft" />
-        </g>
+          <circle cx={cx} cy={cy} r="20" fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.72)" strokeWidth="1.2" style={{ transformOrigin: `${cx}px ${cy}px` }} className="hub-pulse-soft" />
+          <circle cx={cx} cy={cy} r="6" fill="#ffffff" />
+        </svg>
       )
 
     case 5:
-      // 5: Embodied Intelligence — Full-fill depth perception cone + sweeping kinematic robotic actuator
+      // VI: Embodied Intelligence — Spatial perception arcs + serene sweeping frosted-white kinematic vector arm
       return (
-        <g>
-          <rect x="260" y="150" width="220" height="220" fill="url(#themeGrad5)" />
-          {/* Concentric filled lidar perception bands */}
-          <circle cx="370" cy="316" r="126" fill="#00e5b0" fillOpacity="0.1" />
-          <circle cx="370" cy="316" r="88" fill="#38bdf8" fillOpacity="0.16" />
-          <circle cx="370" cy="316" r="52" fill="#00e5b0" fillOpacity="0.22" />
-          {/* Sweeping kinematic perception cone & solid robotic arm */}
-          <g style={{ transformOrigin: '370px 316px' }} className="hub-arm-sweep">
-            <path d="M370 316 L316 174 A150 150 0 0 1 424 174 Z" fill="url(#radarWedge)" fillOpacity="0.9" />
-            <rect x="363" y="218" width="14" height="98" rx="7" fill="#e2f4ff" fillOpacity="0.92" />
-            <circle cx="370" cy="220" r="12" fill="#00e5b0" />
-            <circle cx="370" cy="220" r="5" fill="#041525" />
+        <svg viewBox="0 0 640 420" preserveAspectRatio="xMidYMid slice" className="h-full w-full" aria-hidden="true">
+          <defs>
+            <linearGradient id={`${uid}-cone`} x1="0.5" y1="0" x2="0.5" y2="1">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.24" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0.02" />
+            </linearGradient>
+          </defs>
+          <circle cx={cx} cy="306" r="228" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+          <circle cx={cx} cy="306" r="168" fill="rgba(255,255,255,0.035)" stroke="rgba(255,255,255,0.16)" strokeWidth="1" />
+          <circle cx={cx} cy="306" r="108" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.22)" strokeWidth="1" />
+          <g style={{ transformOrigin: `${cx}px 306px` }} className="hub-arm-sweep">
+            <path d={`M${cx} 306 L${cx - 96} 88 A238 238 0 0 1 ${cx + 96} 88 Z`} fill={`url(#${uid}-cone)`} />
+            <rect x={cx - 6} y="152" width="12" height="154" rx="6" fill="rgba(255,255,255,0.85)" />
+            <circle cx={cx} cy="154" r="11" fill="rgba(255,255,255,0.24)" stroke="#ffffff" strokeWidth="1.4" />
           </g>
-          {/* Base actuator pedestal */}
-          <circle cx="370" cy="316" r="22" fill="#081c33" stroke="#7dd3fc" strokeWidth="2" />
-          <circle cx="370" cy="316" r="8" fill="#5fffe0" />
-        </g>
+          <circle cx={cx} cy="306" r="20" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.68)" strokeWidth="1.2" />
+          <circle cx={cx} cy="306" r="6" fill="#ffffff" />
+        </svg>
       )
 
     case 6:
-      // 6: World Models — Full-fill latent planet rising over infinite scrolling 3D horizon grid
+      // VII: World Models — Luminous frosted pearl sphere hovering over an infinite misty white perspective horizon
       return (
-        <g>
-          <rect x="260" y="150" width="220" height="220" fill="url(#themeGrad6)" />
-          {/* Glowing latent sun/world sphere in upper hemisphere */}
-          <circle cx="370" cy="226" r="46" fill="url(#worldOrb)" style={{ transformOrigin: '370px 226px' }} className="hub-pulse-soft" />
-          {/* Lower full-fill horizon plane */}
-          <rect x="260" y="256" width="220" height="114" fill="#041122" fillOpacity="0.88" />
-          {/* Perspective longitudinal rails */}
-          {[-140, -88, -42, 0, 42, 88, 140].map((dx) => (
-            <line key={dx} x1="370" y1="256" x2={370 + dx * 1.4} y2="372" stroke="#38bdf8" strokeOpacity="0.52" strokeWidth="1.1" />
+        <svg viewBox="0 0 640 420" preserveAspectRatio="xMidYMid slice" className="h-full w-full" aria-hidden="true">
+          <defs>
+            <radialGradient id={`${uid}-orb`} cx="38%" cy="32%" r="64%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+              <stop offset="52%" stopColor="#dceef8" stopOpacity="0.55" />
+              <stop offset="100%" stopColor="#94b8d0" stopOpacity="0.06" />
+            </radialGradient>
+          </defs>
+          <circle cx={cx} cy="146" r="66" fill={`url(#${uid}-orb)`} style={{ transformOrigin: `${cx}px 146px` }} className="hub-pulse-soft" />
+          <rect x="0" y="206" width="640" height="214" fill="rgba(10, 20, 36, 0.42)" />
+          {[-260, -170, -85, 0, 85, 170, 260].map((dx) => (
+            <line key={dx} x1={cx} y1="206" x2={cx + dx * 1.9} y2="420" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
           ))}
-          {/* Scrolling horizon latitude strips */}
           <g className="hub-horizon-scroll">
-            {[262, 278, 296, 316, 338, 360].map((y, i) => (
+            {[218, 240, 266, 298, 336, 382].map((y, i) => (
               <line
                 key={y}
-                x1="260"
+                x1="0"
                 y1={y}
-                x2="480"
+                x2="640"
                 y2={y}
-                stroke="#5fffe0"
-                strokeOpacity={0.28 + i * 0.12}
-                strokeWidth={1 + i * 0.2}
+                stroke="rgba(255,255,255,0.45)"
+                strokeOpacity={0.14 + i * 0.08}
+                strokeWidth="1"
               />
             ))}
           </g>
-          <line x1="260" y1="256" x2="480" y2="256" stroke="#a7f3d0" strokeWidth="1.8" />
-        </g>
+          <line x1="0" y1="206" x2="640" y2="206" stroke="rgba(255,255,255,0.48)" strokeWidth="1.2" />
+        </svg>
       )
 
     default:
-      // 7: Open Source AI — Full-fill branching fork/commit bloom + global ripple
+      // VIII: Open Source AI — Graceful branching frosted-white light tree blooming outward across the canvas
       return (
-        <g>
-          <rect x="260" y="150" width="220" height="220" fill="url(#themeGrad7)" />
-          <circle cx="370" cy="260" r="88" fill="#00e5b0" fillOpacity="0.1" style={{ transformOrigin: '370px 260px' }} className="hub-pulse-soft" />
-          <circle cx="370" cy="260" r="54" fill="#38bdf8" fillOpacity="0.16" />
-          {/* Animated git-branch / fork bloom */}
-          <path d="M370 356 L370 176" stroke="#edf5fa" strokeWidth="2.4" strokeOpacity="0.85" />
-          <path d="M370 310 C370 280, 322 276, 322 240 L322 200" fill="none" stroke="#5fffe0" strokeWidth="2.2" className="pulse-dash" />
-          <path d="M370 294 C370 264, 418 260, 418 226 L418 196" fill="none" stroke="#38bdf8" strokeWidth="2.2" className="pulse-dash" />
-          <path d="M322 246 C322 224, 294 222, 294 202" fill="none" stroke="#a7f3d0" strokeWidth="1.6" strokeOpacity="0.75" />
-          <path d="M418 238 C418 218, 446 216, 446 196" fill="none" stroke="#7dd3fc" strokeWidth="1.6" strokeOpacity="0.75" />
-          {/* Filled glowing contributor commit nodes */}
+        <svg viewBox="0 0 640 420" preserveAspectRatio="xMidYMid slice" className="h-full w-full" aria-hidden="true">
+          <circle cx={cx} cy="196" r="144" fill="rgba(255,255,255,0.04)" style={{ transformOrigin: `${cx}px 196px` }} className="hub-pulse-soft" />
+          <circle cx={cx} cy="196" r="88" fill="rgba(255,255,255,0.055)" />
+          <path d={`M${cx} 352 L${cx} 76`} stroke="rgba(255,255,255,0.58)" strokeWidth="1.6" />
+          <path d={`M${cx} 274 C${cx} 226, 224 220, 224 166 L224 106`} fill="none" stroke="rgba(255,255,255,0.68)" strokeWidth="1.5" className="pulse-dash" />
+          <path d={`M${cx} 252 C${cx} 206, 416 202, 416 150 L416 98`} fill="none" stroke="rgba(255,255,255,0.68)" strokeWidth="1.5" className="pulse-dash" />
+          <path d="M224 180 C224 146, 152 142, 152 108" fill="none" stroke="rgba(255,255,255,0.38)" strokeWidth="1.2" />
+          <path d="M416 168 C416 136, 488 134, 488 102" fill="none" stroke="rgba(255,255,255,0.38)" strokeWidth="1.2" />
           {[
-            { cx: 370, cy: 326, r: 8, c: '#edf5fa' },
-            { cx: 370, cy: 256, r: 10, c: '#00e5b0' },
-            { cx: 370, cy: 188, r: 8, c: '#5fffe0' },
-            { cx: 322, cy: 204, r: 7.5, c: '#5fffe0' },
-            { cx: 418, cy: 198, r: 7.5, c: '#38bdf8' },
-            { cx: 294, cy: 202, r: 5.5, c: '#a7f3d0' },
-            { cx: 446, cy: 196, r: 5.5, c: '#7dd3fc' },
+            { x: cx, y: 296, r: 7 },
+            { x: cx, y: 196, r: 10 },
+            { x: cx, y: 92, r: 7.5 },
+            { x: 224, y: 114, r: 8 },
+            { x: 416, y: 106, r: 8 },
+            { x: 152, y: 108, r: 5.5 },
+            { x: 488, y: 102, r: 5.5 },
           ].map((pt, i) => (
-            <circle
-              key={i}
-              cx={pt.cx}
-              cy={pt.cy}
-              r={pt.r}
-              fill={pt.c}
-              className="hub-node-glow"
-              style={{ animationDelay: `${i * 0.22}s` }}
-            />
+            <g key={i}>
+              <circle cx={pt.x} cy={pt.y} r={pt.r * 2.1} fill="rgba(255,255,255,0.12)" />
+              <circle cx={pt.x} cy={pt.y} r={pt.r} fill="#ffffff" fillOpacity={i === 1 ? 0.95 : 0.82} />
+            </g>
           ))}
-        </g>
+        </svg>
       )
   }
 }
 
 export function HubOrbitDiagram({ lang }: { lang: Lang }) {
+  const uid = useId()
   const [selected, setSelected] = useState(1)
   const active = frontierDetails[selected]
 
   return (
-    <div data-ambient-motion className="relative mx-auto my-2 w-full max-w-[980px] overflow-hidden py-4">
-      <svg
-        viewBox="0 0 740 520"
-        className="h-auto w-full"
-        role="img"
-        aria-label="Interactive WalkingLab research frontiers hub diagram"
-      >
-        <defs>
-          <radialGradient id="hubCoreAura" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#00e5b0" stopOpacity="0.28" />
-            <stop offset="44%" stopColor="#38bdf8" stopOpacity="0.14" />
-            <stop offset="100%" stopColor="#03060c" stopOpacity="0" />
-          </radialGradient>
-          <clipPath id="hubStageClip">
-            <circle cx="370" cy="260" r="106" />
-          </clipPath>
-          <radialGradient id="themeGrad0" cx="50%" cy="50%" r="55%">
-            <stop offset="0%" stopColor="#0d3554" />
-            <stop offset="100%" stopColor="#051120" />
-          </radialGradient>
-          <linearGradient id="themeGrad1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#0a243d" />
-            <stop offset="100%" stopColor="#05101e" />
-          </linearGradient>
-          <linearGradient id="themeGrad2" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#0b2848" />
-            <stop offset="100%" stopColor="#061428" />
-          </linearGradient>
-          <linearGradient id="themeGrad3" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#0a203b" />
-            <stop offset="100%" stopColor="#051323" />
-          </linearGradient>
-          <radialGradient id="themeGrad4" cx="50%" cy="50%" r="60%">
-            <stop offset="0%" stopColor="#0c2f4a" />
-            <stop offset="100%" stopColor="#051120" />
-          </radialGradient>
-          <linearGradient id="themeGrad5" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#07283b" />
-            <stop offset="100%" stopColor="#04101d" />
-          </linearGradient>
-          <linearGradient id="themeGrad6" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#0e2c54" />
-            <stop offset="52%" stopColor="#0a2240" />
-            <stop offset="100%" stopColor="#040e1c" />
-          </linearGradient>
-          <radialGradient id="themeGrad7" cx="50%" cy="40%" r="62%">
-            <stop offset="0%" stopColor="#0c3448" />
-            <stop offset="100%" stopColor="#05111f" />
-          </radialGradient>
-          <linearGradient id="radarWedge" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#00e5b0" stopOpacity="0.46" />
-            <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.04" />
-          </linearGradient>
-          <linearGradient id="scanBeam" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#00e5b0" stopOpacity="0" />
-            <stop offset="50%" stopColor="#00e5b0" stopOpacity="0.34" />
-            <stop offset="100%" stopColor="#00e5b0" stopOpacity="0" />
-          </linearGradient>
-          <linearGradient id="rlAreaFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#00e5b0" stopOpacity="0.65" />
-            <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.12" />
-          </linearGradient>
-          <radialGradient id="worldOrb" cx="42%" cy="38%" r="58%">
-            <stop offset="0%" stopColor="#a7f3d0" />
-            <stop offset="48%" stopColor="#38bdf8" />
-            <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0.2" />
-          </radialGradient>
-          <marker
-            id="hubArrow"
-            viewBox="0 0 8 8"
-            refX="6"
-            refY="4"
-            markerWidth="5"
-            markerHeight="5"
-            orient="auto"
-          >
-            <path d="M 1 1 L 7 4 L 1 7" fill="none" stroke="rgba(169,219,232,0.75)" strokeWidth="1.1" />
-          </marker>
-        </defs>
-
-        <circle cx="370" cy="260" r="245" fill="url(#hubCoreAura)" />
-
-        {/* Thin crisp horizontal & vertical crosshair axes */}
-        <line x1="16" y1="260" x2="724" y2="260" stroke="rgba(237,245,250,0.09)" />
-        <line x1="370" y1="16" x2="370" y2="504" stroke="rgba(237,245,250,0.09)" />
-
-        {/* Iconic large clean concentric orbital rings */}
-        <circle cx="370" cy="260" r="145" fill="none" stroke="rgba(0, 229, 176, 0.32)" strokeWidth="0.9" />
-        <circle cx="370" cy="260" r="236" fill="none" stroke="rgba(56, 189, 248, 0.3)" strokeWidth="0.9" />
-
-        <g>
-          <circle cx="370" cy="115" r="2.8" fill="#edf5fa" />
-          <circle cx="606" cy="260" r="3" fill="#00e5b0" />
-        </g>
-
-        {/* Crisp arrow vectors + sharp boxed tags */}
-        {frontierDetails.map((node, idx) => {
-          const isSel = idx === selected
-          const w = Math.max(122, node.label.length * 6.8 + 20)
-          const tx = node.x + w / 2
-          const ty = node.y + 13
-          return (
-            <g key={node.label}>
-              <line
-                x1="370"
-                y1="260"
-                x2={tx}
-                y2={ty}
-                stroke={isSel ? '#00e5b0' : 'rgba(169, 219, 232, 0.34)'}
-                strokeWidth={isSel ? '1.35' : '0.85'}
-                markerEnd="url(#hubArrow)"
-                strokeDasharray={isSel ? '5 13' : undefined}
-                pointerEvents="none"
-              />
-
-              <g
-                transform={`translate(${node.x}, ${node.y})`}
+    <div data-ambient-motion className="w-full py-4">
+      <div className="grid gap-6 lg:grid-cols-[310px_1fr] lg:items-stretch">
+        {/* Left: Calm frameless typographic index (8 research frontiers) */}
+        <div className="flex flex-col justify-between gap-1" role="tablist" aria-label="Research frontiers">
+          {frontierDetails.map((item, idx) => {
+            const isSel = idx === selected
+            return (
+              <button
+                key={item.label}
+                type="button"
+                role="tab"
+                aria-selected={isSel}
                 onMouseEnter={() => setSelected(idx)}
+                onFocus={() => setSelected(idx)}
                 onClick={() => setSelected(idx)}
-                className="cursor-pointer"
+                className={`group flex w-full cursor-pointer items-baseline justify-between gap-4 rounded-xl px-4 py-3 text-left transition-all duration-200 ${
+                  isSel
+                    ? 'bg-[#edf5fa]/[0.065] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.09)]'
+                    : 'text-[#edf5fa]/42 hover:bg-[#edf5fa]/[0.025] hover:text-[#edf5fa]/78'
+                }`}
               >
-                <rect
-                  width={w}
-                  height="26"
-                  fill={isSel ? '#082329' : '#040a14'}
-                  stroke={isSel ? '#00e5b0' : 'rgba(237, 245, 250, 0.52)'}
-                  strokeWidth={isSel ? '1.2' : '0.85'}
-                />
-                <text
-                  x={w / 2}
-                  y="16.5"
-                  textAnchor="middle"
-                  fill={isSel ? '#d7fff5' : '#edf5fa'}
-                  fontSize="10.8"
-                  style={{ fontFamily: 'var(--font-sans)' }}
-                  fontWeight="500"
-                  letterSpacing="-0.015em"
+                <span
+                  className="text-[17.5px] font-[450] tracking-[-0.03em]"
+                  style={{ fontFamily: 'var(--font-display)' }}
                 >
-                  {node.label}
-                </text>
-              </g>
-            </g>
-          )
-        })}
-
-        {/* Full-fill circular center animation stage corresponding to the active theme */}
-        <g clipPath="url(#hubStageClip)">
-          <HubThemeVisual key={selected} idx={selected} />
-        </g>
-
-        {/* Crisp glass bezel framing the full-fill animated portal */}
-        <circle cx="370" cy="260" r="106.5" fill="none" stroke="rgba(237, 245, 250, 0.28)" strokeWidth="1.2" />
-        <circle cx="370" cy="260" r="112" fill="none" stroke="rgba(0, 229, 176, 0.24)" strokeWidth="0.7" strokeDasharray="3 5" />
-      </svg>
-
-      {/* Clean frosted HUD readout */}
-      <div className="frosted-bcard mx-auto mt-2 flex max-w-[740px] flex-wrap items-center justify-between gap-3 px-4 py-3 text-[13px]">
-        <div className="flex items-center gap-2.5">
-          <span className="sq-dot" aria-hidden="true" />
-          <span className="font-medium text-[#edf5fa]">{active.label}</span>
-          <span className="text-[#a9dbe8]/45">·</span>
-          <span className="text-[#edf5fa]/78">
-            {lang === 'zh' ? active.desc[1] : active.desc[0]}
-          </span>
+                  {item.label}
+                </span>
+                {isSel && (
+                  <span
+                    className="text-[12.5px] tracking-[0.06em] text-[#edf5fa]/38"
+                    style={{ fontFamily: "'Iowan Old Style', 'Palatino Linotype', Georgia, serif" }}
+                  >
+                    {item.roman}
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </div>
-        <span className="box-tag box-tag--sm box-tag--accent">{active.metric}</span>
+
+        {/* Right: Full-fill painterly film-grain atmospheric motion canvas */}
+        <div className="relative flex min-h-[380px] flex-col justify-end overflow-hidden rounded-2xl border border-[#edf5fa]/[0.08] shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:min-h-[430px]">
+          {/* Bespoke muted painterly misty backdrop matching BuildStageVisual */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 transition-all duration-500"
+            style={{ background: active.mist }}
+          />
+
+          {/* Tactile photographic film grain */}
+          <div aria-hidden="true" className="course-film-grain pointer-events-none absolute inset-0 opacity-32" />
+
+          {/* Full-fill pure-white & frosted-glass minimalist motion artwork */}
+          <div key={selected} className="course-scene pointer-events-none absolute inset-0">
+            <FrontierStageVisual idx={selected} uid={uid} />
+          </div>
+
+          {/* Soft lower reading veil so editorial caption sits effortlessly over the motion canvas */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(6, 12, 24, 0.08) 0%, rgba(6, 12, 24, 0.02) 48%, rgba(4, 9, 18, 0.72) 100%)',
+            }}
+          />
+
+          {/* Whisper-subtle condensed Roman numeral flush to bottom-right */}
+          <svg
+            viewBox="0 0 260 240"
+            preserveAspectRatio="xMaxYMax meet"
+            aria-hidden="true"
+            className="pointer-events-none absolute right-0 bottom-0 h-[44%] max-h-[156px] w-auto select-none"
+          >
+            <defs>
+              <linearGradient id={`${uid}-rom-${selected}`} x1="0.88" y1="0" x2="0.12" y2="1">
+                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.14" />
+                <stop offset="60%" stopColor="#d4ecf8" stopOpacity="0.055" />
+                <stop offset="100%" stopColor="#94c4dc" stopOpacity="0.01" />
+              </linearGradient>
+            </defs>
+            <text
+              x="262"
+              y="238"
+              textAnchor="end"
+              fill={`url(#${uid}-rom-${selected})`}
+              fontFamily="'Iowan Old Style', 'Palatino Linotype', 'Baskerville', Georgia, serif"
+              fontSize="276"
+              fontWeight="400"
+              letterSpacing="-0.04em"
+              transform="translate(260, 238) scale(0.66, 1.06) translate(-260, -238)"
+            >
+              {active.roman}
+            </text>
+          </svg>
+
+          {/* Clean bottom editorial caption — zero clunky external HUD box */}
+          <div className="relative z-10 flex flex-col gap-1.5 p-6 pr-28 sm:p-8 sm:pr-36">
+            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+              <h3
+                className="text-[22px] font-medium tracking-[-0.04em] text-white sm:text-[24px]"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                {active.label}
+              </h3>
+              <span className="t-body text-[14px] text-[#edf5fa]/48">
+                {active.metric}
+              </span>
+            </div>
+            <p className="t-body max-w-[48ch] text-[14.5px] text-[#edf5fa]/78">
+              {lang === 'zh' ? active.desc[1] : active.desc[0]}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -823,7 +801,7 @@ function CoursePresetScene({ id, lang }: { id: string; lang: Lang }) {
 
         {/* Left solid pure-white crisp pill */}
         <div
-          className="max-w-[330px] self-start rounded-[22px] bg-white px-5 py-3.5 text-[14px] leading-[1.45] text-[#0c1420] shadow-[0_14px_34px_rgba(6,14,28,0.26)]"
+          className="t-body max-w-[330px] self-start rounded-[22px] bg-white px-5 py-3.5 text-[14px] text-[#0c1420] shadow-[0_14px_34px_rgba(6,14,28,0.26)]"
         >
           {zh
             ? '范围已锁定。正在沙箱仓库内运行 8 项验收循环与回归检查。'
@@ -1021,26 +999,26 @@ export function BuildStageVisual({
 
   return (
     <div className="frosted-card frosted-grain relative flex min-h-[450px] flex-col justify-between overflow-hidden p-5 sm:min-h-[500px] sm:p-7">
-      <CornerBrackets className="text-[#edf5fa]/75" />
-
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-2">
-        <span className="box-tag box-tag--accent">
-          <span className="sq-dot" aria-hidden="true" />
+      <div className="relative z-10 flex flex-wrap items-baseline justify-between gap-3">
+        <span
+          className="text-[20px] leading-none font-[450] tracking-[-0.04em] text-[#edf5fa]/38 sm:text-[23px]"
+          style={{ fontFamily: 'var(--font-display)' }}
+        >
           {item.tag}
         </span>
         <a
           href={item.href}
           target="_blank"
           rel="noreferrer"
-          className="wipe-link text-[13px] font-medium text-[#a9dbe8]"
+          className="wipe-link text-[14.5px] font-medium text-[#edf5fa]/78 hover:text-white"
         >
           {ctaLabel}
-          <ArrowUpRight className="size-3.5" aria-hidden="true" />
+          <ArrowUpRight className="size-4" aria-hidden="true" />
         </a>
       </div>
 
       {/* Unified painterly film-grain misty gradient stage with floating crisp preset choreography */}
-      <div className="relative z-10 my-5 aspect-[16/10] w-full overflow-hidden border border-[#edf5fa]/18 shadow-[0_24px_60px_rgba(0,0,0,0.52)]">
+      <div className="relative z-10 my-5 aspect-[16/10] w-full overflow-hidden rounded-xl border border-[#edf5fa]/[0.08] shadow-[0_24px_60px_rgba(0,0,0,0.48)]">
         <div
           className="pointer-events-none absolute inset-0"
           style={{ background: mistBg }}
@@ -1067,10 +1045,12 @@ export function BuildStageVisual({
         </div>
       </div>
 
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--rail)] pt-3 text-[12px] text-[#a9dbe8]/80">
+      <div
+        className="t-body relative z-10 flex flex-wrap items-baseline justify-between gap-3 pt-1 text-[14.5px] text-[#edf5fa]/30 sm:text-[15px]"
+      >
         <span className="truncate">{item.caption}</span>
-        <span className="text-[#00e5b0]/90">
-          {lang === 'zh' ? '开源可复现 · MIT' : 'Open Source · Verified'}
+        <span className="shrink-0 text-[#edf5fa]/26">
+          {lang === 'zh' ? '开源 · MIT' : 'Open Source · MIT'}
         </span>
       </div>
     </div>

@@ -113,7 +113,7 @@ export function FinaleCurtain({ lang }: { lang: Lang }) {
             </LineReveal>
             <p className="t-body mx-auto mt-5 max-w-[52ch] text-[15px] text-[#edf5fa]/88">
               {t([
-                'No matter how high your hopes, open engineering lets you aim higher — clone the repo, run lesson 01, and look further than you thought possible.',
+                'No matter how high your hopes, open engineering lets you aim higher — clone the repo, run Lesson 1, and look further than you thought possible.',
                 '我们都很普通。但也可以尝试变得不那么普通。小心求证，非同凡想。',
               ])}
             </p>

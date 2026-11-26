@@ -38,7 +38,7 @@ export const collaboratorLogos = [
 
 export const gapCards = [
   {
-    num: '01',
+    num: '1',
     title: ['Papers move fast, courses lag behind', '论文演进极快，可上手的课程却滞后'] as BiText,
     body: [
       'From RLVR and GRPO to agent harnesses and world models, frontier engineering advances every week while practical learning resources stay stuck years behind.',
@@ -47,7 +47,7 @@ export const gapCards = [
     diagram: 'cubes3' as const,
   },
   {
-    num: '02',
+    num: '2',
     title: ['Black-box demos hide the real system', '黑盒演示遮住了真正的系统原理'] as BiText,
     body: [
       'Most tutorials wrap everything behind a single API call or prompt trick. Without seeing loops, checkpoints, gradients, and failure modes, you never own the system.',
@@ -57,13 +57,13 @@ export const gapCards = [
     flipped: true,
   },
   {
-    num: '03',
+    num: '3',
     title: ['Bookmarking isn’t building', '收藏教程，不等于亲手跑通'] as BiText,
     body: [
       'Reading papers without runnable code and reproducible experiments leaves a permanent gap between knowing the jargon and shipping reliable AI systems.',
       '没有可运行代码和可复现实验的阅读，永远会在“听说过概念”和“能做出可靠 AI 系统”之间留下一道鸿沟。',
     ] as BiText,
-    ctaPrompt: ['Ready to start building? Open lesson 01.', '准备开始动手？直接打开第 01 讲。'] as BiText,
+    ctaPrompt: ['Ready to start building? Open Lesson 1.', '准备开始动手？直接打开第 1 讲。'] as BiText,
     diagram: 'gapBridge' as const,
   },
 ]
@@ -81,7 +81,7 @@ export const orbitNodes = [
 
 const repoCatalog = [
   {
-    num: '01',
+    num: '1',
     slug: 'learn-harness-engineering',
     title: 'learn-harness-engineering',
     lang: 'TypeScript',
@@ -95,7 +95,7 @@ const repoCatalog = [
     icon: 'wrench' as const,
   },
   {
-    num: '02',
+    num: '2',
     slug: 'hands-on-modern-rl',
     title: 'hands-on-modern-rl',
     lang: 'Python',
@@ -109,7 +109,7 @@ const repoCatalog = [
     icon: 'network' as const,
   },
   {
-    num: '03',
+    num: '3',
     slug: 'awesome-harness-engineering',
     title: 'awesome-harness-engineering',
     lang: 'Curated',
@@ -123,7 +123,7 @@ const repoCatalog = [
     icon: 'shield' as const,
   },
   {
-    num: '04',
+    num: '4',
     slug: 'modern-llm-notebook',
     title: 'modern-llm-notebook',
     lang: 'Notebook',
@@ -137,7 +137,7 @@ const repoCatalog = [
     icon: 'cpu' as const,
   },
   {
-    num: '05',
+    num: '5',
     slug: 'university-skill',
     title: 'university-skill',
     lang: 'HTML',
@@ -151,7 +151,7 @@ const repoCatalog = [
     icon: 'spark' as const,
   },
   {
-    num: '06',
+    num: '6',
     slug: 'hands-on-world-models',
     title: 'hands-on-world-models',
     lang: 'Python',
@@ -305,7 +305,7 @@ export const readerVoices = [
 
 export const methodSteps = [
   {
-    num: '01',
+    num: '1',
     tag: ['Understand', '先把原理讲透'] as BiText,
     body: [
       'Start from the paper, not the hype. Every derivation is written out, assumptions are named explicitly, and nothing hides behind an opaque library call.',
@@ -313,7 +313,7 @@ export const methodSteps = [
     ] as BiText,
   },
   {
-    num: '02',
+    num: '2',
     tag: ['Architect', '设计系统环境'] as BiText,
     body: [
       'Map the workspace, context boundaries, reward signals, and guardrails before writing a line of glue code.',
@@ -321,7 +321,7 @@ export const methodSteps = [
     ] as BiText,
   },
   {
-    num: '03',
+    num: '3',
     tag: ['Build', '亲手把它跑起来'] as BiText,
     body: [
       'Every chapter ends in working code: a PPO trainer, a tiny LLM in PyTorch, or an agent harness you can point directly at your own repository.',
@@ -329,7 +329,7 @@ export const methodSteps = [
     ] as BiText,
   },
   {
-    num: '04',
+    num: '4',
     tag: ['Verify', '用实验验证结果'] as BiText,
     body: [
       'Inspect training curves, failure traces, checkpoints, and reproducible evals until you have hard proof the system behaves as intended.',
@@ -337,7 +337,7 @@ export const methodSteps = [
     ] as BiText,
   },
   {
-    num: '05',
+    num: '5',
     tag: ['Create', '最后独立创造'] as BiText,
     body: [
       'Go past the curriculum. Fork the repository, break our assumptions, publish your own build, and teach it back to the global community.',
