@@ -21,17 +21,15 @@ function SliceProgressBar({
     <motion.span
       aria-hidden="true"
       style={{ scaleX }}
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-[1.5px] origin-left bg-gradient-to-r from-[#1d4ed8] via-[#38bdf8] to-[#dbeafe] will-change-transform"
+      className="pointer-events-none absolute inset-x-0 -bottom-1 h-[1.5px] origin-left bg-gradient-to-r from-[#1d4ed8] via-[#38bdf8] to-[#dbeafe] will-change-transform lg:bottom-0"
     />
   )
 }
 
 /* ============================================================================
    SCROLL-SCRUBBED COURSE SHOWCASE ("Inside the Courses")
-   - Desktop (lg+): 260vh scroll runway with 100svh sticky workbench; scrolling
-     down smoothly auto-switches pages 01 -> 04 with a live slice progress bar.
-   - Clicking any accordion item smoothly scrolls to that page's stop on desktop
-     (or switches immediately on mobile/tablet).
+   - The pinned workbench switches courses as the page scrolls.
+   - Clicking a course seeks to its scroll position.
    ============================================================================ */
 const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV'] as const
 
@@ -49,7 +47,6 @@ export function CourseShowcaseTrack({ lang }: { lang: Lang }) {
 
   useEffect(() => {
     return scrollYProgress.on('change', (v) => {
-      if (window.innerWidth < 1024) return
       const idx = Math.min(
         buildShowcases.length - 1,
         Math.max(0, Math.floor(v * buildShowcases.length * 0.999)),
@@ -65,32 +62,34 @@ export function CourseShowcaseTrack({ lang }: { lang: Lang }) {
     activeBuildRef.current = idx
     setActiveBuild(idx)
     const el = trackRef.current
-    if (!el || window.innerWidth < 1024) return
-    const scrollable = el.offsetHeight - window.innerHeight
+    if (!el) return
+    const scrollable = el.offsetHeight - document.documentElement.clientHeight
     if (scrollable <= 0) return
     const top = el.getBoundingClientRect().top + window.scrollY
     const targetProgress = (idx + 0.16) / buildShowcases.length
     window.scrollTo({
       top: top + scrollable * targetProgress,
-      behavior: 'smooth',
+      behavior: window.matchMedia('(min-width: 64rem) and (prefers-reduced-motion: no-preference)').matches
+        ? 'smooth'
+        : 'instant',
     })
   }
 
   return (
-    <div ref={trackRef} className="course-workbench relative mt-10 lg:h-[260vh]">
-      <div data-ambient-motion className="lg:sticky lg:top-0 lg:flex lg:h-[100svh] lg:items-center">
-        <div className="grid w-full gap-8 lg:grid-cols-[440px_1fr] lg:items-stretch">
-          <div className="flex min-h-[480px] flex-col">
+    <div ref={trackRef} className="course-workbench relative mt-10 h-[240svh] lg:h-[260vh]">
+      <div data-ambient-motion className="sticky top-16 lg:top-0 lg:flex lg:h-[100svh] lg:items-center">
+        <div className="showcase-grid grid w-full gap-3 max-sm:-mx-4 max-sm:w-[calc(100%+2rem)] lg:grid-cols-[440px_1fr] lg:items-stretch lg:gap-8">
+          <div className="relative grid grid-cols-2 gap-1.5 lg:static lg:flex lg:min-h-[480px] lg:flex-col lg:gap-0">
             {buildShowcases.map((item, idx) => {
               const open = activeBuild === idx
               const roman = ROMAN_NUMERALS[idx] ?? String(idx + 1)
               return (
                 <div
                   key={item.id}
-                  className={`group/row relative flex flex-col justify-between overflow-hidden border-b border-[var(--rail)] last:border-b-0 transition-all duration-300 ${
+                  className={`group/row contents lg:relative lg:flex lg:flex-col lg:justify-between lg:overflow-hidden lg:border-b lg:border-[var(--rail)] lg:last:border-b-0 lg:transition-all lg:duration-300 ${
                     open
-                      ? 'flex-1 rounded-xl bg-[#edf5fa]/[0.03] opacity-100'
-                      : 'flex-none opacity-55 hover:opacity-90'
+                      ? 'lg:flex-1 lg:rounded-xl lg:bg-[#edf5fa]/[0.03] lg:opacity-100'
+                      : 'lg:flex-none lg:opacity-55 lg:hover:opacity-90'
                   }`}
                 >
                   {/* Restrained condensed Roman numeral (I–IV) flush to bottom-right with soft diagonal fade */}
@@ -99,7 +98,7 @@ export function CourseShowcaseTrack({ lang }: { lang: Lang }) {
                       viewBox="0 0 230 240"
                       preserveAspectRatio="xMaxYMax meet"
                       aria-hidden="true"
-                      className="pointer-events-none absolute right-0 bottom-0 h-[54%] max-h-[152px] w-auto select-none"
+                      className="pointer-events-none absolute right-0 bottom-0 hidden h-[54%] max-h-[152px] w-auto select-none lg:block"
                     >
                       <defs>
                         <linearGradient id={`${uid}-num-${idx}`} x1="0.88" y1="0" x2="0.12" y2="1">
@@ -128,34 +127,32 @@ export function CourseShowcaseTrack({ lang }: { lang: Lang }) {
                     type="button"
                     onClick={() => selectBuild(idx)}
                     aria-expanded={open}
-                    className="relative z-10 flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-5 text-left"
+                    className={`relative z-10 flex min-h-11 w-full cursor-pointer items-center justify-between rounded-lg px-2 py-2 text-left lg:gap-4 lg:rounded-none lg:px-5 lg:py-5 ${
+                      open
+                        ? 'max-lg:bg-[#edf5fa]/[0.085]'
+                        : 'max-lg:bg-[#edf5fa]/[0.025] max-lg:text-[#edf5fa]/65'
+                    }`}
                   >
-                    <span
-                      className="t-body text-[22px] text-[#edf5fa]"
-                    >
+                    <span className="t-body text-[13px] max-lg:leading-tight lg:text-[22px] lg:text-[#edf5fa]">
                       {t(item.title)}
                     </span>
                   </button>
 
                   {open && (
-                    <div className="relative z-10 max-w-[33ch] px-5 pr-14 pb-6">
+                    <div className="relative z-10 col-span-2 row-start-3 px-2 pt-1 lg:max-w-[33ch] lg:px-5 lg:pr-14 lg:pb-6 lg:pt-0">
                       <p
-                        className="t-body mb-3 text-[14.5px] text-[#edf5fa]/40"
+                        className="t-body mb-1 text-[13px] text-[#edf5fa]/55 max-lg:leading-tight lg:mb-3 lg:text-[14.5px] lg:text-[#edf5fa]/40"
                       >
                         {item.meta}
                       </p>
-                      <p className="t-body text-[14.5px] text-[#edf5fa]/78">
+                      <p className="t-body text-[13px] text-[#edf5fa]/78 max-lg:leading-tight lg:text-[14.5px]">
                         {t(item.body)}
                       </p>
                     </div>
                   )}
 
                   {open && (
-                    <SliceProgressBar
-                      progress={scrollYProgress}
-                      idx={idx}
-                      total={buildShowcases.length}
-                    />
+                    <SliceProgressBar progress={scrollYProgress} idx={idx} total={buildShowcases.length} />
                   )}
                 </div>
               )

@@ -587,7 +587,7 @@ function FrontierSliceProgress({
     <motion.span
       aria-hidden="true"
       style={{ scaleX }}
-      className="pointer-events-none absolute inset-x-3 bottom-0 hidden h-[1.5px] origin-left rounded-full bg-gradient-to-r from-[#38bdf8]/65 via-[#a9dbe8]/85 to-white will-change-transform lg:block"
+      className="pointer-events-none absolute inset-x-3 bottom-0 h-[1.5px] origin-left rounded-full bg-gradient-to-r from-[#38bdf8]/65 via-[#a9dbe8]/85 to-white will-change-transform"
     />
   )
 }
@@ -606,7 +606,6 @@ export function HubOrbitDiagram({ lang }: { lang: Lang }) {
 
   useEffect(() => {
     return scrollYProgress.on('change', (v) => {
-      if (window.innerWidth < 1024) return
       const idx = Math.min(
         frontierDetails.length - 1,
         Math.max(0, Math.floor(v * frontierDetails.length * 0.999)),
@@ -623,26 +622,28 @@ export function HubOrbitDiagram({ lang }: { lang: Lang }) {
     setSelected(idx)
     if (!scrollToStop) return
     const el = trackRef.current
-    if (!el || window.innerWidth < 1024) return
-    const scrollable = el.offsetHeight - window.innerHeight
+    if (!el) return
+    const scrollable = el.offsetHeight - document.documentElement.clientHeight
     if (scrollable <= 0) return
     const top = el.getBoundingClientRect().top + window.scrollY
     const targetProgress = (idx + 0.18) / frontierDetails.length
     window.scrollTo({
       top: top + scrollable * targetProgress,
-      behavior: 'smooth',
+      behavior: window.matchMedia('(min-width: 64rem) and (prefers-reduced-motion: no-preference)').matches
+        ? 'smooth'
+        : 'instant',
     })
   }
 
   return (
-    <div ref={trackRef} className="relative w-full py-4 lg:h-[340vh]">
+    <div ref={trackRef} className="relative h-[300svh] w-full py-4 lg:h-[340vh]">
       <div
         data-ambient-motion
-        className="lg:sticky lg:top-0 lg:flex lg:h-[100svh] lg:items-center"
+        className="sticky top-16 lg:top-0 lg:flex lg:h-[100svh] lg:items-center"
       >
-        <div className="grid w-full gap-6 lg:grid-cols-[310px_1fr] lg:items-stretch">
+        <div className="showcase-grid grid w-full gap-3 lg:grid-cols-[310px_1fr] lg:items-stretch lg:gap-6">
           {/* Left: Calm frameless typographic index (8 research frontiers, auto-scrubbed on scroll) */}
-          <div className="flex flex-col justify-between gap-1" role="tablist" aria-label="Research frontiers">
+          <div className="grid grid-cols-2 justify-between gap-1 lg:flex lg:flex-col" role="tablist" aria-label="Research frontiers">
             {frontierDetails.map((item, idx) => {
               const isSel = idx === selected
               return (
@@ -651,24 +652,26 @@ export function HubOrbitDiagram({ lang }: { lang: Lang }) {
                   type="button"
                   role="tab"
                   aria-selected={isSel}
-                  onMouseEnter={() => selectFrontier(idx, false)}
-                  onFocus={() => selectFrontier(idx, false)}
+                  onPointerEnter={(event) => {
+                    if (event.pointerType === 'mouse') selectFrontier(idx)
+                  }}
+                  onFocus={() => selectFrontier(idx)}
                   onClick={() => selectFrontier(idx, true)}
-                  className={`group relative flex w-full cursor-pointer items-baseline justify-between gap-4 overflow-hidden rounded-xl px-4 py-3 text-left transition-all duration-200 ${
+                  className={`group relative flex w-full cursor-pointer items-center justify-between gap-1 overflow-hidden rounded-xl px-2.5 py-2 text-left transition-all duration-200 max-lg:min-h-11 lg:items-baseline lg:gap-4 lg:px-4 lg:py-3 ${
                     isSel
                       ? 'bg-[#edf5fa]/[0.065] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.09)]'
                       : 'text-[#edf5fa]/42 hover:bg-[#edf5fa]/[0.025] hover:text-[#edf5fa]/78'
                   }`}
                 >
                   <span
-                    className="text-[17.5px] font-[450] tracking-[-0.03em]"
+                    className="text-[13px] leading-tight font-[450] tracking-[-0.03em] lg:text-[17.5px] lg:leading-[1.25]"
                     style={{ fontFamily: 'var(--font-display)' }}
                   >
                     {item.label}
                   </span>
                   {isSel && (
                     <span
-                      className="text-[12.5px] tracking-[0.06em] text-[#edf5fa]/38"
+                      className="hidden text-[12.5px] tracking-[0.06em] text-[#edf5fa]/38 lg:inline"
                       style={{ fontFamily: "'Iowan Old Style', 'Palatino Linotype', Georgia, serif" }}
                     >
                       {item.roman}
@@ -687,7 +690,7 @@ export function HubOrbitDiagram({ lang }: { lang: Lang }) {
           </div>
 
           {/* Right: Full-fill painterly film-grain atmospheric motion canvas */}
-          <div className="relative flex min-h-[380px] flex-col justify-end overflow-hidden rounded-2xl border border-[#edf5fa]/[0.08] shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:min-h-[430px]">
+          <div className="relative flex min-h-[clamp(12rem,38svh,25rem)] flex-col justify-end overflow-hidden rounded-2xl border border-[#edf5fa]/[0.08] shadow-[0_24px_60px_rgba(0,0,0,0.45)] lg:min-h-[430px]">
             {/* Bespoke muted painterly misty backdrop matching BuildStageVisual */}
             <div
               aria-hidden="true"
@@ -743,7 +746,7 @@ export function HubOrbitDiagram({ lang }: { lang: Lang }) {
             </svg>
 
             {/* Clean bottom editorial caption — zero clunky external HUD box */}
-            <div className="relative z-10 flex flex-col gap-1.5 p-6 pr-28 sm:p-8 sm:pr-36">
+            <div className="relative z-10 flex flex-col gap-1.5 p-4 lg:p-8 lg:pr-36">
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <h3
                   className="text-[22px] font-medium tracking-[-0.04em] text-white sm:text-[24px]"
@@ -1007,10 +1010,10 @@ export function BuildStageVisual({
   const mistBg = COURSE_MIST_BACKDROPS[item.id] ?? COURSE_MIST_BACKDROPS.harness
 
   return (
-    <div className="frosted-card frosted-grain relative flex min-h-[450px] flex-col justify-between overflow-hidden p-5 sm:min-h-[500px] sm:p-7">
-      <div className="relative z-10 flex flex-wrap items-baseline justify-between gap-3">
+    <div className="frosted-card frosted-grain relative flex min-w-0 flex-col justify-between overflow-hidden p-3 lg:min-h-[500px] lg:p-7">
+      <div className="relative z-10 flex items-baseline justify-between gap-3 lg:flex-wrap">
         <span
-          className="text-[20px] leading-none font-[450] tracking-[-0.04em] text-[#edf5fa]/38 sm:text-[23px]"
+          className="text-[16px] leading-none font-[450] tracking-[-0.04em] text-[#edf5fa]/38 max-lg:truncate lg:text-[23px]"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           {item.tag}
@@ -1019,7 +1022,7 @@ export function BuildStageVisual({
           href={item.href}
           target="_blank"
           rel="noreferrer"
-          className="wipe-link text-[14.5px] font-medium text-[#edf5fa]/78 hover:text-white"
+          className="wipe-link shrink-0 text-[13px] font-medium text-[#edf5fa]/78 hover:text-white lg:text-[14.5px]"
         >
           {ctaLabel}
           <ArrowUpRight className="size-4" aria-hidden="true" />
@@ -1027,7 +1030,7 @@ export function BuildStageVisual({
       </div>
 
       {/* Unified painterly film-grain misty gradient stage with floating crisp preset choreography */}
-      <div className="relative z-10 my-5 aspect-[16/10] w-full overflow-hidden rounded-xl border border-[#edf5fa]/[0.08] shadow-[0_24px_60px_rgba(0,0,0,0.48)]">
+      <div className="relative z-10 my-2 flex min-h-[clamp(9.5rem,27svh,15rem)] w-full items-center overflow-hidden rounded-xl border border-[#edf5fa]/[0.08] shadow-[0_24px_60px_rgba(0,0,0,0.48)] lg:my-5 lg:aspect-[16/10] lg:min-h-0">
         <div
           className="pointer-events-none absolute inset-0"
           style={{ background: mistBg }}
@@ -1048,16 +1051,16 @@ export function BuildStageVisual({
 
         {/* Animated course-specific floating preset UI */}
         <div className="relative z-10 flex h-full w-full items-center justify-center">
-          <div key={item.id} className="course-scene w-full">
+          <div key={item.id} className="course-scene course-preset w-full">
             <CoursePresetScene id={item.id} lang={lang} />
           </div>
         </div>
       </div>
 
       <div
-        className="t-body relative z-10 flex flex-wrap items-baseline justify-between gap-3 pt-1 text-[14.5px] text-[#edf5fa]/30 sm:text-[15px]"
+        className="t-body relative z-10 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 pt-1 text-[12px] text-[#edf5fa]/30 lg:gap-3 lg:text-[15px]"
       >
-        <span className="truncate">{item.caption}</span>
+        <span className="min-w-0 truncate max-lg:flex-1">{item.caption}</span>
         <span className="shrink-0 text-[#edf5fa]/26">
           {lang === 'zh' ? '开源 · MIT' : 'Open Source · MIT'}
         </span>
